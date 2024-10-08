@@ -15,23 +15,45 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public List<Order> getAllOrders() {
+    public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
     @Override
-    public Order getOrderById(Long id) {
+    public Order findById(Long id) {
         return orderRepository.findById(id).orElse(null);
     }
 
     @Override
-    public Order saveOrder(Order order) {
-        return orderRepository.save(order);
+    public void cancelOrder(Long id) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setStatus(0); // Giả sử 0 đại diện cho "Cancelled"
+            orderRepository.save(order);
+        }
+
     }
 
     @Override
-    public void deleteOrder(Long id) {
-        orderRepository.deleteById(id);
+    public void confirmOrder(Long id) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setStatus(1); // Giả sử 1 đại diện cho "Confirmed"
+            orderRepository.save(order);
+        }
+
     }
+
+    @Override
+    public void markAsDelivered(Long id) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setStatus(2); // Giả sử 2 đại diện cho "Delivered"
+            orderRepository.save(order);
+        }
+    }
+
 }
+
+
 
