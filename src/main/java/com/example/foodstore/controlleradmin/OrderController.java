@@ -51,13 +51,13 @@ public class OrderController {
 
     @GetMapping("/cancel/{id}")
     public String cancelOrder(@PathVariable("id") Long id) {
-        orderService.cancel(id);
+        orderService.cancelOrder(id);
         return "redirect:/admin/orders";
     }
 
     @GetMapping("/confirm/{id}")
     public String confirmOrder(@PathVariable("id") Long id) {
-        orderService.confirm(id);
+        orderService.confirmOrder(id);
         return "redirect:/admin/orders";
     }
 
