@@ -35,7 +35,7 @@
 <div class="body-wrapper">
 
     <!-- HEADER AREA START -->
-    <div id="header"></div>
+    <div th:replace="~{web/header :: header}"></div>
 
     <div class="ltn__utilize-overlay"></div>
 
@@ -3799,7 +3799,7 @@
                             <div class="col-xl-3 col-md-6 col-12">
                                 <div class="ltn__feature-item ltn__feature-item-8">
                                     <div class="ltn__feature-icon">
-                                        <img src="img/icons/icon-img/14.png" alt="#">
+                                        <img src="web/img/icons/icon-img/14.png" alt="#">
                                     </div>
                                     <div class="ltn__feature-info">
                                         <h4>Free home delivery</h4>
@@ -3815,8 +3815,8 @@
         </div>
     </div>
     <!-- FEATURE AREA END -->
+    <div th:replace="~{web/footer :: footer}"></div>
 
-    <div id="footer"></div>
 
     <!-- MODAL AREA START (Quick View Modal) -->
     <div class="ltn__modal-area ltn__quick-view-modal-area">
@@ -4024,10 +4024,10 @@
     <!-- preloader area end -->
 
     <!-- All JS Plugins -->
-    <script src="web/js/plugins.js"></script>
+    <script th:src="@{/web/js/plugins.js}"></script>
     <!-- Main JS -->
-    <script src="web/js/main.js"></script>
-  
+    <script th:src="@{/web/js/main.js}"></script>
+
 </body>
 </html>
 
