@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/orders")
@@ -28,11 +29,15 @@ public class OrderController {
     @ModelAttribute("user")
     public User user(Model model, Principal principal) {
         if (principal != null) {
-            User user = userRepository.findByEmail(principal.getName());
-            model.addAttribute("user", user);
-            return user;
+            Optional<User> optionalUser = userRepository.findByEmail(principal.getName());
+
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();  // Lấy đối tượng User từ Optional
+                model.addAttribute("user", user);  // Gán đối tượng User thực tế vào model
+                return user;
+            }
         }
-        return null;
+        return null;  // Trả về null nếu không tìm thấy user
     }
 
     @GetMapping

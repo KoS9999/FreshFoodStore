@@ -37,9 +37,9 @@ public class AccountController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@RequestParam String newPassword, @RequestParam String confirmPassword, Model model) {
+    public String changePassword(@RequestParam String email, @RequestParam String newPassword, @RequestParam String confirmPassword, Model model) {
         if (newPassword.equals(confirmPassword)) {
-            accountService.updatePassword(newPassword);
+            accountService.updatePassword(email, newPassword);
             model.addAttribute("message", "Password changed successfully.");
             return "web/login";
         } else {

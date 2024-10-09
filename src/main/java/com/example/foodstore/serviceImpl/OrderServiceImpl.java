@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrderHistory() {
         // Giả sử lấy lịch sử mua hàng cho người dùng đã đăng nhập
         Long userId = 1L; // Thay bằng thông tin người dùng đăng nhập
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUser_UserId(userId);
     }
 
     @Override

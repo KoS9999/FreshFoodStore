@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -29,105 +30,172 @@ public class AccountServiceImpl implements AccountService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JavaMailSender mailSender;  // Thêm JavaMailSender để gửi email
+    private JavaMailSender mailSender;
 
-    private Map<String, String> otpStorage = new HashMap<>();  // Lưu trữ OTP theo email
+    // OTP storage - lưu tạm OTP để kiểm tra
+    private Map<String, String> otpStorage = new HashMap<>();
 
+    /**
+     * Đăng ký tài khoản mới
+     */
     @Override
     public boolean registerUser(String email, String password) {
-        if (userRepository.findByEmail(email) != null) {
-            return false;  // Email đã tồn tại
+        // Kiểm tra nếu email đã tồn tại
+        if (userRepository.findByEmail(email).isPresent()) {
+            return false;
         }
 
-        // Tạo OTP và gửi qua email
+        // Tạo người dùng mới
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));  // Mã hóa mật khẩu
+        user.setEnabled(false);  // Chưa kích hoạt
+
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        user.setRoles(Collections.singleton(userRole));
+
+        // Lưu người dùng vào cơ sở dữ liệu
+        userRepository.save(user);
+
+        // Gửi OTP qua email
         String otp = generateOtp();
         otpStorage.put(email, otp);
         sendOtpToEmail(email, otp);
 
-        // Tạo người dùng mới và gán quyền ROLE_USER
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));  // Mã hóa mật khẩu trước khi lưu
-        user.setEnabled(false);  // Chưa kích hoạt
-
-        // Gán quyền ROLE_USER cho người dùng
-        Role userRole = roleRepository.findByName("ROLE_USER");
-        user.setRoles(Collections.singleton(userRole));
-
-        userRepository.save(user);
         return true;
     }
 
+    /**
+     * Xác nhận OTP đăng ký
+     */
     @Override
     public boolean confirmOtpRegister(String otp) {
         for (Map.Entry<String, String> entry : otpStorage.entrySet()) {
             if (entry.getValue().equals(otp)) {
-                // Kích hoạt tài khoản người dùng
-                User user = userRepository.findByEmail(entry.getKey());
-                if (user != null) {
+                Optional<User> userOpt = userRepository.findByEmail(entry.getKey());
+                if (userOpt.isPresent()) {
+                    User user = userOpt.get();
                     user.setEnabled(true);  // Kích hoạt tài khoản
                     userRepository.save(user);
+                    otpStorage.remove(entry.getKey());  // Xóa OTP khỏi bộ nhớ
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean confirmOtpForgotPassword(String otp) {
+        System.out.println("Checking OTP: " + otp);
+        for (Map.Entry<String, String> entry : otpStorage.entrySet()) {
+            if (entry.getValue().equals(otp)) {
+                System.out.println("OTP is valid for user: " + entry.getKey());
+                return true;
+            }
+        }
+        System.out.println("Invalid OTP.");
+        return false;
+    }
+
+
+
+    @Override
+    public boolean updatePasswordWithOtp(String otp, String newPassword) {
+        // Duyệt qua otpStorage để tìm OTP
+        for (Map.Entry<String, String> entry : otpStorage.entrySet()) {
+            if (entry.getValue().equals(otp)) {
+                Optional<User> userOptional = userRepository.findByEmail(entry.getKey());
+                if (userOptional.isPresent()) {
+                    User user = userOptional.get();
+                    user.setPassword(passwordEncoder.encode(newPassword));  // Mã hóa mật khẩu mới
+                    userRepository.save(user);  // Lưu lại thông tin người dùng
                     otpStorage.remove(entry.getKey());  // Xóa OTP sau khi sử dụng
                     return true;
                 }
             }
         }
-        return false;  // OTP không hợp lệ
+        return false;  // Nếu không tìm thấy OTP hoặc người dùng
     }
 
+
+
+
+    /**
+     * Gửi email quên mật khẩu với OTP
+     */
     @Override
     public boolean sendResetPasswordEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            return false;  // Không tìm thấy người dùng với email này
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return false;
         }
 
-        // Tạo một OTP mới và gửi qua email để đặt lại mật khẩu
+        // Sinh OTP và gửi tới email
         String otp = generateOtp();
         otpStorage.put(email, otp);
         sendOtpToEmail(email, otp);
 
-        return true;  // Gửi thành công OTP để đặt lại mật khẩu
+        return true;
     }
 
+    /**
+     * Xác nhận OTP quên mật khẩu
+     */
     @Override
     public boolean validateOtp(String otp) {
-        // Duyệt qua các OTP được lưu trong otpStorage
         for (Map.Entry<String, String> entry : otpStorage.entrySet()) {
             if (entry.getValue().equals(otp)) {
-                // Nếu OTP hợp lệ, xóa OTP khỏi bộ nhớ tạm để tránh sử dụng lại
-                otpStorage.remove(entry.getKey());
-                return true;  // OTP hợp lệ
+                otpStorage.remove(entry.getKey());  // Xóa OTP sau khi sử dụng
+                return true;
             }
         }
-        return false;  // OTP không hợp lệ
+        return false;
     }
 
-
+    /**
+     * Cập nhật mật khẩu mới
+     */
     @Override
     public void updatePassword(String email, String newPassword) {
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            // Mã hóa mật khẩu mới trước khi cập nhật vào cơ sở dữ liệu
-            user.setPassword(passwordEncoder.encode(newPassword));
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPassword(passwordEncoder.encode(newPassword));  // Mã hóa mật khẩu mới
             userRepository.save(user);
         }
     }
 
-
-    private String generateOtp() {
-        Random random = new Random();
-        return String.format("%06d", random.nextInt(1000000));  // Tạo OTP 6 chữ số
+    /**
+     * Xác thực người dùng
+     */
+    @Override
+    public boolean validateUser(String email, String password) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // So sánh mật khẩu nhập với mật khẩu đã mã hóa
+            return passwordEncoder.matches(password, user.getPassword());
+        }
+        return false;
     }
 
+    /**
+     * Sinh OTP gồm 6 chữ số ngẫu nhiên
+     */
+    private String generateOtp() {
+        Random random = new Random();
+        return String.format("%06d", random.nextInt(1000000));  // Sinh OTP 6 chữ số
+    }
+
+    /**
+     * Gửi OTP tới email người dùng
+     */
     private void sendOtpToEmail(String email, String otp) {
-        // Tạo nội dung email
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Your OTP for Registration");
+        message.setSubject("Your OTP for Registration or Password Reset");
         message.setText("Dear user,\n\nYour OTP code is: " + otp + "\n\nThank you!");
-
-        // Gửi email
         mailSender.send(message);
     }
 }

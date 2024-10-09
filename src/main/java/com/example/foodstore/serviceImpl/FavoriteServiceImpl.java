@@ -17,7 +17,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public List<Product> getFavoriteProducts() {
         Long userId = 1L; // Giả lập lấy userId người dùng đăng nhập
-        return favoriteRepository.findByUserId(userId);
+        return favoriteRepository.findByUser_UserId(userId);  // Sửa lại tên phương thức
     }
 
     @Override

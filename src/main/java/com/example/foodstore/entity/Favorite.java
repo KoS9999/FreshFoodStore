@@ -19,7 +19,7 @@ public class Favorite implements Serializable {
     private Long favoriteId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne

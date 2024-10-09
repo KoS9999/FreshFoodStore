@@ -40,8 +40,9 @@ public class Product implements Serializable {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "categoryId", nullable = false)
     private Category category;
+
 
     // Liên kết một-nhiều với ProductImage
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)

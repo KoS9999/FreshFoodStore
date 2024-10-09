@@ -34,8 +34,8 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 }
 

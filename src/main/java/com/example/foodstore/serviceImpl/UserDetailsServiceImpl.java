@@ -1,22 +1,18 @@
 package com.example.foodstore.serviceImpl;
 
-import com.example.foodstore.entity.Role;
 import com.example.foodstore.entity.User;
 import com.example.foodstore.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Set;
 
-@Service
-public class CustomUserDetailsService implements UserDetailsService {
+@Service("userDetailsServiceImpl")
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -26,24 +22,18 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         // Kiểm tra nếu người dùng không tồn tại
-        User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-
-        // Lấy các vai trò của người dùng và chuyển đổi sang GrantedAuthority
-        for (Role role : user.getRoles()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+        if (!optionalUser.isPresent()) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
 
-        // Tạo đối tượng UserDetails từ thông tin của người dùng
+        User user = optionalUser.get();  // Lấy đối tượng User ra từ Optional
+
+        // Trả về đối tượng UserDetails
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                user.isEnabled(),
-                true,
-                true,
-                true,
-                grantedAuthorities
+                new ArrayList<>() // Cung cấp danh sách các quyền (authorities), có thể để trống nếu không cần
         );
     }
+
 }

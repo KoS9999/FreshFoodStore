@@ -6,4 +6,9 @@ public interface AccountService {
     void updatePassword(String email, String newPassword);
     boolean registerUser(String email, String password);
     boolean confirmOtpRegister(String otp);
+
+    boolean confirmOtpForgotPassword(String otp);
+    boolean updatePasswordWithOtp(String otp, String newPassword);
+
+    boolean validateUser(String email, String password);
 }
