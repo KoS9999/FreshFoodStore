@@ -33,6 +33,9 @@ public class User implements Serializable {
 
     private Boolean status;
 
+    @Column(nullable = false)
+    private boolean enabled;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",

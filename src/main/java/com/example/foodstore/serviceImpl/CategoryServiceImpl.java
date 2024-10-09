@@ -39,9 +39,5 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
-    @Override
-    public void deleteById(Long id) {
-        categoryRepository.deleteById(id);
-    }
 }
 

@@ -1,10 +1,10 @@
 package com.example.foodstore.repository;
 
-import com.example.foodstore.entity.Role;
+import com.example.foodstore.entity.ProductImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
-    Role findByName(String name);
+public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
 }
+

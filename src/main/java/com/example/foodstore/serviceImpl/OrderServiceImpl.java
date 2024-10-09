@@ -53,6 +53,24 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public List<Order> getOrderHistory() {
+        // Giả sử lấy lịch sử mua hàng cho người dùng đã đăng nhập
+        Long userId = 1L; // Thay bằng thông tin người dùng đăng nhập
+        return orderRepository.findByUserId(userId);
+    }
+
+    @Override
+    public void processCheckout() {
+        // Logic xử lý thanh toán
+        // Lưu thông tin đơn hàng vào database
+    }
+
+    @Override
+    public void sendOrderConfirmationEmail() {
+        // Logic gửi email xác nhận đơn hàng
+    }
+
 }
 
 
