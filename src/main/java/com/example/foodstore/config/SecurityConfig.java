@@ -8,39 +8,59 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Set;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private UserDetailsService userDetailsServiceImpl;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
-                                "/",
-                                "/index",
-                                "/register",
-                                "/confirmOTPregister",
-                                "/forgotpassword",
-                                "/confirmOtpForgotPassword",
-                                "/newpassword",
-                                "/forgotpassword",
-                                "/web/**"  // Đảm bảo rằng các tài nguyên tĩnh được truy cập công khai
+                                "/", "/index", "/register", "/login", "/confirmOTPregister",
+                                "/forgotpassword", "/confirmOtpForgotPassword", "/newPassword",
+                                "/web/**"
                         ).permitAll()
+                        .requestMatchers(
+                                "/account", "/wishlist", "/checkout"
+                        ).hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/perform_login")
+                        .successHandler(authenticationSuccessHandler())
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
-                .logout((logout) -> logout.permitAll());
+
+                .logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/index")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .permitAll()
+                );
 
         return http.build();
     }
@@ -65,4 +85,18 @@ public class SecurityConfig {
         authenticationManagerBuilder.authenticationProvider(authenticationProvider());
         return authenticationManagerBuilder.build();
     }
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+
+            var roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+            if (roles.contains("ROLE_ADMIN")) {
+                response.sendRedirect("/admin/dashboard");
+            } else {
+                response.sendRedirect("/index");
+            }
+        };
+    }
 }
+
