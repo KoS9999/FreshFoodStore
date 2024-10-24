@@ -4,7 +4,7 @@ public interface AccountService {
     boolean sendResetPasswordEmail(String email);
     boolean validateOtp(String otp);
     void updatePassword(String email, String newPassword);
-    boolean registerUser(String email, String password);
+    boolean registerUser(String name, String email, String password);
     boolean confirmOtpRegister(String otp);
 
     boolean confirmOtpForgotPassword(String otp);
