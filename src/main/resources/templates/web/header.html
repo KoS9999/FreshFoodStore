@@ -1,4 +1,4 @@
-<div th:fragment="header">
+<div th:fragment="header" xmlns:sec="http://www.w3.org/1999/xhtml">
     <header class="ltn__header-area ltn__header-5 ltn__header-transparent-- gradient-color-4---">
 
         <!-- ltn__header-top-area start -->
@@ -138,14 +138,38 @@
                                 <li>
                                     <a href="#"><i class="icon-user"></i></a>
                                     <ul>
-                                        <li><a href="login.html">Sign in</a></li>
-                                        <li><a href="register.html">Register</a></li>
-                                        <li><a href="account.html">My Account</a></li>
-                                        <li><a href="wishlist.html">Wishlist</a></li>
+                                        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                                        <li sec:authorize="isAuthenticated()">
+                                            <a th:href="@{/account}">My Account</a>
+                                        </li>
+                                        <li sec:authorize="isAuthenticated()">
+                                            <a href="wishlist.html">Wishlist</a>
+                                        </li>
+                                        <li sec:authorize="isAuthenticated()">
+                                            <!-- Liên kết logout -->
+                                            <a th:href="@{/logout}"
+                                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                Logout
+                                            </a>
+                                        </li>
+
+                                        <!-- Kiểm tra nếu người dùng chưa đăng nhập -->
+                                        <li sec:authorize="!isAuthenticated()">
+                                            <a th:href="@{/login}">Sign in</a>
+                                        </li>
+                                        <li sec:authorize="!isAuthenticated()">
+                                            <a th:href="@{/register}">Register</a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
                         </div>
+
+                        <!-- Form logout ẩn -->
+                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                        </form>
+
                         <!-- mini-cart -->
                         <div class="mini-cart-icon">
                             <a href="#ltn__utilize-cart-menu" class="ltn__utilize-toggle">

@@ -34,15 +34,15 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area text-center">
-                        <h1 class="section-title">Confirm Your OTP</h1>
-                        <p>Please enter the OTP sent to your email to reset your password.</p>
+                        <h1 class="section-title">Xác nhận OTP của bạn</h1>
+                        <p>Vui lòng nhập OTP được gửi tới email của bạn để đặt lại mật khẩu</p>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
                     <div class="account-login-inner">
-                        <form th:action="@{/confirmOTPfgpw}" method="post" class="ltn__form-box contact-form-box">
+                        <form th:action="@{/confirmOtpForgotPassword}" method="post" class="ltn__form-box contact-form-box">
                             <input type="text" name="otp" placeholder="Enter OTP*" required>
                             <div class="btn-wrapper mt-0">
                                 <button class="theme-btn-1 btn btn-block" type="submit">CONFIRM OTP</button>
