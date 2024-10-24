@@ -34,12 +34,14 @@ public class AccountServiceImpl implements AccountService {
 
     // OTP storage - lưu tạm OTP để kiểm tra
     private Map<String, String> otpStorage = new HashMap<>();
+    // Bộ nhớ tạm thời cho người dùng chưa xác thực
+    private Map<String, User> tempUserStorage = new HashMap<>();
 
     /**
      * Đăng ký tài khoản mới
      */
     @Override
-    public boolean registerUser(String email, String password) {
+    public boolean registerUser(String name, String email, String password) {
         // Kiểm tra nếu email đã tồn tại
         if (userRepository.findByEmail(email).isPresent()) {
             return false;
@@ -47,15 +49,23 @@ public class AccountServiceImpl implements AccountService {
 
         // Tạo người dùng mới
         User user = new User();
+        user.setName(name);
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));  // Mã hóa mật khẩu
-        user.setEnabled(false);  // Chưa kích hoạt
+        user.setPassword(passwordEncoder.encode(password));
+        user.setEnabled(false);  // Đặt tài khoản chưa kích hoạt
 
+        // Kiểm tra và tạo vai trò nếu chưa tồn tại
         Role userRole = roleRepository.findByName("ROLE_USER");
+        if (userRole == null) {
+            userRole = new Role();
+            userRole.setName("ROLE_USER");
+        }
+
+        // Gán vai trò cho người dùng
         user.setRoles(Collections.singleton(userRole));
 
-        // Lưu người dùng vào cơ sở dữ liệu
-        userRepository.save(user);
+        // Đặt người dùng vào bộ nhớ tạm thời
+        tempUserStorage.put(email, user);
 
         // Gửi OTP qua email
         String otp = generateOtp();
@@ -65,6 +75,7 @@ public class AccountServiceImpl implements AccountService {
         return true;
     }
 
+
     /**
      * Xác nhận OTP đăng ký
      */
@@ -72,18 +83,32 @@ public class AccountServiceImpl implements AccountService {
     public boolean confirmOtpRegister(String otp) {
         for (Map.Entry<String, String> entry : otpStorage.entrySet()) {
             if (entry.getValue().equals(otp)) {
-                Optional<User> userOpt = userRepository.findByEmail(entry.getKey());
-                if (userOpt.isPresent()) {
-                    User user = userOpt.get();
-                    user.setEnabled(true);  // Kích hoạt tài khoản
-                    userRepository.save(user);
-                    otpStorage.remove(entry.getKey());  // Xóa OTP khỏi bộ nhớ
-                    return true;
+                String email = entry.getKey();
+                User tempUser = tempUserStorage.get(email);
+
+                if (tempUser != null) {
+                    // Lưu vai trò nếu chưa tồn tại
+                    for (Role role : tempUser.getRoles()) {
+                        if (!roleRepository.existsByName(role.getName())) {
+                            roleRepository.save(role);
+                        }
+                    }
+
+                    // Kích hoạt tài khoản và lưu người dùng vào cơ sở dữ liệu
+                    tempUser.setEnabled(true);
+                    userRepository.save(tempUser);
+
+                    // Xóa OTP và người dùng tạm thời khỏi bộ nhớ
+                    otpStorage.remove(email);
+                    tempUserStorage.remove(email);
+
+                    return true;  // OTP hợp lệ
                 }
             }
         }
-        return false;
+        return false;  // OTP không hợp lệ
     }
+
 
     @Override
     public boolean confirmOtpForgotPassword(String otp) {
@@ -102,14 +127,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean updatePasswordWithOtp(String otp, String newPassword) {
-        // Duyệt qua otpStorage để tìm OTP
+        // Kiểm tra OTP có tồn tại không
         for (Map.Entry<String, String> entry : otpStorage.entrySet()) {
             if (entry.getValue().equals(otp)) {
                 Optional<User> userOptional = userRepository.findByEmail(entry.getKey());
                 if (userOptional.isPresent()) {
                     User user = userOptional.get();
                     user.setPassword(passwordEncoder.encode(newPassword));  // Mã hóa mật khẩu mới
-                    userRepository.save(user);  // Lưu lại thông tin người dùng
+                    userRepository.save(user);  // Lưu lại người dùng
                     otpStorage.remove(entry.getKey());  // Xóa OTP sau khi sử dụng
                     return true;
                 }
@@ -117,9 +142,6 @@ public class AccountServiceImpl implements AccountService {
         }
         return false;  // Nếu không tìm thấy OTP hoặc người dùng
     }
-
-
-
 
     /**
      * Gửi email quên mật khẩu với OTP
@@ -165,6 +187,8 @@ public class AccountServiceImpl implements AccountService {
             userRepository.save(user);
         }
     }
+
+
 
     /**
      * Xác thực người dùng
