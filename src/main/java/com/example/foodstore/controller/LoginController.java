@@ -12,27 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AccountService accountService;
-
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model, @RequestParam(value = "error", required = false) String error) {
+        if (error != null) {
+            model.addAttribute("error", "Invalid email or password.");
+        }
         return "web/login";
     }
-
-    @PostMapping("/login")
-    public String loginUser(@RequestParam String email, @RequestParam String password, Model model) {
-        // Gọi hàm xác thực từ service và trả về trang tương ứng
-        boolean isValidUser = accountService.validateUser(email, password);
-        if (isValidUser) {
-            return "redirect:/home";  // Chuyển hướng đến trang chủ
-        } else {
-            model.addAttribute("error", "Invalid email or password");
-            return "login";
-        }
-    }
-
 }
+
