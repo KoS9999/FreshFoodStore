@@ -1,10 +1,183 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" content="admin, dashboard, ecommerce, panel" />
+	<meta name="description" content="Carrot - Admin.">
+	<meta name="author" content="ashishmaraviya">
+
+	<title>Admin - Dashboard</title>
+
+	<!-- App favicon -->
+	<link rel="shortcut icon" th:href="@{/static/admin/img/favicon/favicon.ico}">
+
+	<!-- Icon CSS -->
+	<link th:href="@{/static/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/remixicon.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
+
+	<!-- Vendor CSS -->
+	<link th:href="@{/static/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/simplebar.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/apexcharts.css}" rel="stylesheet">
+	<link th:href="@{/static/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+
+	<!-- Main CSS -->
+	<link id="main-css" th:href="@{/static/admin/css/style.css}" rel="stylesheet">
 </head>
+
 <body>
-$END$
+<main class="wrapper sb-default ecom">
+	<!-- Loader -->
+	<div id="cr-overlay">
+		<div class="loader"></div>
+	</div>
+
+	<!-- Gọi fragment header -->
+	<div th:replace="~{admin/header :: header}"></div>
+
+	<!-- Gọi fragment sidebar -->
+	<div th:replace="~{admin/sidebar :: sidebar}"></div>
+
+	<!-- Nội dung chính -->
+	<div class="cr-main-content">
+		<div class="container-fluid">
+			<!-- Page title & breadcrumb -->
+			<div class="cr-page-title">
+				<div class="cr-breadcrumb">
+					<h5>eCommerce</h5>
+					<ul>
+						<li><a th:href="@{/index.html}">Carrot</a></li>
+						<li>eCommerce</li>
+					</ul>
+				</div>
+				<div class="cr-tools">
+					<div id="pagedate">
+						<div class="cr-date-range" title="Date">
+							<span></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xl-12">
+					<div class="row">
+						<div class="col-xl-3 col-md-6">
+							<div class="cr-card">
+								<div class="cr-card-content label-card">
+									<div class="title">
+										<span class="icon icon-1"><i class="ri-shield-user-line"></i></span>
+										<div class="growth-numbers">
+											<h4>Customers</h4>
+											<h5>857k</h5>
+										</div>
+									</div>
+									<p class="card-groth up">
+										<i class="ri-arrow-up-line"></i>
+										32%
+										<span>Last Month</span>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-md-6">
+							<div class="cr-card">
+								<div class="cr-card-content label-card">
+									<div class="title">
+										<span class="icon icon-2"><i class="ri-shopping-bag-3-line"></i></span>
+										<div class="growth-numbers">
+											<h4>Order</h4>
+											<h5>08.65k</h5>
+										</div>
+									</div>
+									<p class="card-groth down">
+										<i class="ri-arrow-down-line"></i>
+										1.7%
+										<span>Last Month</span>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-md-6">
+							<div class="cr-card">
+								<div class="cr-card-content label-card">
+									<div class="title">
+										<span class="icon icon-3"><i class="ri-money-dollar-circle-line"></i></span>
+										<div class="growth-numbers">
+											<h4>Revenue</h4>
+											<h5>$85746</h5>
+										</div>
+									</div>
+									<p class="card-groth down">
+										<i class="ri-arrow-down-line"></i>
+										3.8%
+										<span>Last Month</span>
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-md-6">
+							<div class="cr-card">
+								<div class="cr-card-content label-card">
+									<div class="title">
+										<span class="icon icon-4"><i class="ri-exchange-dollar-line"></i></span>
+										<div class="growth-numbers">
+											<h4>Expenses</h4>
+											<h5>$75462</h5>
+										</div>
+									</div>
+									<p class="card-groth up">
+										<i class="ri-arrow-up-line"></i>
+										8%
+										<span>Last Month</span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container-fluid">
+			<div class="copyright">
+				<p><span id="copyright_year"></span> © Carrot, All rights Reserved.</p>
+				<p>Design by MaraviyaInfotech.</p>
+			</div>
+		</div>
+	</footer>
+</main>
+
+<!-- Vendor Custom -->
+<script th:src="@{/static/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/simplebar.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/apexcharts.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/jquery-jvectormap-1.2.2.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/jquery-jvectormap-world-mill-en.js}"></script>
+<script th:src="@{/static/admin/js/vendor/owl.carousel.min.js}"></script>
+<!-- Data Tables -->
+<script th:src="@{/static/admin/js/vendor/jquery.datatables.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/datatables.responsive.min.js}"></script>
+<!-- Calendar -->
+<script th:src="@{/static/admin/js/vendor/jquery.simple-calendar.js}"></script>
+<!-- Date Range Picker -->
+<script th:src="@{/static/admin/js/vendor/moment.min.js}"></script>
+<script th:src="@{/static/admin/js/vendor/daterangepicker.js}"></script>
+<script th:src="@{/static/admin/js/vendor/date-range.js}"></script>
+
+<!-- Main Custom -->
+<script th:src="@{/static/admin/js/main.js}"></script>
+<script th:src="@{/static/admin/js/data/ecommerce-chart-data.js}"></script>
 </body>
 </html>

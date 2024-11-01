@@ -1,17 +1,13 @@
 package com.example.foodstore.controlleradmin;
 
 import com.example.foodstore.entity.Product;
-import com.example.foodstore.entity.User;
-import com.example.foodstore.repository.UserRepository;
+import com.example.foodstore.entity.Category;
 import com.example.foodstore.service.ProductService;
+import com.example.foodstore.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin/products")
@@ -21,52 +17,38 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
-    private UserRepository userRepository;
-
-
-    @ModelAttribute("user")
-    public User user(Model model, Principal principal) {
-        if (principal != null) {
-            Optional<User> optionalUser = userRepository.findByEmail(principal.getName());
-
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();  // Lấy đối tượng User từ Optional
-                model.addAttribute("user", user);  // Gán đối tượng User thực tế vào model
-                return user;
-            }
-        }
-        return null;  // Trả về null nếu không tìm thấy user
-    }
+    private CategoryService categoryService;
 
     @GetMapping
     public String listProducts(Model model) {
-        List<Product> products = productService.findAll();
-        model.addAttribute("products", products);
-        return "admin/products";
+        model.addAttribute("products", productService.findAll());
+        return "admin/products/list";
     }
 
-    @GetMapping("/add")
-    public String addProductForm(Model model) {
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
-        return "admin/product-form";
+        model.addAttribute("categories", categoryService.findAll());
+        return "admin/products/create";
     }
 
-    @PostMapping("/add")
-    public String addProduct(@ModelAttribute("product") Product product) {
+    @PostMapping("/save")
+    public String saveProduct(@ModelAttribute("product") Product product) {
         productService.save(product);
         return "redirect:/admin/products";
     }
 
     @GetMapping("/edit/{id}")
-    public String editProductForm(@PathVariable("id") Long id, Model model) {
-        Product product = productService.findById(id);
-        model.addAttribute("product", product);
-        return "admin/product-form";
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("product", productService.findById(id));
+        model.addAttribute("categories", categoryService.findAll());
+        return "admin/products/edit";
     }
 
-    @PostMapping("/edit/{id}")
-    public String editProduct(@PathVariable("id") Long id, @ModelAttribute("product") Product product) {
-        productService.update(id, product);
+    @PostMapping("/update/{id}")
+    public String updateProduct(@PathVariable("id") Long id, @ModelAttribute("product") Product product) {
+        product.setProductId(id);
+        productService.save(product);
         return "redirect:/admin/products";
     }
 

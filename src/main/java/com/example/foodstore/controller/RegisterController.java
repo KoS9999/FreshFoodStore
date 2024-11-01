@@ -13,14 +13,10 @@ public class RegisterController {
 
     @Autowired
     private AccountService accountService;
-
-    // Hiển thị trang đăng ký (GET request)
     @GetMapping("/register")
     public String showRegisterPage() {
-        return "web/register";  // Hiển thị trang đăng ký
+        return "web/register";
     }
-
-    // Xử lý đăng ký người dùng (POST request)
     @PostMapping("/register")
     public String registerUser(@RequestParam String name,
                                @RequestParam String email,
@@ -29,25 +25,23 @@ public class RegisterController {
                                Model model) {
         if (password.length() < 8) {
             model.addAttribute("error", "Password must be at least 8 characters long.");
-            return "web/register";  // Quay lại trang đăng ký nếu mật khẩu không hợp lệ
+            return "web/register";
         }
         if (!password.equals(confirmpassword)) {
             model.addAttribute("error", "Passwords do not match!");
-            return "web/register";  // Quay lại trang đăng ký nếu mật khẩu không khớp
+            return "web/register";
         }
 
         boolean isRegistered = accountService.registerUser(name, email, password);
         if (isRegistered) {
             model.addAttribute("message", "OTP has been sent to your email.");
-            return "web/confirmOTPregister";  // Chuyển hướng đến trang xác nhận OTP
+            return "web/confirmOTPregister";
         } else {
             model.addAttribute("error", "Email already exists.");
-            return "web/register";  // Quay lại trang đăng ký nếu email đã tồn tại
+            return "web/register";
         }
     }
 
-
-    // Xác nhận OTP
     @PostMapping("/confirmOTPregister")
     public String confirmOtpRegister(@RequestParam String otp, Model model) {
         boolean isConfirmed = accountService.confirmOtpRegister(otp);

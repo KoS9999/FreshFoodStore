@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Mới Sản Phẩm</title>
+    <link id="main-css" href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="modal">
+    <div class="modal-header">
+        <h2>Thêm mới sản phẩm</h2>
+        <button>&times;</button>
+    </div>
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="productName">Tên sản phẩm</label>
+            <input type="text" id="productName" name="productName" placeholder="Tên sản phẩm..." required>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Thể loại</label>
+            <select id="category" name="category">
+                <option value="RAU">RAU</option>
+                <option value="TRÁI CÂY">TRÁI CÂY</option>
+                <option value="CỦ QUẢ">CỦ QUẢ</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Đơn giá</label>
+            <input type="number" id="price" name="price" value="0.0" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Số lượng</label>
+            <input type="number" id="quantity" name="quantity" value="0" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="discount">Giảm giá</label>
+            <input type="number" id="discount" name="discount" value="0" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dateAdded">Ngày thêm</label>
+            <input type="date" id="dateAdded" name="dateAdded" required>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Images</label>
+            <input type="file" id="image" name="image">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Mô tả sản phẩm</label>
+            <textarea id="description" name="description" placeholder="Mô tả sản phẩm" rows="3"></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Thêm mới</button>
+            <button type="button" class="btn btn-danger" href="index.html" >Hủy</button> 
+        </div>
+    </form>
+</div>
+</script>
+
+</body>
+</html>

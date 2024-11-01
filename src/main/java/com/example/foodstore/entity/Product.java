@@ -48,14 +48,4 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
 
-    // Các phương thức thêm/xóa ảnh phụ
-    public void addImage(ProductImage image) {
-        images.add(image);
-        image.setProduct(this);
-    }
-
-    public void removeImage(ProductImage image) {
-        images.remove(image);
-        image.setProduct(null);
-    }
 }

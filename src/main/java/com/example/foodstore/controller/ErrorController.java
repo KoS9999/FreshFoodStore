@@ -8,6 +8,6 @@ public class ErrorController {
 
     @GetMapping("/error")
     public String error() {
-        return "web/error";
+        return "web/404";
     }
 }
