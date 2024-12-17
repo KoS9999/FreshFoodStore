@@ -15,7 +15,20 @@ public class LoginController {
     @GetMapping("/login")
     public String login(Model model, @RequestParam(value = "error", required = false) String error) {
         if (error != null) {
-            model.addAttribute("error", "Invalid email or password.");
+            switch (error) {
+                case "emailNotRegistered":
+                    model.addAttribute("error", "Email chưa được đăng ký");
+                    break;
+                case "accountNotEnabled":
+                    model.addAttribute("error", "Tài khoản chưa được kích hoạt");
+                    break;
+                case "invalidCredentials":
+                    model.addAttribute("error", "Email hoặc mật khẩu không đúng");
+                    break;
+                default:
+                    model.addAttribute("error", "Đã xảy ra lỗi không xác định");
+                    break;
+            }
         }
         return "web/login";
     }
