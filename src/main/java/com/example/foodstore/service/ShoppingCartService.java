@@ -1,17 +1,17 @@
 package com.example.foodstore.service;
 
-import com.example.foodstore.entity.Product;
 import com.example.foodstore.entity.CartItem;
 
-import java.util.List;
+import java.util.Map;
 
 public interface ShoppingCartService {
-    void addProductToCart(Product product, int quantity);
+    void add(CartItem cartItem); // Thêm sản phẩm vào giỏ hàng
+    void removeProduct(Long productId); // Xóa sản phẩm khỏi giỏ hàng
+    void updateQuantity(Long productId, int quantity); // Cập nhật số lượng sản phẩm trong giỏ hàng
+    Map<Long, CartItem> getCartItems(); // Lấy danh sách sản phẩm trong giỏ hàng
+    int getCount(); // Lấy tổng số lượng sản phẩm trong giỏ hàng
+    double calculateTotal(); // Tính tổng giá trị giỏ hàng
 
-    void removeProductFromCart(Long productId);
+    double getAmount();
 
-    List<CartItem> getCartItems();
-
-    double calculateTotal();
 }
-
