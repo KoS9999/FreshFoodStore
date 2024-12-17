@@ -24,18 +24,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmail(email);
-
-        // Kiểm tra nếu người dùng không tồn tại
         User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-
-        // Lấy các vai trò của người dùng và chuyển đổi sang GrantedAuthority
         for (Role role : user.getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
-
-        // Tạo đối tượng UserDetails từ thông tin của người dùng
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
