@@ -1,2 +1,15 @@
-package com.example.foodstore.controller;public class WebController {
+package com.example.foodstore.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping
+public class WebController {
+
+    @GetMapping("/order-success")
+    public String orderSuccess() {
+        return "web/order-success";
+    }
 }
