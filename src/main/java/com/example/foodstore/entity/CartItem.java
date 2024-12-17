@@ -1,5 +1,6 @@
 package com.example.foodstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,11 +21,14 @@ public class CartItem {
 
     private double unitPrice;
 
+    private String productImage;
+
     private int quantity;
 
     private double totalPrice;
 
     // Mối quan hệ nhiều CartItem thuộc về một Product
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "productId")
     private Product product;

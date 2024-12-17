@@ -1,5 +1,6 @@
 package com.example.foodstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,9 +30,16 @@ public class Order implements Serializable {
 
     private String phone;
 
+    private String note;
+
     private int status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
+
     @OneToMany(mappedBy = "order")
+    @JsonIgnore
     private List<OrderDetail> orderDetails;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -28,6 +28,10 @@ public class User implements Serializable {
 
     private String avatar;
 
+    private String address;
+
+    private String phone;
+
     @Temporal(TemporalType.DATE)
     private Date registerDate;
 
@@ -36,13 +40,14 @@ public class User implements Serializable {
     @Column(nullable = false)
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Collection<Role> roles;
+
 
 }
 

@@ -1,10 +1,13 @@
 package com.example.foodstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.ArrayList;
@@ -32,9 +35,11 @@ public class Product implements Serializable {
     // Ảnh chính của sản phẩm
     private String productImage;
 
+    @Column(length = 1000)
     private String description;
 
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date enteredDate;
 
     private Boolean status;
@@ -44,8 +49,14 @@ public class Product implements Serializable {
     private Category category;
 
 
-    // Liên kết một-nhiều với ProductImage
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
 
+    public void addProductImage(ProductImage image) {
+        this.images.add(image);
+        image.setProduct(this);
+    }
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private List<CartItem> cartItems;
 }
