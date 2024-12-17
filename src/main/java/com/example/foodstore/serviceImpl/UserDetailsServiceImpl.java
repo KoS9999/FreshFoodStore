@@ -4,6 +4,7 @@
     import com.example.foodstore.entity.User;
     import com.example.foodstore.repository.UserRepository;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.security.authentication.DisabledException;
     import org.springframework.security.core.GrantedAuthority;
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
     import org.springframework.security.core.userdetails.UserDetails;
@@ -25,13 +26,15 @@
 
         @Override
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isEmpty()) {
+                throw new UsernameNotFoundException("Email chưa được đăng ký");
+            }
+            User user = userOptional.get();
 
             if (!user.isEnabled()) {
-                throw new UsernameNotFoundException("User is not enabled");
+                throw new DisabledException("Tài khoản chưa được kích hoạt");
             }
-
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
                     user.getPassword(),
@@ -39,7 +42,6 @@
                     getAuthorities(user.getRoles())
             );
         }
-
 
         private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
             return roles.stream()
