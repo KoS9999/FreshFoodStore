@@ -1,6 +1,8 @@
 package com.example.foodstore.serviceImpl;
 
+import com.example.foodstore.entity.Favorite;
 import com.example.foodstore.entity.Product;
+import com.example.foodstore.entity.User;
 import com.example.foodstore.repository.FavoriteRepository;
 import com.example.foodstore.service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +17,27 @@ public class FavoriteServiceImpl implements FavoriteService {
     private FavoriteRepository favoriteRepository;
 
     @Override
-    public List<Product> getFavoriteProducts() {
-        Long userId = 1L; // Giả lập lấy userId người dùng đăng nhập
-        return favoriteRepository.findByUser_UserId(userId);  // Sửa lại tên phương thức
+    public List<Favorite> getFavoritesByUser(User user) {
+        return favoriteRepository.findByUser(user);
     }
 
     @Override
-    public void addFavorite(Long productId) {
-        Long userId = 1L; // Giả lập lấy userId người dùng đăng nhập
-        favoriteRepository.addFavorite(userId, productId);
+    public void addFavorite(User user, Product product) {
+        if (favoriteRepository.findByUserAndProduct(user, product).isEmpty()) {
+            Favorite favorite = new Favorite();
+            favorite.setUser(user);
+            favorite.setProduct(product);
+            favoriteRepository.save(favorite);
+            return;
+        }
+        throw new RuntimeException("Product already in wishlist");
     }
 
     @Override
-    public void removeFavorite(Long productId) {
-        Long userId = 1L; // Giả lập lấy userId người dùng đăng nhập
-        favoriteRepository.removeFavorite(userId, productId);
+    public void removeFavorite(User user, Product product) {
+        favoriteRepository.findByUserAndProduct(user, product)
+                .ifPresent(favoriteRepository::delete);
     }
 }
+
+
