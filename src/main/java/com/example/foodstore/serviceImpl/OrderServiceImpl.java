@@ -1,12 +1,15 @@
 package com.example.foodstore.serviceImpl;
 
 import com.example.foodstore.entity.Order;
+import com.example.foodstore.entity.User;
 import com.example.foodstore.repository.OrderRepository;
 import com.example.foodstore.service.OrderService;
+import com.example.foodstore.entity.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -20,58 +23,42 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findById(Long id) {
-        return orderRepository.findById(id).orElse(null);
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 
     @Override
-    public void cancelOrder(Long id) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if (order != null) {
-            order.setStatus(0); // Giả sử 0 đại diện cho "Cancelled"
-            orderRepository.save(order);
-        }
-
+    public void save(Order order) {
+        orderRepository.save(order);
     }
 
     @Override
-    public void confirmOrder(Long id) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if (order != null) {
-            order.setStatus(1); // Giả sử 1 đại diện cho "Confirmed"
+    public void updatePaymentStatus(Long orderId, int status) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            order.setStatus(status);
             orderRepository.save(order);
-        }
-
-    }
-
-    @Override
-    public void markAsDelivered(Long id) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if (order != null) {
-            order.setStatus(2); // Giả sử 2 đại diện cho "Delivered"
-            orderRepository.save(order);
+        } else {
+            throw new IllegalArgumentException("Order not found with ID: " + orderId);
         }
     }
 
     @Override
-    public List<Order> getOrderHistory() {
-        // Giả sử lấy lịch sử mua hàng cho người dùng đã đăng nhập
-        Long userId = 1L; // Thay bằng thông tin người dùng đăng nhập
-        return orderRepository.findByUser_UserId(userId);
+    public void updateOrderStatus(Long orderId, String orderStatus) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            order.setOrderStatus(OrderStatus.valueOf(orderStatus));
+            orderRepository.save(order);
+        } else {
+            throw new IllegalArgumentException("Order not found with ID: " + orderId);
+        }
     }
 
     @Override
-    public void processCheckout() {
-        // Logic xử lý thanh toán
-        // Lưu thông tin đơn hàng vào database
-    }
-
-    @Override
-    public void sendOrderConfirmationEmail() {
-        // Logic gửi email xác nhận đơn hàng
+    public List<Order> findOrdersByUser(User user) {
+        return orderRepository.findByUser(user);
     }
 
 }
-
-
-
