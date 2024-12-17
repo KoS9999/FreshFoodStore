@@ -5,28 +5,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
@@ -34,26 +32,41 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/cart/update",
+                        "/cart/remove","/api/payment/callback","/wishlist/**","/shop/**",
+                        "/admin/products/delete-image/**"))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
                                 "/", "/index", "/register", "/login", "/confirmOTPregister",
                                 "/forgotpassword", "/confirmOtpForgotPassword", "/newPassword",
-                                "/web/**"
+                                "/web/**", "/product/category/**", "/uploads/**", "/new-products/**","/top-selling-products/**",
+                                "/cart/add", "/cart/update", "/cart/remove", "/api/payment/callback",
+                                "/product-details/**","/shop/**","/about","/contact"
                         ).permitAll()
                         .requestMatchers(
-                                "/account", "/wishlist", "/checkout"
+                                "/account/**", "/wishlist/**", "cart/checkout"
                         ).hasRole("USER")
+                        .requestMatchers("/admin/products/delete-image/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
+                .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/perform_login")
                         .successHandler(authenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
+                        .failureHandler((request, response, exception) -> {
+                            if (exception instanceof UsernameNotFoundException) {
+                                response.sendRedirect("/login?error=emailNotRegistered");
+                            } else if (exception instanceof DisabledException) {
+                                response.sendRedirect("/login?error=accountNotEnabled");
+                            } else if (exception instanceof BadCredentialsException) {
+                                response.sendRedirect("/login?error=invalidCredentials");
+                            } else {
+                                response.sendRedirect("/login?error=unknown");
+                            }
+                        })
                         .permitAll()
                 )
-
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/index")
@@ -70,27 +83,27 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsServiceImpl);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(authenticationProvider());
+        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider());
         return authenticationManagerBuilder.build();
     }
+
+    @Bean
+    public CustomAuthenticationProvider customAuthenticationProvider() {
+        CustomAuthenticationProvider provider = new CustomAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsServiceImpl);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-
             var roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-
             if (roles.contains("ROLE_ADMIN")) {
                 response.sendRedirect("/admin/dashboard");
             } else {
@@ -98,5 +111,10 @@ public class SecurityConfig {
             }
         };
     }
-}
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
+    }
+}
