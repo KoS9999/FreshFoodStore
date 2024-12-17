@@ -1,4 +1,4 @@
-package com.example.foodstore.controller;
+package com.example.foodstore.controlleradmin;
 
 import com.example.foodstore.repository.OrderDetailRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
