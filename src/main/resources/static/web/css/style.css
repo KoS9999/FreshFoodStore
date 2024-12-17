@@ -1236,27 +1236,31 @@ ul {
 ---------------------------------------------------- */
 /* Slick dots */
 .slick-dots {
-  margin: 0 0 30px;
+  margin: 30px 0 0; /* Điều chỉnh khoảng cách phía trên */
   padding: 0;
-  display: block;
-  text-align: center;
-  line-height: 1; }
-  .slick-dots li {
-    display: inline-block;
-    list-style: none;
-    display: inline-block;
-    font-size: 0;
-    height: 10px;
-    width: 10px;
-    border-radius: 100%;
-    margin-right: 20px;
-    background-color: var(--silver);
-    cursor: pointer;
-    margin-top: 0; }
-    .slick-dots li button {
-      display: none; }
-    .slick-dots li:hover, .slick-dots li.slick-active {
-      background-color: var(--ltn__secondary-color); }
+  display: flex; /* Thay đổi display thành flex */
+  justify-content: center; /* Căn giữa */
+  line-height: 1;
+}
+.slick-dots li {
+  list-style: none;
+  display: inline-block;
+  font-size: 0;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  margin-right: 10px; /* Khoảng cách giữa các chấm */
+  background-color: var(--silver);
+  cursor: pointer;
+  margin-top: 0;
+}
+.slick-dots li button {
+  display: none;
+}
+.slick-dots li:hover, .slick-dots li.slick-active {
+  background-color: var(--ltn__secondary-color);
+}
+
 
 /* slick-arrow */
 .slick-arrow {
@@ -11867,6 +11871,7 @@ input.cart-plus-minus-box {
   .ltn__checkout-payment-method p:last-child {
     margin-bottom: 0; }
 
+
 /* ----------------------------------------------------
     Myaccount Page
 ---------------------------------------------------- */
@@ -12709,6 +12714,19 @@ input.cart-plus-minus-box {
     font-size: 14px; }
   [type="submit"].btn {
     padding: 12px 30px; } }
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+
+
+
+
+
+
+
 
 /* ----------------------------------------------------
     END

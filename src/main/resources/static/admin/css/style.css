@@ -7307,5 +7307,55 @@ div.dataTables_wrapper div.dataTables_info {
   background-color: #dc3545;
   color: white;
 }
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/*OrderDetail*/
+
+.order-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 cột */
+  gap: 10px;
+}
+.order-info div {
+  margin-bottom: 10px;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #fff;
+}
+.status-badge.PAID {
+  background-color: #28a745;
+}
+.status-badge.UNPAID {
+  background-color: #dc3545;
+}
+.status-badge.PENDING {
+  background-color: #ffc107;
+}
+.status-badge.CONFIRMED {
+  background-color: #007bff;
+}
+.status-badge.SHIPPING {
+  background-color: #17a2b8;
+}
+.status-badge.DELIVERED {
+  background-color: #28a745;
+}
+.status-badge.CANCELED {
+  background-color: #dc3545;
+}
+
+.table-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
 
 /*# sourceMappingURL=style.css.map */

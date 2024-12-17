@@ -31,39 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.add-to-wishlist1');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            const productId = this.getAttribute('data-product-id');
 
-            fetch(`/wishlist/add?productId=${productId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.redirected) {
-                        // Nếu server trả về redirect, chuyển hướng tới URL mới
-                        window.location.href = response.url;
-                        return;
-                    }
 
-                    if (!response.ok) {
-                        throw new Error('Failed to add product to wishlist');
-                    }
-
-                    return response.text();
-                })
-                .then(data => {
-                    console.log('Product added successfully:', data);
-                })
-                .catch(error => {
-                    console.error('Error:', error); // Log lỗi
-                });
-        });
-    });
-});
