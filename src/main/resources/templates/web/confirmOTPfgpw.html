@@ -19,6 +19,35 @@
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
     <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <style>
+        .otp-input-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .otp-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn-wrapper {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -43,14 +72,21 @@
                 <div class="col-lg-6 offset-lg-3">
                     <div class="account-login-inner">
                         <form th:action="@{/confirmOtpForgotPassword}" method="post" class="ltn__form-box contact-form-box">
-                            <input type="text" name="otp" placeholder="Enter OTP*" required>
+                            <div class="otp-input-container">
+                                <input type="text" maxlength="1" class="otp-input" required>
+                                <input type="text" maxlength="1" class="otp-input" required>
+                                <input type="text" maxlength="1" class="otp-input" required>
+                                <input type="text" maxlength="1" class="otp-input" required>
+                                <input type="text" maxlength="1" class="otp-input" required>
+                                <input type="text" maxlength="1" class="otp-input" required>
+                            </div>
+                            <input type="hidden" name="otp" id="otp" value="">
                             <div class="btn-wrapper mt-0">
                                 <button class="theme-btn-1 btn btn-block" type="submit">CONFIRM OTP</button>
                             </div>
                             <div th:if="${error}" class="alert alert-danger">
                                 <p th:text="${error}"></p>
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -66,6 +102,55 @@
 <script th:src="@{/web/js/plugins.js}"></script>
 <!-- Main JS -->
 <script th:src="@{/web/js/main.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const otpInputs = document.querySelectorAll(".otp-input");
+        const hiddenOtpInput = document.getElementById("otp");
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener("input", (e) => {
+                const value = e.target.value;
+                if (!/^\d$/.test(value)) {
+                    e.target.value = "";
+                    return;
+                }
+                if (value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                collectOtp();
+            });
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener("paste", (e) => {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+                const numbers = pasteData.slice(0, otpInputs.length).split("");
+                otpInputs.forEach((input, i) => {
+                    input.value = numbers[i] || "";
+                });
+                const lastFilledIndex = numbers.length - 1;
+                if (lastFilledIndex >= 0 && lastFilledIndex < otpInputs.length) {
+                    otpInputs[lastFilledIndex].focus();
+                } else {
+                    otpInputs[otpInputs.length - 1].focus();
+                }
+                collectOtp();
+            });
+        });
+
+        function collectOtp() {
+            const otp = Array.from(otpInputs).map((input) => input.value).join("");
+            hiddenOtpInput.value = otp;
+        }
+    });
+
+
+</script>
 
 </body>
 </html>

@@ -35,35 +35,32 @@
                 <div class="col-lg-12">
                     <div class="section-title-area text-center">
                         <h1 class="section-title">Sign In <br>To Your Account</h1>
-                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. <br>
-                            Sit aliquid, Non distinctio vel iste.</p>
+                        <p>"Đăng nhập ngay để khám phá thực phẩm organic chất lượng, an toàn cho sức khỏe và tận hưởng những tính năng tuyệt vời trên website của chúng tôi."</p>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-6">
                     <div class="account-login-inner">
-                        <form th:action="@{/perform_login}" method="post" class="ltn__form-box contact-form-box">
+                        <form th:action="@{/perform_login}" method="post" class="ltn__form-box contact-form-box" onsubmit="disableSubmitButton()">
                             <input type="text" name="username" placeholder="Email*" required />
-                            <input type="password" name="password" placeholder="Password*" required />
+                            <input type="password" name="password" placeholder="Password*" required id="password" oninput="checkPasswordLength()" />
+                            <div th:if="${error}" class="alert alert-danger">
+                                <p th:text="${error}"></p>
+                            </div>
                             <div class="btn-wrapper mt-0">
-                                <button class="theme-btn-1 btn btn-block" type="submit">SIGN IN</button>
+                                <button id="submit-btn" class="theme-btn-1 btn btn-block" type="submit" disabled>SIGN IN</button>
                             </div>
                             <div class="go-to-btn mt-20">
                                 <a th:href="@{/forgotpassword}"><small>FORGOTTEN YOUR PASSWORD?</small></a>
                             </div>
-                            <div th:if="${param.error}">
-                                <p style="color: red;">Invalid email or password.</p>
-                            </div>
                         </form>
-
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="account-create text-center pt-50">
                         <h4>DON'T HAVE AN ACCOUNT?</h4>
-                        <p>Add items to your wishlist, get personalised recommendations, <br>
-                            check out more quickly, track your orders, register</p>
+                        <p>"Hãy tạo tài khoản để không bỏ lỡ những món ăn tươi ngon và an toàn từ thiên nhiên."</p>
                         <div class="btn-wrapper">
                             <a th:href="@{/register}" class="theme-btn-1 btn black-btn">CREATE ACCOUNT</a>
                         </div>
@@ -81,6 +78,28 @@
 <script th:src="@{/web/js/plugins.js}"></script>
 <!-- Main JS -->
 <script th:src="@{/web/js/main.js}"></script>
+
+<script>
+    // Kiểm tra độ dài mật khẩu và kích hoạt nút submit
+    function checkPasswordLength() {
+        const password = document.getElementById('password').value;
+        const submitButton = document.getElementById('submit-btn');
+
+        // Nếu mật khẩu có ít nhất 8 ký tự, kích hoạt nút submit
+        if (password.length >= 8) {
+            submitButton.disabled = false;  // Kích hoạt nút submit
+        } else {
+            submitButton.disabled = true;  // Vô hiệu hóa nút submit
+        }
+    }
+
+    // Disable nút submit khi form được gửi
+    function disableSubmitButton() {
+        const submitButton = document.getElementById('submit-btn');
+        submitButton.disabled = true;
+        submitButton.innerText = "Đang đăng nhập...";
+    }
+</script>
 
 </body>
 </html>

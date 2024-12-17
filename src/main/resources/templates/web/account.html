@@ -3,9 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Broccoli - Organic Food HTML Template</title>
-    <meta name="robots" content="noindex, follow" />
-    <meta name="description" content="">
+    <title>Broccoli - My Account</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Place favicon.png in the root directory -->
@@ -13,47 +11,79 @@
 
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
-
-    <!-- plugins css -->
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
-
-    <!-- Main Stylesheet -->
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
-
-    <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <style>
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+    </style>
+    <style>
+        .pagination .page-item a.page-link {
+            color: #555; /* Màu mặc định */
+            background-color: #f8f9fa; /* Màu nền mặc định */
+            border: 1px solid #fff;
+        }
+
+        .pagination .page-item a.page-link:hover {
+            color: #fff;
+            background-color: #007bff; /* Màu khi hover */
+            border-color: #007bff;
+        }
+
+        .pagination .page-item.active a.page-link {
+            color: #fff;
+            background-color: #8BB436;
+            border-color: #8BB436;
+        }
+
+        .pagination .page-item.disabled a.page-link {
+            color: #ccc;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+    </style>
+
+
 </head>
-
 <body>
-<!--[if lte IE 9]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-<![endif]-->
 
-<!-- Add your site or application content here -->
-
-<!-- Body main wrapper start -->
 <div class="body-wrapper">
-
     <!-- HEADER AREA START -->
     <div th:replace="~{web/header :: header}"></div>
 
     <div class="ltn__utilize-overlay"></div>
 
     <!-- BREADCRUMB AREA START -->
-    <div class="ltn__breadcrumb-area ltn__breadcrumb-area-2 ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image" data-bg="img/bg/9.jpg">
+    <div class="ltn__breadcrumb-area  ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ltn__breadcrumb-inner ltn__breadcrumb-inner-2 justify-content-between">
                         <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">//  Welcome to our company</h6>
+                            <h6 class="section-subtitle ltn__secondary-color">// Welcome to our store</h6>
                             <h1 class="section-title white-color">My Account</h1>
                         </div>
                         <div class="ltn__breadcrumb-list">
                             <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <h1>Welcome, <span th:text="${username}">User</span>!</h1>
-
+                                <li><a th:href="@{/index}">Home</a></li>
+                                <li>Welcome, <span th:text="${user.name}">User</span>!</li>
                             </ul>
                         </div>
                     </div>
@@ -63,203 +93,210 @@
     </div>
     <!-- BREADCRUMB AREA END -->
 
-    <!-- WISHLIST AREA START -->
+    <!-- ACCOUNT AREA START -->
     <div class="liton__wishlist-area pb-70">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <!-- PRODUCT TAB AREA START -->
-                    <div class="ltn__product-tab-area">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="ltn__tab-menu-list mb-50">
-                                        <div class="nav">
-                                            <a class="active show" data-bs-toggle="tab" href="#liton_tab_1_1">Dashboard <i class="fas fa-home"></i></a>
-                                            <a data-bs-toggle="tab" href="#liton_tab_1_2">Orders <i class="fas fa-file-alt"></i></a>
-                                            <a data-bs-toggle="tab" href="#liton_tab_1_3">Downloads <i class="fas fa-arrow-down"></i></a>
-                                            <a data-bs-toggle="tab" href="#liton_tab_1_4">address <i class="fas fa-map-marker-alt"></i></a>
-                                            <a data-bs-toggle="tab" href="#liton_tab_1_5">Account Details <i class="fas fa-user"></i></a>
-                                            <a href="login.html">Logout <i class="fas fa-sign-out-alt"></i></a>
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="ltn__tab-menu-list mb-50">
+                        <div class="nav">
+                            <a class="active show" data-bs-toggle="tab" href="#account-details">Account Details <i class="fas fa-user"></i></a>
+                            <a data-bs-toggle="tab" href="#orders">My Orders <i class="fas fa-file-alt"></i></a>
+                            <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
+                                Logout <i class="fas fa-sign-out-alt"></i>
+                            </a>
+                            <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="col-lg-8">
+                    <div class="tab-content">
+                        <!-- Account Details -->
+                        <div class="tab-pane fade active show" id="account-details">
+                            <div class="ltn__myaccount-tab-content-inner">
+                                <h2>Account Details</h2>
+                                <form th:action="@{/account/update}" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Name:</label>
+                                            <input type="text" name="name" th:value="${user.name}" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Email:</label>
+                                            <input type="email" name="email" th:value="${user.email}" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Phone:</label>
+                                            <input type="text" name="phone" th:value="${user.phone}" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Address:</label>
+                                            <input type="text" name="address" th:value="${user.address}" class="form-control">
+                                        </div>
+                                        <div class="col-md-12 mt-3">
+                                            <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Save Changes</button>
                                         </div>
                                     </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Orders -->
+                        <div class="tab-pane fade" id="orders">
+                            <div class="ltn__myaccount-tab-content-inner">
+                                <h2>Your Orders</h2>
+                                <div class="table-responsive">
+                                    <table class="table" id="orderTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Shipping Address</th>
+                                            <th>Total Price</th>
+                                            <th>Payment Status</th>
+                                            <th>Order Status</th>
+                                            <th>Details</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="order : ${orders}">
+                                            <td th:text="${order.orderId}"></td>
+                                            <td th:text="${order.address}"></td>
+                                            <td th:text="${order.amount}"></td>
+                                            <td>
+                                                <span th:if="${order.status == 1}" class="text-success">Đã thanh toán</span>
+                                                <span th:if="${order.status == 0}" class="text-danger">Chưa thanh toán</span>
+                                            </td>
+                                            <td th:text="${order.orderStatus}"></td>
+                                            <td>
+                                                <button type="button"
+                                                        class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                                                        data-bs-toggle="modal"
+                                                        th:attr="data-bs-target='#orderModal-' + ${order.orderId}">
+                                                    View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="col-lg-8">
-                                    <div class="tab-content">
-                                        <div class="tab-pane fade active show" id="liton_tab_1_1">
-                                            <div class="ltn__myaccount-tab-content-inner">
-                                                <p>Hello <strong>UserName</strong> (not <strong>UserName</strong>? <small><a href="login-register.html">Log out</a></small> )</p>
-                                                <p>From your account dashboard you can view your <span>recent orders</span>, manage your <span>shipping and billing addresses</span>, and <span>edit your password and account details</span>.</p>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="liton_tab_1_2">
-                                            <div class="ltn__myaccount-tab-content-inner">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>Order</th>
-                                                            <th>Date</th>
-                                                            <th>Status</th>
-                                                            <th>Total</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td>Jun 22, 2019</td>
-                                                            <td>Pending</td>
-                                                            <td>$3000</td>
-                                                            <td><a href="cart.html">View</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>2</td>
-                                                            <td>Nov 22, 2019</td>
-                                                            <td>Approved</td>
-                                                            <td>$200</td>
-                                                            <td><a href="cart.html">View</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>
-                                                            <td>Jan 12, 2020</td>
-                                                            <td>On Hold</td>
-                                                            <td>$990</td>
-                                                            <td><a href="cart.html">View</a></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="liton_tab_1_3">
-                                            <div class="ltn__myaccount-tab-content-inner">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                        <tr>
-                                                            <th>Product</th>
-                                                            <th>Date</th>
-                                                            <th>Expire</th>
-                                                            <th>Download</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        <tr>
-                                                            <td>Carsafe - Car Service PSD Template</td>
-                                                            <td>Nov 22, 2020</td>
-                                                            <td>Yes</td>
-                                                            <td><a href="#"><i class="far fa-arrow-to-bottom mr-1"></i> Download File</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Carsafe - Car Service HTML Template</td>
-                                                            <td>Nov 10, 2020</td>
-                                                            <td>Yes</td>
-                                                            <td><a href="#"><i class="far fa-arrow-to-bottom mr-1"></i> Download File</a></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Carsafe - Car Service WordPress Theme</td>
-                                                            <td>Nov 12, 2020</td>
-                                                            <td>Yes</td>
-                                                            <td><a href="#"><i class="far fa-arrow-to-bottom mr-1"></i> Download File</a></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="liton_tab_1_4">
-                                            <div class="ltn__myaccount-tab-content-inner">
-                                                <p>The following addresses will be used on the checkout page by default.</p>
-                                                <div class="row">
-                                                    <div class="col-md-6 col-12 learts-mb-30">
-                                                        <h4>Billing Address <small><a href="#">edit</a></small></h4>
-                                                        <address>
-                                                            <p><strong>Alex Tuntuni</strong></p>
-                                                            <p>1355 Market St, Suite 900 <br>
-                                                                San Francisco, CA 94103</p>
-                                                            <p>Mobile: (123) 456-7890</p>
-                                                        </address>
-                                                    </div>
-                                                    <div class="col-md-6 col-12 learts-mb-30">
-                                                        <h4>Shipping Address <small><a href="#">edit</a></small></h4>
-                                                        <address>
-                                                            <p><strong>Alex Tuntuni</strong></p>
-                                                            <p>1355 Market St, Suite 900 <br>
-                                                                San Francisco, CA 94103</p>
-                                                            <p>Mobile: (123) 456-7890</p>
-                                                        </address>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="tab-pane fade" id="liton_tab_1_5">
-                                            <div class="ltn__myaccount-tab-content-inner">
-                                                <p>The following addresses will be used on the checkout page by default.</p>
-                                                <div class="ltn__form-box">
-                                                    <form action="#">
-                                                        <div class="row mb-50">
-                                                            <div class="col-md-6">
-                                                                <label>First name:</label>
-                                                                <input type="text" name="ltn__name">
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label>Last name:</label>
-                                                                <input type="text" name="ltn__lastname">
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label>Display Name:</label>
-                                                                <input type="text" name="ltn__lastname" placeholder="Ethan">
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <label>Display Email:</label>
-                                                                <input type="email" name="ltn__lastname" placeholder="example@example.com">
-                                                            </div>
-                                                        </div>
-                                                        <fieldset>
-                                                            <legend>Password change</legend>
-                                                            <div class="row">
-                                                                <div class="col-md-12">
-                                                                    <label>Current password (leave blank to leave unchanged):</label>
-                                                                    <input type="password" name="ltn__name">
-                                                                    <label>New password (leave blank to leave unchanged):</label>
-                                                                    <input type="password" name="ltn__lastname">
-                                                                    <label>Confirm new password:</label>
-                                                                    <input type="password" name="ltn__lastname">
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-                                                        <div class="btn-wrapper">
-                                                            <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Save Changes</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center" id="pagination">
+                                    </ul>
+                                </nav>
+
                             </div>
                         </div>
                     </div>
-                    <!-- PRODUCT TAB AREA END -->
                 </div>
             </div>
         </div>
     </div>
-    <!-- WISHLIST AREA START -->
+    <!-- ACCOUNT AREA END -->
+    <!-- Modal chi tiết đơn hàng -->
+    <div th:each="order : ${orders}" class="modal fade" th:attr="id='orderModal-' + ${order.orderId}" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="'Order Details - ' + ${order.orderId}"></h5>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>ProductImage</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="detail : ${orderDetailsMap[order.orderId]}">
+                            <td th:text="${detail.product.productName}"></td>
+                            <td><img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image" class="modal-product-img" width="100px" height="100px"></td>
+                            <td th:text="${detail.quantity}"></td>
+                            <td th:text="${detail.price}"></td>
+                            <td th:text="${detail.price * detail.quantity}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-    <!-- HEADER AREA START -->
+    <!-- FOOTER AREA START -->
     <div th:replace="~{web/footer :: footer}"></div>
-
 </div>
-<!-- Body main wrapper end -->
 
-<!-- All JS Plugins -->
+<!-- JS Plugins -->
 <script th:src="@{/web/js/plugins.js}"></script>
-<!-- Main JS -->
 <script th:src="@{/web/js/main.js}"></script>
+<script th:src="@{/web/js/newmain.js}"></script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const rowsPerPage = 5; // Số hàng mỗi trang
+        const table = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        const rows = Array.from(table.getElementsByTagName("tr"));
+        const pagination = document.getElementById("pagination");
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+        function displayPage(page) {
+            rows.forEach((row, index) => {
+                row.style.display = "none";
+            });
+            const start = page * rowsPerPage;
+            const end = start + rowsPerPage;
+            rows.slice(start, end).forEach(row => {
+                row.style.display = "table-row";
+            });
+            document.querySelectorAll(".pagination .page-item").forEach((item, index) => {
+                if (index === page) {
+                    item.classList.add("active");
+                } else {
+                    item.classList.remove("active");
+                }
+            });
+        }
+        function createPagination() {
+            for (let i = 0; i < totalPages; i++) {
+                const li = document.createElement("li");
+                li.classList.add("page-item");
+                if (i === 0) li.classList.add("active");
+
+                const a = document.createElement("a");
+                a.classList.add("page-link");
+                a.textContent = i + 1;
+                a.href = "#";
+                a.dataset.page = i;
+
+                a.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    displayPage(parseInt(a.dataset.page));
+                });
+
+                li.appendChild(a);
+                pagination.appendChild(li);
+            }
+        }
+        displayPage(0);
+        createPagination();
+    });
+
+</script>
+
+
 
 </body>
 </html>
-
