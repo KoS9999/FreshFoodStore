@@ -2,8 +2,9 @@
     <div class="cr-sidebar-overlay"></div>
     <div class="cr-sidebar" data-mode="light">
         <div class="cr-sb-logo">
-            <a href="index.html" class="sb-full"><img src="assets/img/logo/full-logo.png" alt="logo"></a>
-            <a href="index.html" class="sb-collapse"><img src="assets/img/logo/collapse-logo.png" alt="logo"></a>
+            <a th:href="@{/admin/dashboard}" class="sb-full">
+                <img th:src="@{/admin/img/logoff1a.png}" alt="logo">
+            </a>
         </div>
         <div class="cr-sb-wrapper">
             <div class="cr-sb-content">
@@ -13,20 +14,17 @@
                             <i class="ri-dashboard-3-line"></i><span class="condense">Hệ Thống Quản Lý<i
                                 class="drop-arrow ri-arrow-down-s-line"></i></span></a>
                         <ul class="cr-sb-drop condense">
-                            <li><a href="index.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/dashboard}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>ecommerce</a></li>
-                            <li><a href="product-list.html" class="cr-page-link drop"><i
-                                    class="ri-checkbox-blank-circle-line"></i>Quản Lý Sản Phẩm</a></li>
-                            <li><a href="order-list.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/orders}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Quản Lý Đơn Hàng</a></li>
-                            <li><a href="category.html" class="cr-page-link drop"><i
-                                    class="ri-checkbox-blank-circle-line"></i>Quản Lý Danh Mục</a></li>
-                            <li><a href="customer-list.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/products}" class="cr-page-link drop"><i
+                                    class="ri-checkbox-blank-circle-line"></i>Quản Lý Sản Phẩm</a></li>
+                            <li><a th:href="@{/admin/users}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Quản Lý Khách Hàng</a></li>
+                            <li><a th:href="@{/admin/categories}" class="cr-page-link drop"><i
+                                    class="ri-checkbox-blank-circle-line"></i>Quản Lý Danh Mục</a></li>
 
-                            <li class="cr-sb-item sb-subdrop-item">
-                                <a href="javascript:void(0)" class="cr-sub-drop-toggle"> </a>
-                            </li>
                         </ul>
                     </li>
                     <li class="cr-sb-item-separator"></li>
@@ -35,21 +33,22 @@
                             <i class="ri-pages-line"></i><span class="condense">Thống Kê Doanh Số<i
                                 class="drop-arrow ri-arrow-down-s-line"></i></span></a>
                         <ul class="cr-sb-drop condense">
-                            <li><a href="Thongke-sp.html" class="cr-page-link drop"><i
-                                    class="ri-checkbox-blank-circle-line"></i></i>Thống Kê Sản Phẩm</a></li>
-                            <li><a href="signup.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/charts}" class="cr-page-link drop"><i
+                                    class="ri-checkbox-blank-circle-line"></i>Biểu đồ</a></li>
+                            <li><a th:href="@{/admin/report-product}" class="cr-page-link drop"><i
+                                    class="ri-checkbox-blank-circle-line"></i>Thống Kê Sản Phẩm</a></li>
+                            <li><a th:href="@{/admin/report-category}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Thống Kê Thể Loại</a></li>
-                            <li><a href="forgot.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/report-year}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Thống Kê Theo Năm</a></li>
-                            <li><a href="two-factor.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/report-month}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Thống Kê Theo Tháng</a></li>
-                            <li><a href="reset-password.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/report-quarter}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Thống Kê Theo Quý</a></li>
-                            <li><a href="remember.html" class="cr-page-link drop"><i
+                            <li><a th:href="@{/admin/report-customer}" class="cr-page-link drop"><i
                                     class="ri-checkbox-blank-circle-line"></i>Thống Kê Theo Khách Hàng</a></li>
                         </ul>
                     </li>
-
                 </ul>
             </div>
         </div>

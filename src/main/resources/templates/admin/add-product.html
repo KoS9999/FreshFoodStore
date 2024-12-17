@@ -1,71 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm Mới Sản Phẩm</title>
-    <link id="main-css" href="assets/css/style.css" rel="stylesheet">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="admin, dashboard, ecommerce, panel" />
+    <meta name="description" content="Carrot - Admin.">
+    <title>Admin - Thêm Sản Phẩm</title>
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+
+    <!-- CSS -->
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 </head>
 <body>
+<main class="wrapper sb-default">
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
-<div class="modal">
-    <div class="modal-header">
-        <h2>Thêm mới sản phẩm</h2>
-        <button>&times;</button>
+    <!-- Main content -->
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Thêm Sản Phẩm Mới</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Thêm Sản Phẩm</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default product-list">
+                        <div class="cr-card-content">
+                            <form th:action="@{/admin/products/save}" th:object="${product}" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="productName">Tên Sản Phẩm</label>
+                                    <input type="text" id="productName" th:field="*{productName}" class="form-control" placeholder="Nhập tên sản phẩm" required>
+                                </div>
+
+                                <!-- Thể loại sản phẩm -->
+                                <div class="form-group">
+                                    <label for="categoryId">Thể Loại</label>
+                                    <select id="categoryId" name="categoryId" class="form-control" required>
+                                        <!-- Option mặc định trống -->
+                                        <option value="" disabled selected>Chọn thể loại</option>
+                                        <!-- Danh sách thể loại từ categories -->
+                                        <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="price">Đơn Giá</label>
+                                    <input type="number" id="price" th:field="*{price}" class="form-control" placeholder="Đơn giá" min="0" step="0.01" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="discount">Giảm Giá (%)</label>
+                                    <input type="number" id="discount" th:field="*{discount}" class="form-control" placeholder="Nhập % giảm giá" min="0" max="100">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="quantity">Số Lượng</label>
+                                    <input type="number" id="quantity" th:field="*{quantity}" class="form-control" placeholder="Nhập số lượng" min="0" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="enteredDate">Ngày Thêm</label>
+                                    <input type="date" id="enteredDate" th:field="*{enteredDate}" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="mainImageFile">Ảnh chính</label>
+                                    <input type="file" id="mainImageFile" name="mainImageFile" accept="image/*" required>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="description">Mô Tả Sản Phẩm</label>
+                                    <textarea id="description" th:field="*{description}" class="form-control" placeholder="Mô tả sản phẩm" rows="3"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="status">Trạng Thái</label>
+                                    <select id="status" th:field="*{status}" class="form-control">
+                                        <option value="true" th:selected="*{status == true}">Hiển Thị</option>
+                                        <option value="false" th:selected="*{status == false}">Ẩn</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+                                    <button type="submit" class="cr-btn default-btn color-success">Thêm Sản Phẩm</button>
+                                    <button type="button" class="btn btn-secondary color-danger" style="color: white; background-color: red; border-color: red;" onclick="window.location.href='/admin/products'">Hủy</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                </div>
+            </div>
+        </footer>
     </div>
+</main>
 
-    <form action="" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="productName">Tên sản phẩm</label>
-            <input type="text" id="productName" name="productName" placeholder="Tên sản phẩm..." required>
-        </div>
-
-        <div class="form-group">
-            <label for="category">Thể loại</label>
-            <select id="category" name="category">
-                <option value="RAU">RAU</option>
-                <option value="TRÁI CÂY">TRÁI CÂY</option>
-                <option value="CỦ QUẢ">CỦ QUẢ</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="price">Đơn giá</label>
-            <input type="number" id="price" name="price" value="0.0" min="0" required>
-        </div>
-
-        <div class="form-group">
-            <label for="quantity">Số lượng</label>
-            <input type="number" id="quantity" name="quantity" value="0" min="0" required>
-        </div>
-
-        <div class="form-group">
-            <label for="discount">Giảm giá</label>
-            <input type="number" id="discount" name="discount" value="0" min="0" required>
-        </div>
-
-        <div class="form-group">
-            <label for="dateAdded">Ngày thêm</label>
-            <input type="date" id="dateAdded" name="dateAdded" required>
-        </div>
-
-        <div class="form-group">
-            <label for="image">Images</label>
-            <input type="file" id="image" name="image">
-        </div>
-
-        <div class="form-group">
-            <label for="description">Mô tả sản phẩm</label>
-            <textarea id="description" name="description" placeholder="Mô tả sản phẩm" rows="3"></textarea>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">Thêm mới</button>
-            <button type="button" class="btn btn-danger" href="index.html" >Hủy</button> 
-        </div>
-    </form>
-</div>
-</script>
+<!-- Vendor Custom Scripts -->
+<script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin/js/main.js}"></script>
 
 </body>
 </html>

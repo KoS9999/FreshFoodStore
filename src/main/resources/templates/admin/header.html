@@ -1,6 +1,5 @@
 <div th:fragment="header" xmlns:th="http://www.thymeleaf.org">
     <header class="cr-header">
-
         <div class="container-fluid">
             <div class="cr-header-items">
                 <div class="left-header">
@@ -24,20 +23,15 @@
                     <div class="cr-right-tool cr-flag-drop language">
                         <div class="cr-hover-drop">
                             <div class="cr-hover-tool">
-                                <img class="flag" src="assets/img/flag/us.png" alt="flag">
+                                <img class="flag" th:src="@{/admin/img/flag/us.png}" alt="flag">
                             </div>
                             <div class="cr-hover-drop-panel right">
                                 <ul>
-                                    <li><a href="javascript:void(0)"><img class="flag" src="assets/img/flag/us.png"
-                                                                          alt="flag">English</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" src="assets/img/flag/in.png"
-                                                                          alt="flag">Hindi</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" src="assets/img/flag/de.png"
-                                                                          alt="flag"> Deutsch</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" src="assets/img/flag/it.png"
-                                                                          alt="flag">Italian</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" src="assets/img/flag/jp.png"
-                                                                          alt="flag">Japanese</a></li>
+                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/us.png}" alt="flag">English</a></li>
+                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/in.png}" alt="flag">Hindi</a></li>
+                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/de.png}" alt="flag"> Deutsch</a></li>
+                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/it.png}" alt="flag">Italian</a></li>
+                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/jp.png}" alt="flag">Japanese</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -50,26 +44,19 @@
                             <div class="cr-hover-drop-panel right">
                                 <h6 class="title">Apps</h6>
                                 <ul>
-                                    <li><a href="javascript:void(0)"><img class="app" src="assets/img/apps/1.png"
-                                                                          alt="flag">English</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" src="assets/img/apps/2.png"
-                                                                          alt="flag">Hindi</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" src="assets/img/apps/3.png"
-                                                                          alt="flag"> Deutsch</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" src="assets/img/apps/4.png"
-                                                                          alt="flag">Italian</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" src="assets/img/apps/5.png"
-                                                                          alt="flag">Japanese</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" src="assets/img/apps/6.png"
-                                                                          alt="flag">Japanese</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/1.png}" alt="app">English</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/2.png}" alt="app">Hindi</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/3.png}" alt="app"> Deutsch</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/4.png}" alt="app">Italian</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/5.png}" alt="app">Japanese</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/6.png}" alt="app">Japanese</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="cr-right-tool display-screen">
                         <a class="cr-screen full" href="javascript:void(0)"><i class="ri-fullscreen-line"></i></a>
-                        <a class="cr-screen reset" href="javascript:void(0)"><i
-                                class="ri-fullscreen-exit-line"></i></a>
+                        <a class="cr-screen reset" href="javascript:void(0)"><i class="ri-fullscreen-exit-line"></i></a>
                     </div>
                     <div class="cr-right-tool">
                         <a class="cr-notify" href="javascript:void(0)">
@@ -84,22 +71,25 @@
                     <div class="cr-right-tool cr-user-drop">
                         <div class="cr-hover-drop">
                             <div class="cr-hover-tool">
-                                <img class="user" src="assets/img/user/1.jpg" alt="user">
+                                <img class="user" th:src="@{/admin/img/user/1.jpg}" alt="user">
                             </div>
                             <div class="cr-hover-drop-panel right">
                                 <div class="details">
-                                    <h6>Wiley Waites</h6>
-                                    <p>wiley@example.com</p>
+                                    <h6>Ngoc Thong</h6>
+                                    <p></p>
                                 </div>
                                 <ul class="border-top">
-                                    <li><a href="team-profile.html">Profile</a></li>
-                                    <li><a href="faq.html">Help</a></li>
-                                    <li><a href="chatapp.html">Messages</a></li>
-                                    <li><a href="project-overview.html">Projects</a></li>
-                                    <li><a href="team-update.html">Settings</a></li>
+
                                 </ul>
                                 <ul class="border-top">
-                                    <li><a href="signin.html"><i class="ri-logout-circle-r-line"></i>Logout</a></li>
+                                    <li>
+                                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                            <i class="ri-logout-circle-r-line"></i>Logout
+                                        </a>
+                                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                        </form>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

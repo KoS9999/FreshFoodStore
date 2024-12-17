@@ -1,10 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Thống Kê</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+  <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
+  <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .wrapper {
+      display: flex;
+    }
+
+    .main-content {
+      flex: 1;
+      margin-left: 250px;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+
+    .chart-container {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .chart-row {
+      display: flex;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    /* Kích thước biểu đồ */
+    .small-chart canvas {
+      width: 100%;
+      height: 200px;
+    }
+
+    .large-chart canvas {
+      width: 100%;
+      height: 350px;
+    }
+
+    :root {
+      --primary-color: #36a2eb;
+      --secondary-color: #ff6384;
+      --success-color: #4bc0c0;
+      --warning-color: #ffce56;
+    }
+  </style>
 </head>
 <body>
-$END$
+<main class="wrapper">
+  <div th:replace="~{admin/sidebar :: sidebar}"></div>
+  <div class="main-content">
+    <h1 style="text-align: center; margin-bottom: 20px;">Thống Kê Doanh Thu</h1>
+    <div class="chart-container small-chart">
+      <h2 class="chart-title">Doanh Thu Theo Sản Phẩm</h2>
+      <canvas id="productChart"></canvas>
+    </div>
+    <div class="chart-row">
+      <div class="chart-container large-chart">
+        <h2 class="chart-title">Doanh Thu Theo Thể Loại</h2>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="chart-container large-chart">
+        <h2 class="chart-title">Doanh Thu Theo Năm</h2>
+        <canvas id="yearChart"></canvas>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script th:inline="javascript">
+  const productData = JSON.parse(/*[[${productDataJson}]]*/ '[]');
+  const categoryData = JSON.parse(/*[[${categoryDataJson}]]*/ '[]');
+  const yearData = JSON.parse(/*[[${yearDataJson}]]*/ '[]');
+
+  const productLabels = productData.map(item => item[0]);
+  const productValues = productData.map(item => item[2]);
+  new Chart(document.getElementById('productChart'), {
+    type: 'bar',
+    data: {
+      labels: productLabels,
+      datasets: [{
+        label: 'Doanh thu (VNĐ)',
+        data: productValues,
+        backgroundColor: ['#36a2eb', '#4bc0c0', '#ff6384', '#ffce56', '#2ecc71']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: { enabled: true }
+      }
+    }
+  });
+
+  const categoryLabels = categoryData.map(item => item[0]);
+  const categoryValues = categoryData.map(item => item[2]);
+  new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: categoryLabels,
+      datasets: [{
+        data: categoryValues,
+        backgroundColor: ['#36a2eb', '#4bc0c0', '#ff6384', '#ffce56']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: { enabled: true }
+      }
+    }
+  });
+
+  const yearLabels = [2023, 2024, 2025];
+  const yearMap = new Map(yearData.map(item => [item[0], item[2]]));
+  const yearValues = yearLabels.map(year => yearMap.get(year) || 0);
+
+  new Chart(document.getElementById('yearChart'), {
+    type: 'line',
+    data: {
+      labels: yearLabels,
+      datasets: [{
+        label: 'Doanh thu (VNĐ)',
+        data: yearValues,
+        borderColor: '#36a2eb',
+        backgroundColor: 'rgba(54,162,235,0.2)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: { enabled: true }
+      }
+    }
+  });
+</script>
 </body>
 </html>
