@@ -1,6 +1,7 @@
 package com.example.foodstore.service;
 
 import com.example.foodstore.entity.Category;
+import com.example.foodstore.entity.Product;
 
 import java.util.List;
 
@@ -13,5 +14,6 @@ public interface CategoryService {
 
     void delete(Long id);
 
+    List<Product> getAll();
 }
 
