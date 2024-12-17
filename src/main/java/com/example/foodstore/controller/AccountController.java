@@ -1,19 +1,67 @@
 package com.example.foodstore.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
+import com.example.foodstore.entity.Order;
+import com.example.foodstore.entity.OrderDetail;
+import com.example.foodstore.entity.User;
+import com.example.foodstore.service.OrderDetailService;
+import com.example.foodstore.service.OrderService;
+import com.example.foodstore.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/account")
 public class AccountController {
 
-    @GetMapping("/account")
-    public String account(@AuthenticationPrincipal User user, Model model) {
-        // Thêm thông tin người dùng vào model
-        model.addAttribute("username", user.getUsername());
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private OrderDetailService orderDetailService;
+
+    @GetMapping
+    public String viewAccount(Model model) {
+        User user = userService.getLoggedInUser();
+        model.addAttribute("user", user);
+        List<Order> orders = orderService.findOrdersByUser(user);
+        model.addAttribute("orders", orders);
+        Map<Long, List<OrderDetail>> orderDetailsMap = orders.stream()
+                .collect(Collectors.toMap(
+                        Order::getOrderId,
+                        order -> orderDetailService.findDetailsByOrder(order)
+                ));
+        model.addAttribute("orderDetailsMap", orderDetailsMap);
         return "web/account";
     }
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("user") User updatedUser, RedirectAttributes redirectAttributes) {
+        User currentUser = userService.getLoggedInUser();
+        currentUser.setName(updatedUser.getName());
+        currentUser.setPhone(updatedUser.getPhone());
+        currentUser.setAddress(updatedUser.getAddress());
+        userService.save(currentUser);
+        redirectAttributes.addFlashAttribute("successMessage", "Your account details have been updated successfully!");
+        return "redirect:/account";
+    }
+    @GetMapping("/orders/{id}")
+    @ResponseBody
+    public List<OrderDetail> getOrderDetails(@PathVariable("id") Long id) {
+        Order order = orderService.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        return orderDetailService.findDetailsByOrder(order);
+    }
 }
+
+
+
+
