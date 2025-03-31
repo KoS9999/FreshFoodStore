@@ -2,9 +2,11 @@ package com.example.foodstore.controller;
 
 import com.example.foodstore.entity.Order;
 import com.example.foodstore.entity.OrderDetail;
+import com.example.foodstore.entity.Review;
 import com.example.foodstore.entity.User;
 import com.example.foodstore.service.OrderDetailService;
 import com.example.foodstore.service.OrderService;
+import com.example.foodstore.service.ReviewService;
 import com.example.foodstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,18 +32,32 @@ public class AccountController {
     @Autowired
     private OrderDetailService orderDetailService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     @GetMapping
     public String viewAccount(Model model) {
         User user = userService.getLoggedInUser();
         model.addAttribute("user", user);
+
         List<Order> orders = orderService.findOrdersByUser(user);
         model.addAttribute("orders", orders);
+
         Map<Long, List<OrderDetail>> orderDetailsMap = orders.stream()
                 .collect(Collectors.toMap(
                         Order::getOrderId,
                         order -> orderDetailService.findDetailsByOrder(order)
                 ));
         model.addAttribute("orderDetailsMap", orderDetailsMap);
+        Map<Long, List<Review>> reviewMap = orders.stream()
+                .flatMap(order -> orderDetailService.findDetailsByOrder(order).stream())
+                .map(orderDetail -> reviewService.getReviewsByUserAndOrderDetail(user, orderDetail))
+                .filter(reviews -> reviews != null && !reviews.isEmpty()) // Bỏ qua nếu chưa có đánh giá
+                .collect(Collectors.toMap(reviews -> reviews.get(0).getOrderDetail().getOrderDetailId(), reviews -> reviews));
+
+        model.addAttribute("reviewMap", reviewMap);
+
+
         return "web/account";
     }
     @PostMapping("/update")
