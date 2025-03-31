@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin - Blog Form</title>
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+    <!-- Vendor CSS -->
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <style>
+        .product-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            min-width: 150px;
+            text-align: left;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-checkbox:hover {
+            background: #e9ecef;
+        }
+
+        .product-checkbox input {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        .product-checkbox label {
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .product-checkbox input:checked + label {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+    </style>
+</head>
+<body>
+<main class="wrapper sb-default">
+    <div id="cr-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <div th:replace="~{admin/header :: header}"></div>
+    <div th:replace="~{admin/sidebar :: sidebar}"></div>
+
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Blog Form</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Dashboard</a></li>
+                        <li>Blog Form</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default">
+                        <div class="cr-card-content">
+                            <form th:action="@{/admin/blogs/save}" method="post" enctype="multipart/form-data" th:object="${blog}">
+                                <input type="hidden" th:field="*{id}">
+
+                                <div class="form-group">
+                                    <label for="title">Tiêu đề</label>
+                                    <input type="text" id="title" class="form-control" th:field="*{title}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="slug">Slug</label>
+                                    <input type="text" id="slug" class="form-control" th:field="*{slug}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="author">Tác giả</label>
+                                    <input type="text" id="author" class="form-control" th:field="*{author}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">Trạng thái</label>
+                                    <select id="status" class="form-control" th:field="*{status}">
+                                        <option value="DRAFT">Nháp</option>
+                                        <option value="PUBLISHED">Đã xuất bản</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="markdownContent">Nội dung Markdown</label>
+                                    <textarea id="markdownContent" class="form-control" rows="10" th:field="*{markdownContent}" required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="image">Ảnh đại diện blog</label>
+                                    <input type="file" id="image" name="imageFile" class="form-control-file" accept="image/*">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Sản phẩm liên quan</label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="d-flex flex-wrap">
+                                                <div class="form-check product-checkbox m-2" th:each="product : ${products}">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           th:id="'product-' + ${product.productId}"
+                                                           th:name="relatedProducts"
+                                                           th:value="${product.productId}">
+                                                    <label class="form-check-label" th:for="'product-' + ${product.productId}">
+                                                        <span th:text="${product.productName}"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group text-right">
+                                    <button type="submit" class="cr-btn default-btn color-success">Lưu bài viết</button>
+                                    <a th:href="@{/admin/blogs}" class="cr-btn default-btn">Hủy</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin/js/main.js}"></script>
+</body>
+</html>
