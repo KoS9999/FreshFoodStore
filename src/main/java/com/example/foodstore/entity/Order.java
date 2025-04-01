@@ -24,6 +24,8 @@ public class Order implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date orderDate;
 
+    private String voucherCode;
+
     private Double amount;
 
     private String address;
@@ -37,6 +39,9 @@ public class Order implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
     private OrderStatus orderStatus;
+
+    @Column(name = "used_points")
+    private Integer usedPoints;
 
     @OneToMany(mappedBy = "order")
     @JsonIgnore
