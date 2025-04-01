@@ -21,4 +21,5 @@ public interface ReviewService {
     List<Review> getAllReviews();
     List<OrderDetail> findAllOrderDetails();
     List<Review> findAll();
+    Review toggleReviewVisibility(Long reviewId, boolean visible);
 }
