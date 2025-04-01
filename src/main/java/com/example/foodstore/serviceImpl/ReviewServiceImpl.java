@@ -62,6 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
         String imageUrl2 = (image2 != null && !image2.isEmpty()) ? firebaseStorageService.uploadFile(image2) : null;
 
         Review review = new Review(user, product, orderDetail, rating, reviewText, new Date(), null, imageUrl1, imageUrl2);
+        review.setVisible(false);
         Review savedReview = reviewRepository.save(review);
 
         user.setPoints(user.getPoints() + 1000);
@@ -135,5 +136,13 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findAll();
     }
 
+    @Override
+    public Review toggleReviewVisibility(Long reviewId, boolean visible) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review không tồn tại!"));
+
+        review.setVisible(visible);
+        return reviewRepository.save(review);
+    }
 
 }
