@@ -59,8 +59,6 @@
             border-color: #dee2e6;
         }
     </style>
-
-
 </head>
 <body>
 
@@ -139,6 +137,10 @@
                                             <label>Address:</label>
                                             <input type="text" name="address" th:value="${user.address}" class="form-control">
                                         </div>
+                                        <div class="col-md-6">
+                                            <label>Points</label>
+                                            <input type="number" name="points" th:value="${user.points}" class="form-control" readonly>
+                                        </div>
                                         <div class="col-md-12 mt-3">
                                             <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Save Changes</button>
                                         </div>
@@ -214,16 +216,43 @@
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Subtotal</th>
+                            <th>Review</th>
+
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="detail : ${orderDetailsMap[order.orderId]}">
                             <td th:text="${detail.product.productName}"></td>
-                            <td><img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image" class="modal-product-img" width="100px" height="100px"></td>
+                            <td>
+                                <img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image" class="modal-product-img" width="100px" height="100px">
+                            </td>
                             <td th:text="${detail.quantity}"></td>
                             <td th:text="${detail.price}"></td>
                             <td th:text="${detail.price * detail.quantity}"></td>
+                            <td>
+
+                                <a th:if="${!reviewMap.containsKey(detail.orderDetailId)}"
+                                   th:href="@{/reviews/create(productId=${detail.product.productId}, orderDetailId=${detail.orderDetailId})}"
+                                   class="btn btn-success">
+                                    Tạo đánh giá
+                                </a>
+
+                                <!-- Nếu đã có đánh giá cho lần mua này -->
+                                <div th:if="${reviewMap.containsKey(detail.orderDetailId)}">
+                                    <h5>Đánh giá của bạn:</h5>
+                                    <ul>
+                                        <li th:each="review : ${reviewMap[detail.orderDetailId]}">
+                                            <span th:text="'⭐ ' + ${review.rating} + ' - ' + ${review.reviewText}"></span>
+                                            <a th:href="@{/reviews/edit(reviewId=${review.reviewId})}" class="btn btn-warning">Sửa đánh giá</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </td>
+
+
                         </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -233,7 +262,6 @@
             </div>
         </div>
     </div>
-
     <!-- FOOTER AREA START -->
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
@@ -245,15 +273,24 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const rowsPerPage = 5; // Số hàng mỗi trang
-        const table = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        const rows = Array.from(table.getElementsByTagName("tr"));
+    document.addEventListener("DOMContentLoaded", function () {
+        const rowsPerPage = 5;
+        const tableBody = document.querySelector("#orderTable tbody");
+        const rows = Array.from(tableBody.querySelectorAll("tr"));
+
+        rows.sort((a, b) => {
+            const idA = parseInt(a.children[0].textContent.trim());
+            const idB = parseInt(b.children[0].textContent.trim());
+            return idB - idA; 
+        });
+
+        rows.forEach(row => tableBody.appendChild(row));
+
         const pagination = document.getElementById("pagination");
         const totalPages = Math.ceil(rows.length / rowsPerPage);
 
         function displayPage(page) {
-            rows.forEach((row, index) => {
+            rows.forEach((row) => {
                 row.style.display = "none";
             });
             const start = page * rowsPerPage;
@@ -281,7 +318,7 @@
                 a.href = "#";
                 a.dataset.page = i;
 
-                a.addEventListener("click", function(event) {
+                a.addEventListener("click", function (event) {
                     event.preventDefault();
                     displayPage(parseInt(a.dataset.page));
                 });
@@ -295,8 +332,5 @@
     });
 
 </script>
-
-
-
 </body>
 </html>
