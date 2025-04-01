@@ -36,6 +36,12 @@ public class ResponseController {
         Review updatedReview = reviewService.replyToReview(reviewId, responseText);
         return ResponseEntity.ok(updatedReview);
     }
+    @PostMapping("/toggle-visibility/{reviewId}")
+    @ResponseBody
+    public ResponseEntity<Review> toggleVisibility(@PathVariable Long reviewId, @RequestParam boolean visible) {
+        Review updatedReview = reviewService.toggleReviewVisibility(reviewId, visible);
+        return ResponseEntity.ok(updatedReview);
+    }
 
 }
 
