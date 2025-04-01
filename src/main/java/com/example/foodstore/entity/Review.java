@@ -49,6 +49,9 @@ public class Review {
     @Column(nullable = true)
     private String imageUrl2;
 
+    @Column(nullable = false)
+    private Boolean visible = false;
+
     public Review(User user, Product product, OrderDetail orderDetail, int rating, String reviewText, Date reviewDate, String responseText, String imageUrl1, String imageUrl2) {
         this.user = user;
         this.product = product;
