@@ -40,6 +40,9 @@ public class User implements Serializable {
     @Column(nullable = false)
     private boolean enabled;
 
+    @Column(nullable = false)
+    private int points = 0;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "users_roles",
