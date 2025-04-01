@@ -143,11 +143,13 @@
             font-weight: 500;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         }
+        .btn-success, .btn-secondary {
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
 
     </style>
-
-
-
 
 </head>
 
@@ -198,6 +200,7 @@
                                             <th>Image 1</th>
                                             <th>Image 2</th>
                                             <th>Date</th>
+                                            <th>Hiển thị</th>
                                             <th>Response</th>
                                         </tr>
                                         </thead>
@@ -216,6 +219,16 @@
                                                 <img th:if="${review.imageUrl2}" th:src="${review.imageUrl2}" class="img-thumbnail" width="80" height="80">
                                             </td>
                                             <td th:text="${#dates.format(review.reviewDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                            <td>
+                                                <form th:action="@{'/admin/reviews/toggle-visibility/' + ${review.reviewId}}" method="post" class="toggle-visibility-form">
+                                                    <input type="hidden" name="visible" th:value="${!review.visible}" />
+                                                    <button type="submit"
+                                                            class="btn btn-sm toggle-btn"
+                                                            th:classappend="${review.visible} ? 'btn-success' : 'btn-secondary'"
+                                                            th:text="${review.visible} ? 'Hiển thị' : 'Ẩn'">
+                                                    </button>
+                                                </form>
+                                            </td>
                                             <td>
                                                 <form th:action="@{'/admin/reviews/reply/' + ${review.reviewId}}" method="post" class="reply-form d-flex flex-column align-items-start">
                                                     <input type="text" name="responseText" class="form-control mb-2" th:value="${review.responseText}" placeholder="Enter response...">
@@ -242,8 +255,15 @@
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
+        <div id="visibilityToast" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="visibilityToastText">
+                    Trạng thái đã được cập nhật!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
     </div>
-
 
     <!-- Modal -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -287,11 +307,10 @@
 <script th:src="@{/admin/js/data/ecommerce-chart-data.js}"></script>
 <script>
     $(document).ready(function () {
-        // Khi bấm vào ảnh, mở modal và thay đổi ảnh
         $('img').click(function () {
-            var imgSrc = $(this).attr('src'); // Lấy đường dẫn ảnh khi bấm
-            $('#modalImage').attr('src', imgSrc); // Cập nhật đường dẫn ảnh vào modal
-            $('#imageModal').modal('show'); // Hiển thị modal
+            var imgSrc = $(this).attr('src');
+            $('#modalImage').attr('src', imgSrc);
+            $('#imageModal').modal('show');
         });
 
         $(".reply-form").submit(function (event) {
@@ -311,7 +330,31 @@
                 alert("Có lỗi xảy ra, vui lòng thử lại.");
             });
         });
+        $("form.toggle-visibility-form").submit(function (event) {
+            event.preventDefault();
 
+            let form = $(this);
+            let url = form.attr("action");
+            let visibleValue = form.find("input[name='visible']").val();
+
+            $.post(url, { visible: visibleValue }, function (data) {
+                let button = form.find(".toggle-btn");
+                let newVisible = data.visible;
+
+                form.find("input[name='visible']").val(!newVisible);
+                button.text(newVisible ? "Hiển thị" : "Ẩn");
+                button.removeClass("btn-success btn-secondary")
+                    .addClass(newVisible ? "btn-success" : "btn-secondary");
+
+                $("#visibilityToastText").text("Review đã được " + (newVisible ? "hiển thị" : "ẩn") + " thành công!");
+
+                // Hiển thị Toast khi trạng thái được thay đổi
+                const toastEl = new bootstrap.Toast(document.getElementById('visibilityToast'));
+                toastEl.show();
+            }).fail(function () {
+                alert("Không thể cập nhật trạng thái hiển thị!");
+            });
+        });
 
 
         $('#review_list').DataTable({
