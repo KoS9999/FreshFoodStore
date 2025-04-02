@@ -11,7 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -37,7 +39,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-
     @Override
     public void delete(Long id) {
         productRepository.deleteById(id);
@@ -50,44 +51,53 @@ public class ProductServiceImpl implements ProductService {
         productImage.setProduct(product);
         productImageRepository.save(productImage);
     }
-
     @Override
     public void deleteProductImages(Product product) {
         List<ProductImage> images = productImageRepository.findByProduct(product);
         productImageRepository.deleteAll(images);
     }
-
     @Override
     public List<Product> findProductsByCategoryId(Long id) {
         return productRepository.findByCategory_CategoryId(id);
     }
-
     @Override
     public Product getProductById(Long productId) {
         return productRepository.findById(productId).orElse(null);
     }
-
     @Override
     public List<Product> findTop8ByOrderByEnteredDateDesc() {
         return productRepository.findTop8ByOrderByEnteredDateDesc();
     }
-
     @Override
     public List<Product> getTop8BestSellingProducts() {
         Pageable pageable = PageRequest.of(0, 8);
         return productRepository.findTop8BestSellingProducts(pageable);
     }
-
     @Override
     public Product findByProductId(Long id) {
         return productRepository.findByProductId(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
-
     @Override
     public Page<Product> searchProducts(String keyword, Long categoryId, double minPrice, double maxPrice, Pageable pageable) {
         return productRepository.findProducts(keyword, categoryId, minPrice, maxPrice, pageable);
     }
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+    @Override
+    public List<Product> getProductsByIds(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
+    @Override
+    public List<Product> getProductsBySeasonMonth(int month) {
+        return productRepository.findProductsBySeasonMonth(month);
+    }
+    public List<Product> findProductsByIds(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
+    }
+
 
 }
 
