@@ -16,6 +16,40 @@
     <!-- CSS -->
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <style>
+        .season-checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            padding: 10px;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .season-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .season-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .season-checkbox:hover {
+            background-color: #e7f5ff;
+            border-color: #339af0;
+        }
+
+    </style>
 </head>
 <body>
 <main class="wrapper sb-default">
@@ -86,6 +120,20 @@
                                 <div class="form-group">
                                     <label for="description">Mô Tả Sản Phẩm</label>
                                     <textarea id="description" th:field="*{description}" class="form-control" placeholder="Mô tả sản phẩm" rows="3"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="mb-2">Mùa của sản phẩm (tháng):</label>
+                                    <div class="season-checkbox-container">
+                                        <th:block th:each="i : ${#numbers.sequence(1,12)}">
+                                            <label class="season-checkbox">
+                                                <input type="checkbox" name="seasonMonths"
+                                                       th:value="${i}"
+                                                       th:checked="${product.seasonMonths != null and product.seasonMonths.contains(i)}">
+                                                <span>Tháng <span th:text="${i}">1</span></span>
+                                            </label>
+                                        </th:block>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">

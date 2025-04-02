@@ -6,6 +6,63 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 	<link th:href="@{/admin/css/style.css}" rel="stylesheet">
+	<style>
+		.season-checkbox-container {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+			gap: 10px;
+			padding: 10px;
+			background-color: #f9f9f9;
+			border-radius: 10px;
+			border: 1px solid #ddd;
+		}
+
+		.season-checkbox {
+			display: flex;
+			align-items: center;
+			padding: 8px 10px;
+			border: 1px solid transparent;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: 0.3s ease;
+			font-weight: 500;
+			font-size: 15px;
+		}
+
+		.season-checkbox input[type="checkbox"] {
+			margin-right: 8px;
+			transform: scale(1.2);
+		}
+
+		/* Hiệu ứng hover */
+		.season-checkbox:hover {
+			opacity: 0.85;
+			border-color: #999;
+		}
+
+		/* Màu theo mùa */
+		.season-checkbox.spring {
+			background: #fff0f5;
+			color: #c2185b;
+		}
+
+		.season-checkbox.summer {
+			background: #fffde7;
+			color: #f9a825;
+		}
+
+		.season-checkbox.autumn {
+			background: #fbe9e7;
+			color: #bf360c;
+		}
+
+		.season-checkbox.winter {
+			background: #e3f2fd;
+			color: #1565c0;
+		}
+
+	</style>
+
 </head>
 
 <body>
@@ -92,11 +149,35 @@
 						</div>
 					</div>
 
-
 					<!-- Mô tả sản phẩm -->
 					<div class="form-group">
 						<label for="description">Mô Tả Sản Phẩm</label>
 						<textarea id="description" name="description" class="form-control" placeholder="Mô tả sản phẩm" rows="3" maxlength="999" th:text="${product.description}"></textarea>
+					</div>
+
+					<!-- Mùa của sản phẩm -->
+					<div class="form-group">
+						<label class="mb-2">Mùa của sản phẩm (tháng):</label>
+						<div class="season-checkbox-container">
+							<th:block th:each="i : ${#numbers.sequence(1,12)}">
+								<label class="season-checkbox"
+									   th:classappend="${i <= 3} ? 'spring' :
+                                   (${i <= 6} ? 'summer' :
+                                   (${i <= 9} ? 'autumn' : 'winter'))">
+									<input type="checkbox" name="seasonMonths"
+										   th:value="${i}"
+										   th:checked="${product.seasonMonths != null and product.seasonMonths.contains(i)}">
+									<span>
+										<span th:if="${i <= 3}">🌸</span>
+										<span th:if="${i > 3 and i <= 6}">☀️</span>
+										<span th:if="${i > 6 and i <= 9}">🍂</span>
+										<span th:if="${i > 9}">❄️</span>
+										Tháng <span th:text="${i}">1</span>
+									</span>
+
+								</label>
+							</th:block>
+						</div>
 					</div>
 
 					<!-- Trạng thái -->
