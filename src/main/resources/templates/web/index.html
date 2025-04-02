@@ -15,6 +15,8 @@
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
     <!-- Main Stylesheet -->
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
+    <link rel="stylesheet" th:href="@{/web/css/stylechatbot.css}">
+
     <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
 </head>
@@ -293,11 +295,14 @@
                                                     <div class="product-info">
                                                         <div class="product-ratting">
                                                             <ul>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                                <li><a href="#"><i class="far fa-star"></i></a></li>
+                                                                <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                                    <a href="#">
+                                                                        <i th:class="${#maps.containsKey(averageRatings, product.productId) ?
+                                                                         (i <= T(java.lang.Math).floor(averageRatings[product.productId]) ? 'fas fa-star' :
+                                                                         (i - 0.5 <= averageRatings[product.productId] && averageRatings[product.productId] < i ? 'fas fa-star-half-alt' : 'far fa-star'))
+                                                                           : 'far fa-star'}"></i>
+                                                                    </a>
+                                                                </li>
                                                             </ul>
                                                         </div>
                                                         <h2 class="product-title">
@@ -305,9 +310,11 @@
                                                                th:text="${product.productName}">Product Name</a>
                                                         </h2>
                                                         <div class="product-price">
-                                                            <span th:text="${product.price}"></span>
+                                                            <span th:attr="data-order=${product.price}"
+                                                                  th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></span>
                                                             <del th:if="${product.discount > 0}"
-                                                                 th:text="${product.price + (product.price * product.discount / 100)}"></del>
+                                                                 th:text="${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                                            </del>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -401,20 +408,26 @@
                                 <div class="product-info">
                                     <div class="product-ratting">
                                         <ul>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                            <li><a href="#"><i class="far fa-star"></i></a></li>
+                                            <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <a href="#">
+                                                    <i th:class="${#maps.containsKey(averageRatings, product.productId) ?
+                                                                         (i <= T(java.lang.Math).floor(averageRatings[product.productId]) ? 'fas fa-star' :
+                                                                         (i - 0.5 <= averageRatings[product.productId] && averageRatings[product.productId] < i ? 'fas fa-star-half-alt' : 'far fa-star'))
+                                                                           : 'far fa-star'}"></i>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                     <h2 class="product-title">
                                         <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
                                     </h2>
                                     <div class="product-price">
-                                        <span th:text="${product.price}">0.00</span>
-                                        <!-- Hiển thị giá gốc không cần điều kiện -->
-                                        <del th:text="${product.price + (product.price * product.discount / 100)}">0.00</del>
+                                        <span th:attr="data-order=${product.price}"
+                                              th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </span>
+                                        <del th:if="${product.discount > 0}"
+                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </del>
                                     </div>
                                 </div>
                             </div>
@@ -504,19 +517,111 @@
                                 <div class="product-info">
                                     <div class="product-ratting">
                                         <ul>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                            <li><a href="#"><i class="far fa-star"></i></a></li>
+                                            <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <a href="#">
+                                                    <i th:class="${#maps.containsKey(averageRatings, product.productId) ?
+                                                                         (i <= T(java.lang.Math).floor(averageRatings[product.productId]) ? 'fas fa-star' :
+                                                                         (i - 0.5 <= averageRatings[product.productId] && averageRatings[product.productId] < i ? 'fas fa-star-half-alt' : 'far fa-star'))
+                                                                           : 'far fa-star'}"></i>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                     <h2 class="product-title">
                                         <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
                                     </h2>
                                     <div class="product-price">
-                                        <span th:text="${product.price}">0.00</span>
-                                        <del th:if="${product.discount > 0}" th:text="${product.price + (product.price * product.discount / 100)}">0.00</del>
+                                        <span th:attr="data-order=${product.price}"
+                                              th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </span>
+                                        <del th:if="${product.discount > 0}"
+                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </del>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT TAB AREA START for season-products -->
+    <div class="ltn__product-tab-area ltn__product-gutter pt-115 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title-area ltn__section-title-2 text-center">
+                        <h1 class="section-title">Seasonal Products</h1>
+                    </div>
+                </div>
+            </div>
+            <div id="season-products" class="season-products">
+                <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
+                    <th:block th:each="product : ${seasonProducts}">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="ltn__product-item ltn__product-item-3 text-center">
+                                <div class="product-img">
+                                    <a th:href="@{/product-details/{id}(id=${product.productId})}">
+                                        <img th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image">
+                                    </a>
+                                    <div class="product-badge">
+                                        <ul>
+                                            <li th:if="${product.status == false}" style="background-color: #ff8585;">
+                                                <span>Out of Stock</span>
+                                            </li>
+                                            <li th:if="${product.status == true && product.discount > 0}" class="sale-badge">
+                                                <span>Discount: <span th:text="${product.discount} + '%'"></span></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul>
+                                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a></li>
+                                            <li th:if="${product.status == true}">
+                                                <a href="javascript:void(0);" title="Thêm vào giỏ" class="product-add1" th:data-product-id="${product.productId}">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                </a>
+                                            </li>
+                                            <li th:if="${product.status == true}">
+                                                <a href="javascript:void(0);"
+                                                   class="add-to-wishlist1"
+                                                   th:data-product-id="${product.productId}"
+                                                   th:data-product-name="${product.productName}"
+                                                   th:src="@{'/uploads/main/' + ${product.productImage}}"
+                                                   title="Add to Wishlist">
+                                                    <i class="far fa-heart"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-ratting">
+                                        <ul>
+                                            <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <a href="#">
+                                                    <i th:class="${#maps.containsKey(averageRatings, product.productId) ?
+                                                    (i <= T(java.lang.Math).floor(averageRatings[product.productId]) ? 'fas fa-star' :
+                                                    (i - 0.5 <= averageRatings[product.productId] && averageRatings[product.productId] < i ? 'fas fa-star-half-alt' : 'far fa-star'))
+                                                    : 'far fa-star'}"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <h2 class="product-title">
+                                        <a th:href="@{/product-details/{id}(id=${product.productId})}"
+                                           th:text="${product.productName}">Product Name</a>
+                                    </h2>
+                                    <div class="product-price">
+                                        <span th:attr="data-order=${product.price}"
+                                              th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </span>
+                                        <del th:if="${product.discount > 0}"
+                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </del>
                                     </div>
                                 </div>
                             </div>
@@ -526,6 +631,8 @@
             </div>
         </div>
     </div>
+    <!-- PRODUCT TAB AREA END for season-products -->
+
 
     <!-- BLOG AREA START (blog-3) -->
     <div class="ltn__blog-area pt-115 pb-70">
@@ -539,167 +646,53 @@
             </div>
             <div class="row  ltn__blog-slider-one-active slick-arrow-1 ltn__blog-item-3-normal">
                 <!-- Blog Item -->
-                <div class="col-lg-12">
+                <div class="col-lg-12" th:each="blog : ${blogs}">
                     <div class="ltn__blog-item ltn__blog-item-3">
                         <div class="ltn__blog-img">
-                            <a href="blog-details.html"></a>
+                            <a th:href="@{'/news/' + ${blog.slug}}">
+                                <img th:src="@{${blog.imageUrl}}" alt="Blog Image">
+                            </a>
                         </div>
                         <div class="ltn__blog-brief">
                             <div class="ltn__blog-meta">
                                 <ul>
                                     <li class="ltn__blog-author">
-                                        <a href="#"><i class="far fa-user"></i>by: Admin</a>
+                                        <a href="#"><i class="far fa-user"></i>by: <span th:text="${blog.author}">Admin</span></a>
                                     </li>
                                     <li class="ltn__blog-tags">
-                                        <a href="#"><i class="fas fa-tags"></i>Services</a>
+                                        <a href="#"><i class="fas fa-tags"></i>Blog</a>
                                     </li>
                                 </ul>
                             </div>
-                            <h3 class="ltn__blog-title"><a href="blog-details.html">Common Engine Oil Problems and Solutions</a></h3>
+                            <h3 class="ltn__blog-title">
+                                <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}">Blog Title</a>
+                            </h3>
                             <div class="ltn__blog-meta-btn">
                                 <div class="ltn__blog-meta">
                                     <ul>
-                                        <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>June 24, 2024</li>
+                                        <li class="ltn__blog-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span th:text="${#temporals.format(blog.createdAt, 'dd MMM yyyy')}">01 Jan 2025</span>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="ltn__blog-btn">
-                                    <a href="blog-details.html">Read more</a>
+                                    <a th:href="@{'/news/' + ${blog.slug}}">Read more</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Blog Item -->
-                <div class="col-lg-12">
-                    <div class="ltn__blog-item ltn__blog-item-3">
-                        <div class="ltn__blog-img">
-                            <a href="blog-details.html"></a>
-                        </div>
-                        <div class="ltn__blog-brief">
-                            <div class="ltn__blog-meta">
-                                <ul>
-                                    <li class="ltn__blog-author">
-                                        <a href="#"><i class="far fa-user"></i>by: Admin</a>
-                                    </li>
-                                    <li class="ltn__blog-tags">
-                                        <a href="#"><i class="fas fa-tags"></i>Services</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h3 class="ltn__blog-title"><a href="blog-details.html">How and when to replace brake rotors</a></h3>
-                            <div class="ltn__blog-meta-btn">
-                                <div class="ltn__blog-meta">
-                                    <ul>
-                                        <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>July 23, 2024</li>
-                                    </ul>
-                                </div>
-                                <div class="ltn__blog-btn">
-                                    <a href="blog-details.html">Read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Blog Item -->
-                <div class="col-lg-12">
-                    <div class="ltn__blog-item ltn__blog-item-3">
-                        <div class="ltn__blog-img">
-                            <a href="blog-details.html"></a>
-                        </div>
-                        <div class="ltn__blog-brief">
-                            <div class="ltn__blog-meta">
-                                <ul>
-                                    <li class="ltn__blog-author">
-                                        <a href="#"><i class="far fa-user"></i>by: Admin</a>
-                                    </li>
-                                    <li class="ltn__blog-tags">
-                                        <a href="#"><i class="fas fa-tags"></i>Services</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h3 class="ltn__blog-title"><a href="blog-details.html">Elenance, Servicing & Repairs</a></h3>
-                            <div class="ltn__blog-meta-btn">
-                                <div class="ltn__blog-meta">
-                                    <ul>
-                                        <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>August 22, 2024</li>
-                                    </ul>
-                                </div>
-                                <div class="ltn__blog-btn">
-                                    <a href="blog-details.html">Read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Blog Item -->
-                <div class="col-lg-12">
-                    <div class="ltn__blog-item ltn__blog-item-3">
-                        <div class="ltn__blog-img">
-                            <a href="blog-details.html"></a>
-                        </div>
-                        <div class="ltn__blog-brief">
-                            <div class="ltn__blog-meta">
-                                <ul>
-                                    <li class="ltn__blog-author">
-                                        <a href="#"><i class="far fa-user"></i>by: Admin</a>
-                                    </li>
-                                    <li class="ltn__blog-tags">
-                                        <a href="#"><i class="fas fa-tags"></i>Services</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h3 class="ltn__blog-title"><a href="blog-details.html">Healthiest Vegetables on Earth</a></h3>
-                            <div class="ltn__blog-meta-btn">
-                                <div class="ltn__blog-meta">
-                                    <ul>
-                                        <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>June 24, 2024</li>
-                                    </ul>
-                                </div>
-                                <div class="ltn__blog-btn">
-                                    <a href="blog-details.html">Read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Blog Item -->
-                <div class="col-lg-12">
-                    <div class="ltn__blog-item ltn__blog-item-3">
-                        <div class="ltn__blog-img">
-                            <a href="blog-details.html"></a>
-                        </div>
-                        <div class="ltn__blog-brief">
-                            <div class="ltn__blog-meta">
-                                <ul>
-                                    <li class="ltn__blog-author">
-                                        <a href="#"><i class="far fa-user"></i>by: Admin</a>
-                                    </li>
-                                    <li class="ltn__blog-tags">
-                                        <a href="#"><i class="fas fa-tags"></i>Services</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h3 class="ltn__blog-title"><a href="blog-details.html">How te Your Tires Last Longer</a></h3>
-                            <div class="ltn__blog-meta-btn">
-                                <div class="ltn__blog-meta">
-                                    <ul>
-                                        <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>June 24, 2024</li>
-                                    </ul>
-                                </div>
-                                <div class="ltn__blog-btn">
-                                    <a href="blog-details.html">Read more</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--  -->
             </div>
         </div>
     </div>
     <!-- BLOG AREA END -->
     <!-- FEATURE AREA END -->
+
+    <div th:replace="~{web/chatbot :: chatbot}"></div>
+
     <div th:replace="~{web/footer :: footer}"></div>
+
     <!-- MODAL AREA START (Quick View Modal) -->
     <div class="ltn__modal-area ltn__quick-view-modal-area">
         <div class="modal fade" id="quick_view_modal" tabindex="-1">
@@ -803,12 +796,6 @@
         </div>
     </div>
     <!-- MODAL AREA END -->
-
-
-
-
-
-
     <!-- MODAL AREA START (Add To Cart Modal) -->
     <div class="ltn__modal-area ltn__add-to-cart-modal-area">
         <div class="modal fade" id="add_to_cart_modal" tabindex="-1">
