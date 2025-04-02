@@ -23,6 +23,70 @@
     <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
     <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
     <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
+
+        .table th {
+            background-color: #f2f9f2;
+            color: #3c763d;
+            font-weight: bold;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .table tr:hover {
+            background-color: #bff6bf;
+        }
+        .btn {
+            border-radius: 5px;
+            padding: 8px 15px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: white;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            opacity: 0.8;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.8;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-danger.disabled, .btn-danger:disabled {
+            pointer-events: none;
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+
+    </style>
 
 </head>
 
