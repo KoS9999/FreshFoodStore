@@ -84,14 +84,14 @@
 
                                     <!-- Ảnh sản phẩm -->
                                     <td class="cart-product-image">
-                                        <a th:href="@{/product-details(id=${favorite.product.productId})}">
+                                        <a th:href="@{/product-details/{id}(id=${favorite.product.productId})}">
                                             <img th:src="@{/uploads/main/{filename}(filename=${favorite.product.productImage})}" alt="Product Image">
                                         </a>
                                     </td>
                                     <!-- Tên sản phẩm -->
                                     <td class="cart-product-info">
                                         <h4>
-                                            <a th:href="@{/product/{id}(id=${favorite.product.productId})}" th:text="${favorite.product.productName}"></a>
+                                            <a th:href="@{/product-details/{id}(id=${favorite.product.productId})}" th:text="${favorite.product.productName}"></a>
                                         </h4>
                                     </td>
                                     <!-- Giá sản phẩm -->
