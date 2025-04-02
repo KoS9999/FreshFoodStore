@@ -52,11 +52,13 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images = new ArrayList<>();
 
-    public void addProductImage(ProductImage image) {
-        this.images.add(image);
-        image.setProduct(this);
-    }
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<CartItem> cartItems;
+
+    @ElementCollection
+    @CollectionTable(name = "product_seasons", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "month")
+    private List<Integer> seasonMonths = new ArrayList<>();
+
 }
