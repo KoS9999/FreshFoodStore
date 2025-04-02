@@ -23,6 +23,65 @@
 	<link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
 	<link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
 	<link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+	<style>
+		.dropdown-menu {
+			display: none;
+			position: absolute;
+			background-color: white;
+			min-width: 160px;
+			box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+			z-index: 1000;
+		}
+
+		.dropdown:hover .dropdown-menu {
+			display: block;
+		}
+
+		.status-label {
+			padding: 6px 12px;
+			border-radius: 6px;
+			cursor: pointer;
+			font-weight: 500;
+			display: inline-block;
+		}
+
+		.dropdown-item {
+			padding: 8px 12px;
+			display: block;
+			color: #333;
+			text-decoration: none;
+		}
+
+		.dropdown-item:hover {
+			background-color: #f0f0f0;
+		}
+		.table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+			background-color: #ffffff;
+		}
+
+		.table th {
+			background-color: #f2f9f2;
+			color: #3c763d;
+			font-weight: bold;
+			padding: 12px;
+			text-align: center;
+			border: 1px solid #e0e0e0;
+		}
+
+		.table td {
+			padding: 10px;
+			text-align: center;
+			border: 1px solid #e0e0e0;
+		}
+
+		.table tr:hover {
+			background-color: #f1f8f1;
+		}
+
+	</style>
 </head>
 
 <body>
@@ -70,8 +129,9 @@
 											<th>Shipping Address</th>
 											<th>Phone Number</th>
 											<th>Note</th>
-											<th>Total Price</th>
 											<th>Payment Status</th>
+											<th>Voucher</th>
+											<th>Total Price</th>
 											<th>Order Status</th>
 											<th>Actions</th>
 										</tr>
@@ -85,33 +145,50 @@
 											<td th:text="${order.note}"></td>
 											<td>
 												<!-- Nút chỉnh trạng thái thanh toán -->
-												<div>
-													<a th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/1'}" class="btn btn-success"
-													   th:classappend="${order.status == 1} ? 'disabled'">Paid</a>
-													<a th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/0'}" class="btn btn-danger"
-													   th:classappend="${order.status == 0} ? 'disabled'">Unpaid</a>
-												</div>
-											</td>
-											<td th:text="${order.amount}"></td>
+												<div class="dropdown d-inline-block">
+													<span class="status-label"
+														  th:classappend="' ' + (${order.status} == 1 ? 'text-bg-success' : 'text-bg-danger')">
+														<span th:text="${order.status == 1 ? 'PAID' : 'UNPAID'}">Status</span>
+													</span>
+													<div class="dropdown-menu show-on-hover bg-white">
+														<a class="dropdown-item text-success" th:if="${order.status != 1}"
+														   th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/1'}">Mark as Paid</a>
 
+														<a class="dropdown-item text-danger" th:if="${order.status != 0}"
+														   th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/0'}">Mark as Unpaid</a>
+													</div>
+												</div>
+
+											</td>
+											<td th:text="${order.voucherCode}"></td>
+											<td th:attr="data-order=${order.amount}"
+												th:text="${#numbers.formatDecimal(order.amount, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+
+											</td>
 											<td>
 												<!-- Nút chỉnh trạng thái đơn hàng -->
-												<div>
-													<a th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/PENDING'}"
-													   class="btn btn-warning"
-													   th:classappend="${order.orderStatus.name() == 'PENDING'} ? 'disabled'">Pending</a>
-													<a th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CONFIRMED'}"
-													   class="btn btn-primary"
-													   th:classappend="${order.orderStatus.name() == 'CONFIRMED'} ? 'disabled'">Confirmed</a>
-													<a th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/SHIPPING'}"
-													   class="btn btn-info"
-													   th:classappend="${order.orderStatus.name() == 'SHIPPING'} ? 'disabled'">Shipping</a>
-													<a th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/DELIVERED'}"
-													   class="btn btn-success"
-													   th:classappend="${order.orderStatus.name() == 'DELIVERED'} ? 'disabled'">Delivered</a>
-													<a th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CANCELED'}"
-													   class="btn btn-danger"
-													   th:classappend="${order.orderStatus.name() == 'CANCELED'} ? 'disabled'">Canceled</a>
+												<div class="dropdown d-inline-block">
+													<span class="status-label"
+														  th:classappend=" ' ' +
+															(${order.orderStatus.name() == 'PENDING'} ? 'text-bg-warning' :
+															(${order.orderStatus.name() == 'CONFIRMED'} ? 'text-bg-primary' :
+															(${order.orderStatus.name() == 'SHIPPING'} ? 'text-bg-info' :
+															(${order.orderStatus.name() == 'DELIVERED'} ? 'text-bg-success' :
+															(${order.orderStatus.name() == 'CANCELED'} ? 'text-bg-danger' : 'text-bg-secondary')))))">
+														<span th:text="${order.orderStatus.name()}">Status</span>
+													</span>
+													<div class="dropdown-menu show-on-hover bg-white">
+														<a class="dropdown-item text-warning" th:if="${order.orderStatus.name() != 'PENDING'}"
+														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/PENDING'}">Pending</a>
+														<a class="dropdown-item text-primary" th:if="${order.orderStatus.name() != 'CONFIRMED'}"
+														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CONFIRMED'}">Confirmed</a>
+														<a class="dropdown-item text-info" th:if="${order.orderStatus.name() != 'SHIPPING'}"
+														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/SHIPPING'}">Shipping</a>
+														<a class="dropdown-item text-success" th:if="${order.orderStatus.name() != 'DELIVERED'}"
+														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/DELIVERED'}">Delivered</a>
+														<a class="dropdown-item text-danger" th:if="${order.orderStatus.name() != 'CANCELED'}"
+														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CANCELED'}">Canceled</a>
+													</div>
 												</div>
 											</td>
 											<td>
