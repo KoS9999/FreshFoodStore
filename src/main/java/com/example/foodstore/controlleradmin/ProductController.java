@@ -47,9 +47,9 @@ public class ProductController {
         if (product == null) {
             return "redirect:/admin/products?error=product_not_found";
         }
-        List<ProductImage> additionalImages = productImageService.findByProduct(product); // Lấy danh sách ảnh phụ
+        List<ProductImage> additionalImages = productImageService.findByProduct(product);
         model.addAttribute("product", product);
-        model.addAttribute("additionalImages", additionalImages); // Gửi danh sách ảnh phụ tới view
+        model.addAttribute("additionalImages", additionalImages);
         return "admin/add-product-images";
     }
 
@@ -94,27 +94,32 @@ public class ProductController {
     @PostMapping("/save")
     public String saveProduct(@ModelAttribute("product") Product product,
                               @RequestParam("categoryId") Long categoryId,
-                              @RequestParam("mainImageFile") MultipartFile mainImageFile) throws IOException {
+                              @RequestParam("mainImageFile") MultipartFile mainImageFile,
+                              @RequestParam(value = "seasonMonths", required = false) List<Integer> seasonMonths) throws IOException {
         Category category = categoryService.findById(categoryId);
         if (category == null) {
             return "redirect:/admin/products?error=invalid_category";
         }
         product.setCategory(category);
+
+        // Gán mùa nếu có chọn
+        product.setSeasonMonths(seasonMonths != null ? seasonMonths : List.of());
+
         if (!mainImageFile.isEmpty()) {
             String mainFileName = mainImageFile.getOriginalFilename();
             File mainUploadPath = new File(uploadDir + "/main/");
             mainUploadPath.mkdirs();
-            // Resize ảnh chính và lưu
             File mainImageDestinationFile = new File(mainUploadPath, mainFileName);
             Thumbnails.of(mainImageFile.getInputStream())
                     .size(800, 800)
                     .toFile(mainImageDestinationFile);
-
             product.setProductImage(mainFileName);
         }
+
         Product savedProduct = productService.save(product);
         return "redirect:/admin/products/addImages/" + savedProduct.getProductId();
     }
+
 
     @GetMapping("/edit/{id}")
     public String editProductPage(@PathVariable("id") Long id, Model model) {
@@ -134,13 +139,13 @@ public class ProductController {
                                 @ModelAttribute("product") Product product,
                                 @RequestParam("categoryId") Long categoryId,
                                 @RequestParam(value = "mainImageFile", required = false) MultipartFile mainImageFile,
-                                @RequestParam(value = "additionalImageFiles", required = false) MultipartFile[] additionalImageFiles) throws IOException {
-
+                                @RequestParam(value = "additionalImageFiles", required = false) MultipartFile[] additionalImageFiles,
+                                @RequestParam(value = "seasonMonths", required = false) List<Integer> seasonMonths) throws IOException {
         Product existingProduct = productService.findById(id);
         if (existingProduct == null) {
             return "redirect:/admin/products?error=not_found";
         }
-        // Cập nhật thông tin sản phẩm
+
         existingProduct.setProductName(product.getProductName());
         existingProduct.setPrice(product.getPrice());
         existingProduct.setDiscount(product.getDiscount());
@@ -148,18 +153,22 @@ public class ProductController {
         existingProduct.setEnteredDate(product.getEnteredDate());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setStatus(product.getStatus());
+        existingProduct.setSeasonMonths(seasonMonths != null ? seasonMonths : List.of());
+
         Category category = categoryService.findById(categoryId);
         if (category != null) {
             existingProduct.setCategory(category);
         } else {
             return "redirect:/admin/products?error=invalid_category";
         }
+
         if (mainImageFile != null && !mainImageFile.isEmpty()) {
             String mainImagePath = saveMainImage(mainImageFile);
             existingProduct.setProductImage(mainImagePath);
         }
+
         if (additionalImageFiles != null) {
-            productService.deleteProductImages(existingProduct); // Xóa ảnh phụ cũ nếu có
+            productService.deleteProductImages(existingProduct);
             for (MultipartFile file : additionalImageFiles) {
                 if (!file.isEmpty()) {
                     String additionalImagePath = saveAdditionalImage(file);
@@ -171,6 +180,7 @@ public class ProductController {
         productService.save(existingProduct);
         return "redirect:/admin/products";
     }
+
     // Phương thức lưu ảnh chính
     private String saveMainImage(MultipartFile file) throws IOException {
         String mainUploadDir = new File("uploads/main").getAbsolutePath();
