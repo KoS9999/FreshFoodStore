@@ -26,6 +26,64 @@
 
 	<!-- Main CSS -->
 	<link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+	<style>
+		.table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
+			background-color: #ffffff;
+		}
+
+		.table th {
+			background-color: #f2f9f2;
+			color: #3c763d;
+			font-weight: bold;
+			padding: 12px;
+			text-align: center;
+			border: 1px solid #e0e0e0;
+		}
+
+		.table td {
+			padding: 10px;
+			text-align: center;
+			border: 1px solid #e0e0e0;
+		}
+
+		.table tr:hover {
+			background-color: #f1f8f1;
+		}
+
+		.tbl-thumb {
+			width: 50px;
+			height: 50px;
+			object-fit: cover;
+			border-radius: 5px;
+		}
+
+		.btn-outline-success {
+			color: #28a745;
+			border-color: #28a745;
+			border-radius: 5px;
+			padding: 8px 15px;
+			text-transform: uppercase;
+		}
+
+		.btn-outline-success:hover {
+			background-color: #28a745;
+			color: #fff;
+		}
+
+		.dropdown-menu {
+			border-radius: 5px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
+
+		.dropdown-item:hover {
+			background-color: #f1f8f1;
+		}
+
+
+	</style>
 
 
 </head>
@@ -78,7 +136,9 @@
 										<td><img class="tbl-thumb" th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image"></td>
 										<td th:text="${product.productName}">Product Name</td>
 										<td th:text="${product.category.categoryName}">Category</td>
-										<td th:text="${product.price}">0</td>
+										<td th:attr="data-order=${product.price}"
+											th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+										</td>
 										<td th:text="${product.discount} + '%'">0% OFF</td>
 										<td th:text="${product.quantity}">0</td>
 										<td th:text="${#dates.format(product.enteredDate, 'dd/MM/yyyy')}">Date</td>
