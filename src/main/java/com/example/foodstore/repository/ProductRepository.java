@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "(:categoryId = 0 OR p.category.categoryId = :categoryId) AND " +
             "p.price BETWEEN :minPrice AND :maxPrice")
     Page<Product> findProducts(String keyword, Long categoryId, double minPrice, double maxPrice, Pageable pageable);
+
+    @Query("SELECT p FROM Product p JOIN p.seasonMonths m WHERE m = :month")
+    List<Product> findProductsBySeasonMonth(@Param("month") int month);
 
 }
 
