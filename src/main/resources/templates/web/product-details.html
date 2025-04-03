@@ -91,19 +91,21 @@
                         <!-- Rating -->
                         <div class="product-ratting">
                             <ul>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                <li><a href="#"><i class="far fa-star"></i></a></li>
+                                <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <a href="#">
+                                        <i th:class="${i <= T(java.lang.Math).floor(averageRating) ? 'fas fa-star' :(i - 0.5 <= averageRating && averageRating < i ? 'fas fa-star-half-alt' : 'far fa-star')}"></i>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <!-- Name & Price -->
                         <h3 th:text="${product.productName}">Product Name</h3>
                         <div class="product-price">
-                            <span th:text="${product.price}"></span>
+                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></span>
+
                             <del th:if="${product.discount > 0}"
-                                 th:text="${product.price + (product.price * product.discount / 100)}"></del>
+                                 th:text="${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                            </del>
                         </div>
                         <!-- Description -->
                         <p th:text="${product.description}">Product Description</p>
@@ -157,25 +159,164 @@
             </div>
 
             <!-- Product Tabs -->
-            <div class="ltn__shop-details-tab-inner">
-                <div class="nav">
-                    <a class="active show" data-bs-toggle="tab" href="#description">Description</a>
-                    <a data-bs-toggle="tab" href="#reviews">Reviews</a>
+            <div class="ltn__shop-details-tab-inner ltn__shop-details-tab-inner-2">
+                <div class="ltn__shop-details-tab-menu">
+                    <div class="nav">
+                        <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Description</a>
+                        <a data-bs-toggle="tab" href="#liton_tab_details_1_2" class="">Reviews</a>
+                    </div>
                 </div>
                 <div class="tab-content">
-                    <div id="description" class="tab-pane fade active show">
-                        <p th:text="${product.description}"></p>
+                    <div class="tab-pane fade active show" id="liton_tab_details_1_1">
+                        <div class="ltn__shop-details-tab-content-inner">
+                            <p th:text="${product.description}">Product Description</p>
+                        </div>
                     </div>
-                    <div id="reviews" class="tab-pane fade">
-                        <h4>Customer Reviews</h4>
-                        <p>No reviews yet.</p>
+                    <div class="tab-pane fade" id="liton_tab_details_1_2">
+                        <div class="ltn__shop-details-tab-content-inner">
+                            <h4 class="title-2">Customer Reviews</h4>
+                            <div class="product-ratting">
+                                <ul>
+                                    <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <a href="#">
+                                            <i th:class="${i <= T(java.lang.Math).floor(averageRating) ? 'fas fa-star' :(i - 0.5 <= averageRating && averageRating < i ? 'fas fa-star-half-alt' : 'far fa-star')}"></i>
+                                        </a>
+                                    </li>
+                                    <li class="review-total">
+                                        <a href="#"> ( <span th:text="${#lists.size(reviews)}"></span> Reviews )</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <hr>
+                            <!-- comment-area -->
+                            <div class="ltn__comment-area mb-30">
+                                <div class="ltn__comment-inner">
+                                    <ul>
+                                        <li th:each="review : ${reviews}" th:if="${review.visible}">
+                                            <div class="ltn__comment-item clearfix">
+                                                <div class="ltn__commenter-img">
+                                                    <img th:src="@{/web/img/user-comment.png}" alt="User Image">
+                                                </div>
+                                                <div class="ltn__commenter-comment">
+                                                    <h6><a href="#" th:text="${review.user.name}"></a></h6>
+                                                    <div class="product-ratting">
+                                                        <ul>
+                                                            <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                                <a href="#">
+                                                                    <i th:class="${i <= review.rating ? 'fas fa-star' : (i - 0.5 == review.rating ? 'fas fa-star-half-alt' : 'far fa-star')}"></i>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <p th:text="${review.reviewText}"></p>
+                                                    <span class="ltn__comment-reply-btn" th:text="${#dates.format(review.reviewDate, 'MMMM dd, yyyy')}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="ltn__comment-item clearfix admin-reply" th:if="${review.responseText}">
+                                                <div class="ltn__commenter-img">
+                                                    <img th:src="@{/web/img/operator.png}" alt="Admin Image">
+                                                </div>
+                                                <div class="ltn__commenter-comment">
+                                                    <h6><a href="#">Admin</a></h6>
+                                                    <p th:text="${review.responseText}"></p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
+    <!-- RECOMMENDED PRODUCTS AREA START -->
+    <div class="ltn__product-tab-area ltn__product-gutter pt-115 pb-70" th:if="${recommendedProducts != null}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title-area ltn__section-title-2 text-center">
+                        <h1 class="section-title">Sản phẩm gợi ý dành cho bạn</h1>
+                    </div>
+                </div>
+            </div>
+            <div id="recommend-products" class="recommend-products">
+                <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
+                    <th:block th:each="product : ${recommendedProducts}">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="ltn__product-item ltn__product-item-3 text-center">
+                                <div class="product-img">
+                                    <a th:href="@{/product-details/{id}(id=${product.productId})}">
+                                        <img th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image">
+                                    </a>
+                                    <div class="product-badge">
+                                        <ul>
+                                            <li th:if="${product.status == false}" style="background-color: #ff8585;">
+                                                <span>Out of Stock</span>
+                                            </li>
+                                            <li th:if="${product.status == true && product.discount > 0}" class="sale-badge">
+                                                <span>Discount: <span th:text="${product.discount} + '%'"></span></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="product-hover-action">
+                                        <ul>
+                                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a></li>
+                                            <li th:if="${product.status == true}">
+                                                <a href="javascript:void(0);" title="Thêm vào giỏ" class="product-add1" th:data-product-id="${product.productId}">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                </a>
+                                            </li>
+                                            <li th:if="${product.status == true}">
+                                                <a href="javascript:void(0);"
+                                                   class="add-to-wishlist1"
+                                                   th:data-product-id="${product.productId}"
+                                                   th:data-product-name="${product.productName}"
+                                                   th:src="@{'/uploads/main/' + ${product.productImage}}"
+                                                   title="Add to Wishlist">
+                                                    <i class="far fa-heart"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-ratting">
+                                        <ul>
+                                            <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <a href="#">
+                                                    <i th:class="${#maps.containsKey(averageRatings, product.productId) ?
+                                                (i <= T(java.lang.Math).floor(averageRatings[product.productId]) ? 'fas fa-star' :
+                                                (i - 0.5 <= averageRatings[product.productId] && averageRatings[product.productId] < i ? 'fas fa-star-half-alt' : 'far fa-star'))
+                                                : 'far fa-star'}"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <h2 class="product-title">
+                                        <a th:href="@{/product-details/{id}(id=${product.productId})}"
+                                           th:text="${product.productName}">Product Name</a>
+                                    </h2>
+                                    <div class="product-price">
+                                    <span th:attr="data-order=${product.price}"
+                                          th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                    </span>
+                                        <del th:if="${product.discount > 0}"
+                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        </del>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- RECOMMENDED PRODUCTS AREA END -->
 
 
 
