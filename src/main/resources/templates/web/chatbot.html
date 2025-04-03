@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" th:href="@{/web/css/stylechatbot.css}">
+    <link rel="stylesheet" href="/web/css/stylechatbot.css">
+</head>
+<body>
+
+<div th:fragment="chatbot">
+    <!-- Nút tròn mở chatbot -->
+    <div class="chat-toggle" id="chatToggle">
+        <i class="fas fa-comments"></i>
+        <span class="notification" id="notification"></span> <!-- Thông báo mới -->
+    </div>
+
+    <div class="chat-body">
+        <!-- Khung chatbot -->
+        <div class="chatbot-wrapper" id="chatbotWrapper">
+            <div class="chatbot-header">
+                <i class="fas fa-seedling"></i> Chat với chúng tôi
+            </div>
+
+            <div class="chatbot-box" id="chatbox">
+                <div class="chatbot-item">
+                    <div class="chatbot-msg bot">
+                        <p>Chào bạn! Mình có thể giúp gì về các sản phẩm rau sạch hôm nay?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chatbot-input">
+                <input type="text" id="userInput" placeholder="Nhập tin nhắn..." required maxlength="200" />
+                <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script th:inline="javascript">
+        const toggle = document.getElementById("chatToggle");
+        const wrapper = document.getElementById("chatbotWrapper");
+        const input = document.getElementById("userInput");
+        const button = document.getElementById("sendBtn");
+        const chatbox = document.getElementById("chatbox");
+        const notification = document.getElementById("notification");
+
+        toggle.addEventListener("click", () => {
+            wrapper.classList.toggle("active");
+            // Ẩn thông báo khi mở chatbot
+            notification.style.display = 'none';
+        });
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            chatbox.innerHTML += `
+        <div class="chatbot-item right">
+            <div class="chatbot-msg user"><p>${text}</p></div>
+        </div>`;
+            input.value = '';
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            chatbox.innerHTML += `
+        <div class="chatbot-item bot-typing">
+            <div class="chatbot-msg bot typing">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+        </div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            try {
+                const res = await fetch("/api/chatbot", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const reply = await res.text();
+
+                document.querySelector(".bot-typing")?.remove();
+                chatbox.innerHTML += `
+                <div class="chatbot-item">
+                    <div class="chatbot-msg bot">${reply}</div>
+                </div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+
+                // Hiển thị thông báo chưa đọc nếu chatbot đang thu nhỏ
+                if (!wrapper.classList.contains("active")) {
+                    notification.style.display = 'block';
+                }
+            } catch (err) {
+                document.querySelector(".bot-typing")?.remove();
+                chatbox.innerHTML += `
+            <div class="chatbot-item">
+                <div class="chatbot-msg bot"><p>⚠️ Xin lỗi, có lỗi xảy ra khi kết nối. Vui lòng thử lại sau.</p></div>
+            </div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        }
+
+        button.addEventListener("click", sendMessage);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") sendMessage();
+        });
+    </script>
+</div>
+
+</body>
+</html>
