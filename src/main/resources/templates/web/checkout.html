@@ -89,6 +89,42 @@
     <!-- Vùng Checkout -->
     <div class="ltn__checkout-area mb-105">
         <div class="container">
+            <h4 class="title-2">Áp dụng Voucher</h4>
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <input type="text" id="voucherCode" class="form-control" placeholder="Nhập mã giảm giá">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" onclick="applyVoucher()"
+                            class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                            style="background-color: #88c244; font-family: Arial, sans-serif;">
+                        Áp dụng
+                    </button>
+                </div>
+            </div>
+            <p id="voucherMessage" class="text-success"></p>
+            <h4 class="title-2">Áp dụng Điểm Thưởng</h4>
+            <div class="row mb-3">
+                <div class="col-md-8">
+                    <input type="number" id="pointsToUse" class="form-control" placeholder="Nhập số điểm muốn dùng" min="0">
+                    <input type="hidden" id="usedPointsInput" value="0">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" onclick="applyPoints()"
+                            class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                            style="background-color: #f7b500; font-family: Arial, sans-serif;">
+                        Áp dụng điểm
+                    </button>
+                </div>
+            </div>
+            <p id="pointsMessage" class="text-success"></p>
+        </div>
+    </div>
+
+
+    <!-- Vùng Checkout -->
+    <div class="ltn__checkout-area mb-105">
+        <div class="container">
             <!-- Vùng Cart Totals -->
             <div class="row">
                 <h4 class="title-2">Tổng số giỏ hàng</h4>
@@ -120,12 +156,20 @@
                         <td><span th:text="${shippingCost}"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>Vat</strong></td>
+                        <td colspan="4"><strong>VAT</strong></td>
                         <td><span th:text="${vat}"></span></td>
+                    </tr>
+                    <tr id="pointsDiscountRow" style="display:none;">
+                        <td colspan="4"><strong>Giảm từ điểm thưởng</strong></td>
+                        <td><strong><span id="pointsDiscountAmount">- 0.00</span></strong></td>
+                    </tr>
+                    <tr id="discountRow" style="display:none;">
+                        <td colspan="4"><strong>Discount</strong></td>
+                        <td><strong><span id="discountAmount">- 0.00</span></strong></td>
                     </tr>
                     <tr>
                         <td colspan="4"><strong>Order Total</strong></td>
-                        <td><strong><span th:text="${totalPrice + shippingCost + vat}"></span></strong></td>
+                        <td><strong><span id="orderTotal" th:text="${totalPrice + shippingCost + vat}"></span></strong></td>
                     </tr>
                     </tbody>
                 </table>
@@ -167,15 +211,17 @@
                                 <h5 class="ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-2" aria-expanded="true">
                                     Thanh toán khi nhận hàng (COD)<img th:src="@{/web/img/icons/cash.png}" alt="#">
                                 </h5>
-                                <div id="faq-item-2-2" class="collapse show" data-parent="#checkout_accordion_1">
+                                <div id="faq-item-2-2" class="collapse show" data-bs-parent="#checkout_accordion_1">
                                     <div class="card-body">
                                         <p>Thanh toán bằng tiền mặt khi nhận hàng.</p>
                                         <form th:action="@{/api/payment/createCODOrder}" method="post" id="codForm">
                                             <!-- Hidden Inputs -->
                                             <input type="hidden" name="app_user" th:value="${user}" />
-                                            <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
+                                            <input type="hidden" name="totalPrice" id="totalPriceInput" th:value="${totalPrice}" />
                                             <input type="hidden" name="items" id="itemsInputCOD" />
                                             <input type="hidden" name="embedData" id="embedDataInputCOD" />
+                                            <input type="hidden" name="voucherCode" id="voucherCodeInput" />
+                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInput" value="0" />
                                             <!-- Submit Button -->
                                             <button type="button" id="createCODBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #ff7700;">
                                                 Thanh toán COD
@@ -184,20 +230,22 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="card">
                                 <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-3" aria-expanded="false">
                                     ZaloPay <img th:src="@{/web/img/icons/zalopay.png}" alt="#">
                                 </h5>
-                                <div id="faq-item-2-3" class="collapse" data-parent="#checkout_accordion_1">
+                                <div id="faq-item-2-3" class="collapse" data-bs-parent="#checkout_accordion_1">
                                     <div class="card-body">
                                         <p>ZaloPay là phương thức thanh toán hiện đại.</p>
                                         <form th:action="@{/api/payment/createPayment}" method="post" id="zalopayForm">
                                             <!-- Hidden Inputs -->
                                             <input type="hidden" name="app_user" th:value="${user}" />
-                                            <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
+                                            <input type="hidden" name="totalPrice" id="totalPriceInputZaloPay" th:value="${totalPrice}" />
                                             <input type="hidden" name="items" id="itemsInput" />
                                             <input type="hidden" name="embedData" id="embedDataInput" />
+                                            <input type="hidden" name="voucherCode" id="voucherCodeInputZaloPay" />
+                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInputZaloPay" value="0" />
+
                                             <input type="hidden" name="redirect_url" value="http://localhost:9090/order-success" />
                                             <!-- Submit Button -->
                                             <button type="button" id="createPaymentBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #004cef;" >Thanh toán qua ZaloPay</button>
@@ -216,14 +264,63 @@
 
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
-
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
 <script>
-    function validateNumber(element) {
-        element.value = element.value.replace(/[^0-9]/g, '');
+    function applyPoints() {
+        const points = parseInt(document.getElementById('pointsToUse').value);
+        const email = document.querySelector('input[name="app_user"]').value;
+        const pointsMessage = document.getElementById('pointsMessage');
+
+        if (isNaN(points) || points <= 0) {
+            pointsMessage.innerText = "Vui lòng nhập số điểm hợp lệ.";
+            return;
+        }
+
+        const redeemAmount = (points / 1000) * 2000;
+
+        fetch(`/api/payment/redeem?email=${email}&redeemAmountInVND=${redeemAmount}`, { method: 'POST' })
+            .then(res => res.json().then(data => ({ ok: res.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) {
+                    pointsMessage.innerText = data.message || "Không đủ điểm.";
+                    return;
+                }
+
+                document.getElementById('usedPointsInput').value = points;
+                document.getElementById('usedPointsHiddenInput').value = points;
+                document.getElementById('usedPointsHiddenInputZaloPay').value = points;
+
+                pointsMessage.innerText = `Bạn đã dùng ${points} điểm để giảm ${redeemAmount.toLocaleString()} VNĐ`;
+
+                document.getElementById('pointsDiscountRow').style.display = '';
+                document.getElementById('pointsDiscountAmount').innerText = `- ${redeemAmount.toLocaleString()} VNĐ`;
+
+                const orderTotalEl = document.getElementById('orderTotal');
+                const currentTotal = parseFloat(orderTotalEl.innerText.replace(/[^\d.-]/g, ""));
+                orderTotalEl.innerText = `${(currentTotal - redeemAmount).toLocaleString()} VNĐ`;
+
+                const embed = {
+                    address: document.getElementById("address").value,
+                    phone: document.getElementById("phone").value,
+                    note: document.getElementById("note").value
+                };
+
+                ["embedDataInput", "embedDataInputCOD"].forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) input.value = JSON.stringify(embed);
+                });
+
+                console.log("[LOG] Điểm đã dùng:", points);
+                console.log("[LOG] embedData:", embed);
+            })
+            .catch(err => {
+                console.error("Lỗi khi gọi API redeem:", err);
+                pointsMessage.innerText = "Đã xảy ra lỗi. Vui lòng thử lại.";
+            });
     }
+
 </script>
 </body>
 </html>
