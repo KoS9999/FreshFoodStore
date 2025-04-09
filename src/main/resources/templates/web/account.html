@@ -32,18 +32,15 @@
         .text-danger {
             color: #dc3545 !important;
         }
-
-    </style>
-    <style>
         .pagination .page-item a.page-link {
-            color: #555; /* Màu mặc định */
-            background-color: #f8f9fa; /* Màu nền mặc định */
+            color: #555;
+            background-color: #f8f9fa;
             border: 1px solid #fff;
         }
 
         .pagination .page-item a.page-link:hover {
             color: #fff;
-            background-color: #007bff; /* Màu khi hover */
+            background-color: #007bff;
             border-color: #007bff;
         }
 
@@ -58,14 +55,57 @@
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
+        .checkin-progress .step-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0px;
+            margin: 20px 0;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .step-line {
+            height: 4px;
+            width: 50px;
+            background-color: #ccc;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+        .step-line.active {
+            background-color: #7ed957;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            background-color: white;
+            border: 2px solid #7ed957;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .step-circle.active {
+            background-color: #7ed957;
+            color: white;
+        }
     </style>
+
 </head>
 <body>
 
 <div class="body-wrapper">
     <!-- HEADER AREA START -->
     <div th:replace="~{web/header :: header}"></div>
-
     <div class="ltn__utilize-overlay"></div>
 
     <!-- BREADCRUMB AREA START -->
@@ -101,6 +141,7 @@
                         <div class="nav">
                             <a class="active show" data-bs-toggle="tab" href="#account-details">Account Details <i class="fas fa-user"></i></a>
                             <a data-bs-toggle="tab" href="#orders">My Orders <i class="fas fa-file-alt"></i></a>
+                            <a data-bs-toggle="tab" href="#daily-checkin">Daily Check-in <i class="fas fa-calendar-check"></i></a>
                             <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
                                 Logout <i class="fas fa-sign-out-alt"></i>
                             </a>
@@ -119,7 +160,7 @@
                         <div class="tab-pane fade active show" id="account-details">
                             <div class="ltn__myaccount-tab-content-inner">
                                 <h2>Account Details</h2>
-                                <form th:action="@{/account/update}" method="post">
+                                <form id="update-account-form" action="#" method="post">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label>Name:</label>
@@ -131,7 +172,9 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>Phone:</label>
-                                            <input type="text" name="phone" th:value="${user.phone}" class="form-control">
+                                            <input type="text" name="phone" th:value="${user.phone}" class="form-control"
+                                                   pattern="^0\d{9}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                   required title="Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)">
                                         </div>
                                         <div class="col-md-6">
                                             <label>Address:</label>
@@ -139,10 +182,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>Points</label>
-                                            <input type="number" name="points" th:value="${user.points}" class="form-control" readonly>
+                                            <input type="text" name="points" th:value="${user.points}" class="form-control" readonly>
                                         </div>
-                                        <div class="col-md-12 mt-3">
-                                            <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Save Changes</button>
+                                        <div class="col-md-12 mt-3 d-flex align-items-center">
+                                            <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">Lưu thay đổi</button>
+                                            <div id="success-message" class="text-success ms-3" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></div>
                                         </div>
                                     </div>
                                 </form>
@@ -191,9 +235,53 @@
                                     <ul class="pagination justify-content-center" id="pagination">
                                     </ul>
                                 </nav>
-
                             </div>
                         </div>
+
+                        <!-- Daily Check-in -->
+                        <div class="tab-pane fade" id="daily-checkin">
+                            <div class="ltn__myaccount-tab-content-inner">
+                                <h2>Điểm danh hàng ngày</h2>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <button id="checkInBtn" class="btn theme-btn-1 btn-effect-1"
+                                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                        Điểm danh hôm nay
+                                    </button>
+
+                                    <div id="checkin-message" class="m-0 p-0"></div>
+                                </div>
+                                <div class="checkin-progress my-4">
+                                    <div class="step-wrapper" th:with="progress=${totalCheckIn % 7 == 0 and totalCheckIn > 0 ? 7 : totalCheckIn % 7}">
+                                        <div class="step-container">
+                                            <div th:each="i : ${#numbers.sequence(1,7)}" class="step-item">
+                                                <div th:if="${i > 1}" class="step-line" th:classappend="${i <= progress + 1} ? ' active' : ''"></div>
+
+                                                <div class="step-circle"
+                                                     th:classappend="${i <= progress} ? ' active' : ''"
+                                                     th:text="${i}"
+                                                     th:title="${'Mốc ' + i}"
+                                                     data-bs-toggle="tooltip"
+                                                     data-bs-placement="top"></div>
+                                            </div>
+                                        </div>
+
+                                        <div th:if="${totalCheckIn > 0 and totalCheckIn % 7 == 0}" class="text-success mt-2">
+                                            🎉 Bạn vừa hoàn thành chu kỳ 7 ngày và nhận được 1000 điểm thưởng!
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4 class="mt-4">Lịch sử điểm danh gần đây</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item" th:each="item : ${recentAttendances}">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <span th:text="${#temporals.format(item.date, 'dd/MM/yyyy')}"></span>
+                                        - +<span th:text="${item.earnedPoints}"></span> điểm
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -230,8 +318,7 @@
                             <td th:text="${detail.price}"></td>
                             <td th:text="${detail.price * detail.quantity}"></td>
                             <td>
-
-                                <a th:if="${!reviewMap.containsKey(detail.orderDetailId)}"
+                                <a th:if="${order.status == 1 and order.orderStatus.name() == 'DELIVERED' and !reviewMap.containsKey(detail.orderDetailId)}"
                                    th:href="@{/reviews/create(productId=${detail.product.productId}, orderDetailId=${detail.orderDetailId})}"
                                    class="btn btn-success">
                                     Tạo đánh giá
@@ -247,12 +334,8 @@
                                         </li>
                                     </ul>
                                 </div>
-
                             </td>
-
-
                         </tr>
-
                         </tbody>
                     </table>
                 </div>
@@ -270,9 +353,24 @@
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
-
-
 <script>
+    $(document).ready(function() {
+        $('#update-account-form').submit(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/account/update',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#success-message').text("Thông tin của bạn đã được cập nhật thành công!").fadeIn().delay(3000).fadeOut();
+                },
+                error: function(xhr) {
+                    alert("Cập nhật thất bại. Vui lòng thử lại!");
+                }
+            });
+        });
+    });
     document.addEventListener("DOMContentLoaded", function () {
         const rowsPerPage = 5;
         const tableBody = document.querySelector("#orderTable tbody");
@@ -330,7 +428,49 @@
         displayPage(0);
         createPagination();
     });
+    document.getElementById('checkInBtn').addEventListener('click', function () {
+        fetch('/account/check-in')
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('checkin-message');
+                messageDiv.innerHTML = '';
 
+                const alert = document.createElement('div');
+                alert.className = data.success ? 'alert alert-success mb-0 px-3 py-2' : 'alert alert-danger mb-0 px-3 py-2';
+                alert.style.lineHeight = '1.6';
+                alert.style.minHeight = '42px';
+                alert.style.display = 'flex';
+                alert.style.alignItems = 'center';
+                alert.style.margin = '0';
+                alert.innerText = data.message;
+
+                messageDiv.appendChild(alert);
+                setTimeout(function() {
+                    alert.style.transition = "opacity 0.3s ease-out";
+                    alert.style.opacity = 0;
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 3000);
+
+                if (data.success) {
+                    const totalSpan = document.querySelector('[th\\:text="${totalCheckIn}"]');
+                    if (totalSpan) {
+                        let current = parseInt(totalSpan.innerText);
+                        totalSpan.innerText = current + 1;
+                    }
+
+                    const list = document.querySelector('.list-group');
+                    const newItem = document.createElement('li');
+                    newItem.className = 'list-group-item';
+                    const today = new Date().toLocaleDateString('vi-VN');
+                    newItem.innerHTML = `<i class="fas fa-check-circle text-success"></i> ${today} - +1000 điểm`;
+                    list.prepend(newItem);
+                }
+            });
+    });
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
 </script>
 </body>
 </html>
