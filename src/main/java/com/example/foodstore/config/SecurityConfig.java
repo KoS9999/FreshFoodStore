@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,8 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -34,14 +31,16 @@ public class SecurityConfig implements WebMvcConfigurer {
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/cart/update",
                         "/cart/remove","/api/payment/callback","/wishlist/**","/shop/**",
-                        "/admin/products/delete-image/**"))
+                        "/admin/products/delete-image/**","/api/payment/check-voucher/**","/api/payment/redeem/**",
+                        "/reviews/**","/admin/reviews/**","/api/chatbot","/account/update"))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
                                 "/", "/index", "/register", "/login", "/confirmOTPregister",
                                 "/forgotpassword", "/confirmOtpForgotPassword", "/newPassword",
                                 "/web/**", "/product/category/**", "/uploads/**", "/new-products/**","/top-selling-products/**",
-                                "/cart/add", "/cart/update", "/cart/remove", "/api/payment/callback",
-                                "/product-details/**","/shop/**","/about","/contact"
+                                "/cart/add", "/cart/update", "/cart/remove", "/api/payment/callback",  "/news/**",
+                                "/product-details/**","/shop/**","/about","/contact","/api/payment/check-voucher/**","/api/payment/redeem/**",
+                                "/reviews/**","/api/chatbot"
                         ).permitAll()
                         .requestMatchers(
                                 "/account/**", "/wishlist/**", "cart/checkout"
