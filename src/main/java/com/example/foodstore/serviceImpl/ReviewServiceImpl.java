@@ -9,6 +9,7 @@ import com.example.foodstore.repository.ProductRepository;
 import com.example.foodstore.repository.ReviewRepository;
 import com.example.foodstore.repository.UserRepository;
 import com.example.foodstore.service.FirebaseStorageService;
+import com.example.foodstore.service.NotificationService;
 import com.example.foodstore.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor // Lombok tự động tạo constructor với các dependencies
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -28,6 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserRepository userRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final FirebaseStorageService firebaseStorageService;
+    private final NotificationService notificationService;
 
     @Override
     public List<Review> getReviewsByProduct(Long productId) {
@@ -67,6 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         user.setPoints(user.getPoints() + 1000);
         userRepository.save(user);
+        notificationService.sendNewReviewNotification("/topic/admin", "Có đánh giá mới từ khách hàng!");
 
         return savedReview;
     }
