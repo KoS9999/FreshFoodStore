@@ -4,6 +4,7 @@ import com.example.foodstore.dto.ItemDetail;
 import com.example.foodstore.entity.*;
 import com.example.foodstore.repository.*;
 import com.example.foodstore.service.EmailService;
+import com.example.foodstore.service.NotificationService;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -49,12 +50,15 @@ public class PaymentController {
     private EmailService emailService;
 
     @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
     private UserRepository userRepository;
     private final String appId = "2553";
     private final String key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
     private static final String key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
     private final String endpoint = "https://sb-openapi.zalopay.vn/v2/create";
-    private final String callback_url = "https://2825-171-252-155-41.ngrok-free.app/api/payment/callback";
+    private final String callback_url = "https://60c3-171-252-153-252.ngrok-free.app/api/payment/callback";
 
 
     @PostMapping("/check-voucher")
@@ -188,6 +192,7 @@ public class PaymentController {
             }
 
             orderRepository.save(order);
+            notificationService.sendNewOrderNotification("/topic/admin", "Có đơn hàng mới từ khách hàng " + user.getEmail());
 
             List<ItemDetail> itemDetails = new ArrayList<>();
             for (int i = 0; i < itemsArray.length(); i++) {
@@ -355,6 +360,7 @@ public class PaymentController {
                 order.setVoucherCode(voucherCode);
             }
             orderRepository.save(order);
+            notificationService.sendNewOrderNotification("/topic/admin", "Có đơn hàng mới từ khách hàng " + user.getEmail());
 
             List<ItemDetail> itemDetails = new ArrayList<>();
             for (int i = 0; i < itemsArray.length(); i++) {
