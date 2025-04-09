@@ -188,7 +188,11 @@
                                 </div>
                             <h6>Số điện thoại</h6>
                                 <div class="input-item input-item-phone ltn__custom-icon">
-                                    <textarea id="phone" name="ltn__phone" class="form-control" rows="2" placeholder="Nhập số điện thoại..." oninput="validateNumber(this)" required></textarea>
+                                    <textarea id="phone" name="ltn__phone" class="form-control" rows="2" placeholder="Nhập số điện thoại..."
+                                              oninput="validateNumber(this)" required title="Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)"></textarea>
+                                    <div id="phoneError" class="invalid-feedback" style="display:none; color: red; margin-bottom: 15px;">
+                                        Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)
+                                    </div>
                                 </div>
                             <h6>Ghi chú đơn hàng</h6>
                             <div class="input-item input-item-textarea ltn__custom-icon">
@@ -215,15 +219,14 @@
                                     <div class="card-body">
                                         <p>Thanh toán bằng tiền mặt khi nhận hàng.</p>
                                         <form th:action="@{/api/payment/createCODOrder}" method="post" id="codForm">
-                                            <!-- Hidden Inputs -->
                                             <input type="hidden" name="app_user" th:value="${user}" />
                                             <input type="hidden" name="totalPrice" id="totalPriceInput" th:value="${totalPrice}" />
                                             <input type="hidden" name="items" id="itemsInputCOD" />
                                             <input type="hidden" name="embedData" id="embedDataInputCOD" />
                                             <input type="hidden" name="voucherCode" id="voucherCodeInput" />
                                             <input type="hidden" name="usedPoints" id="usedPointsHiddenInput" value="0" />
-                                            <!-- Submit Button -->
-                                            <button type="button" id="createCODBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #ff7700;">
+
+                                            <button type="button" id="createCODBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #ff7700;" disabled>
                                                 Thanh toán COD
                                             </button>
                                         </form>
@@ -238,17 +241,15 @@
                                     <div class="card-body">
                                         <p>ZaloPay là phương thức thanh toán hiện đại.</p>
                                         <form th:action="@{/api/payment/createPayment}" method="post" id="zalopayForm">
-                                            <!-- Hidden Inputs -->
                                             <input type="hidden" name="app_user" th:value="${user}" />
                                             <input type="hidden" name="totalPrice" id="totalPriceInputZaloPay" th:value="${totalPrice}" />
                                             <input type="hidden" name="items" id="itemsInput" />
                                             <input type="hidden" name="embedData" id="embedDataInput" />
                                             <input type="hidden" name="voucherCode" id="voucherCodeInputZaloPay" />
                                             <input type="hidden" name="usedPoints" id="usedPointsHiddenInputZaloPay" value="0" />
-
                                             <input type="hidden" name="redirect_url" value="http://localhost:9090/order-success" />
-                                            <!-- Submit Button -->
-                                            <button type="button" id="createPaymentBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #004cef;" >Thanh toán qua ZaloPay</button>
+
+                                            <button type="button" id="createPaymentBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #004cef; " disabled >Thanh toán qua ZaloPay</button>
                                         </form>
 
                                     </div>
@@ -321,6 +322,30 @@
             });
     }
 
+</script>
+<script>
+    function validateCheckout() {
+        const address = document.getElementById('address').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const isFormValid = address !== '' && phone !== '' && phone.length === 10;
+        const codButton = document.getElementById('createCODBtn');
+        const zaloPayButton = document.getElementById('createPaymentBtn');
+
+        if (isFormValid) {
+            codButton.disabled = false;
+            zaloPayButton.disabled = false;
+        } else {
+            codButton.disabled = true;
+            zaloPayButton.disabled = true;
+        }
+    }
+
+    document.getElementById('address').addEventListener('input', validateCheckout);
+    document.getElementById('phone').addEventListener('input', validateCheckout);
+
+    window.onload = function() {
+        validateCheckout();
+    };
 </script>
 </body>
 </html>
