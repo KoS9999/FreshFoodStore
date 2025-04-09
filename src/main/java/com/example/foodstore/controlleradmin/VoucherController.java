@@ -40,6 +40,13 @@ public class VoucherController {
 
     @PostMapping("/update")
     public String updateVoucher(@ModelAttribute Voucher voucher) {
+        if (voucher.getStartDate() == null) {
+            voucher.setStartDate(voucherService.findById(voucher.getVoucherid()).get().getStartDate());
+        }
+        if (voucher.getEndDate() == null) {
+            voucher.setEndDate(voucherService.findById(voucher.getVoucherid()).get().getEndDate());
+        }
+
         voucherService.save(voucher);
         return "redirect:/admin/vouchers";
     }
