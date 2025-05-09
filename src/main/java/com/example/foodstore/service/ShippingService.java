@@ -1,2 +1,7 @@
-package com.example.foodstore.service;public interface ShippingService {
+package com.example.foodstore.service;
+
+import com.example.foodstore.dto.ShippingInfo;
+
+public interface ShippingService {
+    ShippingInfo calculateShipping(String destinationAddress);
 }
