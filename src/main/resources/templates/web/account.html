@@ -14,6 +14,7 @@
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfRONZjUFaUaCWqwbA-bDwrPPqJ6P_fmQ&libraries=places"></script>
     <style>
         .btn-success {
             background-color: #28a745;
@@ -171,6 +172,10 @@
                                             <input type="email" name="email" th:value="${user.email}" class="form-control" readonly>
                                         </div>
                                         <div class="col-md-6">
+                                            <label>Points</label>
+                                            <input type="text" name="points" th:value="${user.points}" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-md-6">
                                             <label>Phone:</label>
                                             <input type="text" name="phone" th:value="${user.phone}" class="form-control"
                                                    pattern="^0\d{9}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
@@ -178,12 +183,10 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>Address:</label>
-                                            <input type="text" name="address" th:value="${user.address}" class="form-control">
+                                            <input type="text" id="address" name="address" th:value="${user.address}" class="form-control" placeholder="Nhập địa chỉ hoặc chọn từ bản đồ" required>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>Points</label>
-                                            <input type="text" name="points" th:value="${user.points}" class="form-control" readonly>
-                                        </div>
+                                        <div id="map" style="height: 400px; width: 1000px; margin-top: 15px;"></div>
+
                                         <div class="col-md-12 mt-3 d-flex align-items-center">
                                             <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">Lưu thay đổi</button>
                                             <div id="success-message" class="text-success ms-3" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></div>
@@ -213,7 +216,10 @@
                                         <tr th:each="order : ${orders}">
                                             <td th:text="${order.orderId}"></td>
                                             <td th:text="${order.address}"></td>
-                                            <td th:text="${order.amount}"></td>
+                                            <td class="js-format-vnd"
+                                                th:attr="data-value=${order.amount != null ? order.amount : 0}"
+                                                th:text="${order.amount != null ? order.amount : 0}">
+                                            </td>
                                             <td>
                                                 <span th:if="${order.status == 1}" class="text-success">Đã thanh toán</span>
                                                 <span th:if="${order.status == 0}" class="text-danger">Chưa thanh toán</span>
@@ -315,8 +321,14 @@
                                 <img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image" class="modal-product-img" width="100px" height="100px">
                             </td>
                             <td th:text="${detail.quantity}"></td>
-                            <td th:text="${detail.price}"></td>
-                            <td th:text="${detail.price * detail.quantity}"></td>
+                            <td class="js-format-vnd"
+                                th:attr="data-value=${detail.price != null ? detail.price : 0}"
+                                th:text="${detail.price != null ? detail.price : 0}">
+                            </td>
+                            <td class="js-format-vnd"
+                                th:attr="data-value=${detail.price * detail.quantity != null ? detail.price * detail.quantity : 0}"
+                                th:text="${detail.price * detail.quantity != null ? detail.price * detail.quantity : 0}">
+                            </td>
                             <td>
                                 <a th:if="${order.status == 1 and order.orderStatus.name() == 'DELIVERED' and !reviewMap.containsKey(detail.orderDetailId)}"
                                    th:href="@{/reviews/create(productId=${detail.product.productId}, orderDetailId=${detail.orderDetailId})}"
@@ -348,129 +360,34 @@
     <!-- FOOTER AREA START -->
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
+<!-- Đặt các toast này ở cuối file HTML, ngay trước khi đóng </body> -->
+<div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 9999;">
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #ffdb99 !important;">
+        <div class="d-flex">
+            <div class="toast-body fw-semibold">
+                ❌ Cập nhật thất bại. Vui lòng thử lại!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
 
+    <div id="addressToast" class="toast align-items-center text-dark bg-warning border-0 shadow-lg fs-6"
+         role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #ffdb99 !important;">
+        <div class="d-flex">
+            <div class="toast-body fw-semibold">
+                ❌ Vui lòng chọn một địa chỉ hợp lệ từ gợi ý hoặc bản đồ!
+            </div>
+            <button type="button" class="btn-close me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <!-- JS Plugins -->
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
-<script>
-    $(document).ready(function() {
-        $('#update-account-form').submit(function(e) {
-            e.preventDefault();
+<script th:src="@{/web/js/google-map.js}"></script>
+<script th:src="@{/web/js/account.js}"></script>
 
-            $.ajax({
-                url: '/account/update',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    $('#success-message').text("Thông tin của bạn đã được cập nhật thành công!").fadeIn().delay(3000).fadeOut();
-                },
-                error: function(xhr) {
-                    alert("Cập nhật thất bại. Vui lòng thử lại!");
-                }
-            });
-        });
-    });
-    document.addEventListener("DOMContentLoaded", function () {
-        const rowsPerPage = 5;
-        const tableBody = document.querySelector("#orderTable tbody");
-        const rows = Array.from(tableBody.querySelectorAll("tr"));
-
-        rows.sort((a, b) => {
-            const idA = parseInt(a.children[0].textContent.trim());
-            const idB = parseInt(b.children[0].textContent.trim());
-            return idB - idA; 
-        });
-
-        rows.forEach(row => tableBody.appendChild(row));
-
-        const pagination = document.getElementById("pagination");
-        const totalPages = Math.ceil(rows.length / rowsPerPage);
-
-        function displayPage(page) {
-            rows.forEach((row) => {
-                row.style.display = "none";
-            });
-            const start = page * rowsPerPage;
-            const end = start + rowsPerPage;
-            rows.slice(start, end).forEach(row => {
-                row.style.display = "table-row";
-            });
-            document.querySelectorAll(".pagination .page-item").forEach((item, index) => {
-                if (index === page) {
-                    item.classList.add("active");
-                } else {
-                    item.classList.remove("active");
-                }
-            });
-        }
-        function createPagination() {
-            for (let i = 0; i < totalPages; i++) {
-                const li = document.createElement("li");
-                li.classList.add("page-item");
-                if (i === 0) li.classList.add("active");
-
-                const a = document.createElement("a");
-                a.classList.add("page-link");
-                a.textContent = i + 1;
-                a.href = "#";
-                a.dataset.page = i;
-
-                a.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    displayPage(parseInt(a.dataset.page));
-                });
-
-                li.appendChild(a);
-                pagination.appendChild(li);
-            }
-        }
-        displayPage(0);
-        createPagination();
-    });
-    document.getElementById('checkInBtn').addEventListener('click', function () {
-        fetch('/account/check-in')
-            .then(response => response.json())
-            .then(data => {
-                const messageDiv = document.getElementById('checkin-message');
-                messageDiv.innerHTML = '';
-
-                const alert = document.createElement('div');
-                alert.className = data.success ? 'alert alert-success mb-0 px-3 py-2' : 'alert alert-danger mb-0 px-3 py-2';
-                alert.style.lineHeight = '1.6';
-                alert.style.minHeight = '42px';
-                alert.style.display = 'flex';
-                alert.style.alignItems = 'center';
-                alert.style.margin = '0';
-                alert.innerText = data.message;
-
-                messageDiv.appendChild(alert);
-                setTimeout(function() {
-                    alert.style.transition = "opacity 0.3s ease-out";
-                    alert.style.opacity = 0;
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 300);
-                }, 3000);
-
-                if (data.success) {
-                    const totalSpan = document.querySelector('[th\\:text="${totalCheckIn}"]');
-                    if (totalSpan) {
-                        let current = parseInt(totalSpan.innerText);
-                        totalSpan.innerText = current + 1;
-                    }
-
-                    const list = document.querySelector('.list-group');
-                    const newItem = document.createElement('li');
-                    newItem.className = 'list-group-item';
-                    const today = new Date().toLocaleDateString('vi-VN');
-                    newItem.innerHTML = `<i class="fas fa-check-circle text-success"></i> ${today} - +1000 điểm`;
-                    list.prepend(newItem);
-                }
-            });
-    });
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
-</script>
 </body>
 </html>
