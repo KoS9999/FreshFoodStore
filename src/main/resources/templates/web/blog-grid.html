@@ -49,8 +49,15 @@
                                     </li>
                                 </ul>
                             </div>
-                            <h3 class="ltn__blog-title">
-                                <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}"></a>
+                            <h3 class="ltn__blog-title" style="
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2;
+                                    -webkit-box-orient: vertical;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    min-height: 3.6em;
+                                ">
+                                <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}">Blog Title</a>
                             </h3>
                             <div class="ltn__blog-btn">
                                 <a th:href="@{'/news/' + ${blog.slug}}">Read more</a>
