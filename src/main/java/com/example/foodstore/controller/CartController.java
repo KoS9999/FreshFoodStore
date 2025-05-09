@@ -1,10 +1,15 @@
 package com.example.foodstore.controller;
 
+import com.example.foodstore.dto.ShippingInfo;
 import com.example.foodstore.entity.Product;
 import com.example.foodstore.entity.CartItem;
+import com.example.foodstore.entity.User;
 import com.example.foodstore.repository.ProductRepository;
+import com.example.foodstore.service.ShippingService;
 import com.example.foodstore.service.ShoppingCartService;
+import com.example.foodstore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +33,12 @@ public class CartController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ShippingService shippingService;
 
     @GetMapping
     public String viewCart(Model model) {
@@ -109,8 +120,8 @@ public class CartController {
         String appUser = authentication.getName();
         Map<Long, CartItem> cartItems = shoppingCartService.getCartItems();
         double totalPrice = shoppingCartService.calculateTotal();
-        double shippingCost = 0.00;
         double vat = 0.00;
+
         List<Map<String, Object>> items = new ArrayList<>();
         for (CartItem cartItem : cartItems.values()) {
             Map<String, Object> item = new HashMap<>();
@@ -119,13 +130,33 @@ public class CartController {
             item.put("itemquantity", cartItem.getQuantity());
             items.add(item);
         }
+
+        User user = userService.getLoggedInUser();
+        ShippingInfo shippingInfo = shippingService.calculateShipping(user.getAddress());
+
+        double shippingCost = (shippingInfo != null) ? shippingInfo.getShippingCost() : 0.0;
+        String estimatedTime = (shippingInfo != null) ? shippingInfo.getDurationText() : "Không xác định";
+        double distanceKm = (shippingInfo != null) ? shippingInfo.getDistanceKm() : 0.0;
+
+        model.addAttribute("users", user);
         model.addAttribute("user", appUser);
         model.addAttribute("cartItems", cartItems.values());
         model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("shippingCost", shippingCost);
         model.addAttribute("vat", vat);
         model.addAttribute("items", items);
+
+        model.addAttribute("shippingCost", shippingCost);
+        model.addAttribute("estimatedTime", estimatedTime);
+        model.addAttribute("distanceKm", distanceKm);
+        System.out.println("ShippingCost: " + shippingCost);
         return "web/checkout";
     }
-
+    @GetMapping("/checkout/validate")
+    public ResponseEntity<String> validateCheckout() {
+        Map<Long, CartItem> cartItems = shoppingCartService.getCartItems();
+        if (cartItems.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giỏ hàng của bạn đang trống. Hãy thêm sản phẩm vào giỏ hàng để thanh toán.");
+        }
+        return ResponseEntity.ok("OK");
+    }
 }
