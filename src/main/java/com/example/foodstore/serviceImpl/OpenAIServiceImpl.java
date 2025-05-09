@@ -58,6 +58,22 @@ public class OpenAIServiceImpl implements OpenAIService {
     }
 
     private String searchInternalData(String query) {
+        String lowerQuery = query.toLowerCase();
+
+        if (lowerQuery.contains("thanh toán") || lowerQuery.contains("giỏ hàng") || lowerQuery.contains("cách mua hàng")) {
+            return "✅ Để mua sản phẩm trên website, bạn vui lòng làm theo các bước sau: <br><br>"
+                    + "<ol>"
+                    + "<li><strong>Đăng nhập tài khoản</strong></li>"
+                    + "<li><strong>Chọn sản phẩm và cho vào giỏ hàng</strong></li>"
+                    + "<li><strong>Vào giỏ hàng và ấn 'Checkout'</strong></li>"
+                    + "<li><strong>Điền đầy đủ thông tin, kiểm tra đơn hàng và áp dụng khuyến mãi (nếu có)</strong></li>"
+                    + "<li><strong>Chọn phương thức thanh toán (COD hoặc ZaloPay)</strong></li>"
+                    + "<li><strong>Sau khi hoàn tất, bạn sẽ nhận được email xác nhận đơn đặt hàng</strong></li>"
+                    + "</ol>"
+                    + "Bạn có thể tham khảo chi tiết về các sản phẩm tại "
+                    + "<a href='http://localhost:9090/shop' target='_blank'><strong>liên kết này</strong></a>.";
+        }
+
         String productName = extractProductNameFromGPT(query);
         if (productName == null) return "";
 
@@ -67,24 +83,20 @@ public class OpenAIServiceImpl implements OpenAIService {
         if (matched.isPresent()) {
             Product p = matched.get();
             String name = p.getProductName();
-            String lowerQuery = query.toLowerCase();
 
-            // Kiểm tra "mua", "bán", "đặt" trong câu hỏi
-            if (lowerQuery.contains("mua") || lowerQuery.contains("bán") || lowerQuery.contains("đặt")) {
+            if (lowerQuery.contains("mua") || lowerQuery.contains("bán") || lowerQuery.contains("đặt") || lowerQuery.contains("giá")) {
                 return "✅ Website hiện có bán sản phẩm <strong>" + name + "</strong>. "
                         + "Bạn có thể xem chi tiết tại "
                         + "<a href='http://localhost:9090/product-details/" + p.getProductId()
                         + "' target='_blank'>liên kết này</a>.";
             }
 
-            // Kiểm tra công dụng
             if (lowerQuery.contains("công dụng") || lowerQuery.contains("tác dụng")) {
                 return buildFriendlyGPTReply("Công dụng của sản phẩm", name, p.getDescription());
             }
 
-            // Kiểm tra món ăn / chế biến
             if (lowerQuery.contains("món") || lowerQuery.contains("nấu") || lowerQuery.contains("kết hợp") ||
-                    lowerQuery.contains("cách làm") ||lowerQuery.contains("bài viết") || lowerQuery.contains("công thức")) {
+                    lowerQuery.contains("cách làm") || lowerQuery.contains("bài viết") || lowerQuery.contains("công thức")) {
                 List<Blog> blogs = blogRepository.findAll().stream()
                         .filter(b -> {
                             String content = (b.getMarkdownContent() + " " + b.getTitle()).toLowerCase();
@@ -102,7 +114,7 @@ public class OpenAIServiceImpl implements OpenAIService {
                 }
 
                 String gptRecipe = fetchSimpleRecipeFromGPT(name);
-                return buildFriendlyGPTReply("Hiện chưa có bài viết nào về món ăn với", name, gptRecipe);
+                return buildFriendlyGPTReply("Bạn có thể tham khảo về món ăn với", name, gptRecipe);
             }
 
             return buildFriendlyGPTReply("Thông tin sản phẩm", name,
@@ -144,7 +156,7 @@ public class OpenAIServiceImpl implements OpenAIService {
         headers.setBearerAuth(apiKey);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "gpt-3.5-turbo");
+        requestBody.put("model", "gpt-4o");
         requestBody.put("messages", List.of(Map.of("role", "user", "content", prompt)));
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
@@ -183,7 +195,8 @@ public class OpenAIServiceImpl implements OpenAIService {
                 || lower.contains("trái cây") || lower.contains("nguyên liệu")
                 || lower.contains("chế biến") || lower.contains("mua")
                 || lower.contains("thực đơn") || lower.contains("dinh dưỡng")
-                || lower.contains("tác dụng") || lower.contains("công dụng");
+                || lower.contains("tác dụng") || lower.contains("công dụng")
+                || lower.contains("thanh toán");
     }
 
     private String fetchSimpleRecipeFromGPT(String productName) {
