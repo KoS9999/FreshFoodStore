@@ -61,9 +61,6 @@
                         <h4 class="ltn__widget-title">Search Products</h4>
                         <form th:action="@{/shop}" method="get">
                             <input type="text" name="keyword" th:value="${keyword}" placeholder="Search here...">
-                            <input type="hidden" name="categoryId" th:value="${categoryId}">
-                            <input type="hidden" name="minPrice" th:value="${minPrice}">
-                            <input type="hidden" name="maxPrice" th:value="${maxPrice}">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
@@ -74,7 +71,7 @@
                         <h4 class="ltn__widget-title">Product Categories</h4>
                         <ul>
                             <li th:each="category : ${categories}">
-                                <a th:href="@{/shop(categoryId=${category.categoryId}, keyword=${keyword}, minPrice=${minPrice}, maxPrice=${maxPrice})}" th:text="${category.categoryName}"></a>
+                                <a th:href="@{/shop(categoryId=${category.categoryId})}" th:text="${category.categoryName}"></a>
                             </li>
                         </ul>
                     </div>
@@ -91,8 +88,6 @@
                                     <!-- Hidden inputs để gửi dữ liệu minPrice và maxPrice -->
                                     <input type="hidden" id="minPriceInput" name="minPrice" th:value="${minPrice}">
                                     <input type="hidden" id="maxPriceInput" name="maxPrice" th:value="${maxPrice}">
-                                    <input type="hidden" name="keyword" th:value="${keyword}">
-                                    <input type="hidden" name="categoryId" th:value="${categoryId}">
                                 </div>
                                 <div id="slider-range"></div>
                             </div>
@@ -188,11 +183,14 @@
                                                 <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
                                             </h2>
                                             <div class="product-price">
-                                                <span th:attr="data-order=${product.price}"
-                                                      th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                                <span class="js-price"
+                                                      th:attr="data-price=${product.price}">
+                                                      [[${product.price}]]
                                                 </span>
-                                                <del th:if="${product.discount > 0}"
-                                                     th:text="${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                                <del class="js-original-price"
+                                                     th:if="${product.discount > 0}"
+                                                     th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                                    [[${product.price + (product.price * product.discount / 100)}]]
                                                 </del>
                                             </div>
                                         </div>
@@ -284,37 +282,58 @@
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
 <script th:src="@{/web/js/favorite.js}"></script>
-<script>
-    $(function () {
-        // Lấy giá trị min và max từ backend
-        let minPrice = parseInt("${minPrice}", 10) || 0;
-        let maxPrice = parseInt("${maxPrice}", 10) || 1000000;
+<script th:inline="javascript">
+    let minPrice = [[${minPrice}]];
+    let maxPrice = [[${maxPrice}]];
 
-        // Khởi tạo thanh trượt
-        $("#slider-range").slider({
-            range: true,
-            min: 0,
-            max: 1000000,
-            step: 10000,
-            values: [minPrice, maxPrice],
-            slide: function (event, ui) {
-                // Cập nhật giá trị hiển thị
-                $("#amount").val(ui.values[0] + " - " + ui.values[1]);
-                // Gán giá trị cho input ẩn để gửi dữ liệu qua form
-                $("#minPriceInput").val(ui.values[0]);
-                $("#maxPriceInput").val(ui.values[1]);
+
+    $("#slider-range").slider({
+        range: true,
+        min: 0,
+        max: 1000000,
+        values: [minPrice, maxPrice],
+        slide: function (event, ui) {
+            let scaledMin = scalePrice(ui.values[0]);
+            let scaledMax = scalePrice(ui.values[1]);
+
+            $("#amount").val(formatCurrency(scaledMin) + " - " + formatCurrency(scaledMax));
+            $("#minPriceInput").val(ui.values[0]);
+            $("#maxPriceInput").val(ui.values[1]);
+        },
+        change: function (event, ui) {
+            let value = ui.values[0];
+
+            let step;
+            if (value <= 100000) {
+                step = 5000;
             }
-        });
+            else if (value <= 500000) {
+                step = 20000;
+            }
+            else {
+                step = 50000;
+            }
 
-        // Hiển thị giá trị mặc định
-        $("#amount").val($("#slider-range").slider("values", 0) + " - " + $("#slider-range").slider("values", 1));
-        $("#minPriceInput").val($("#slider-range").slider("values", 0));
-        $("#maxPriceInput").val($("#slider-range").slider("values", 1));
+            $(this).slider("option", "step", step);
+        }
     });
 
+    function formatCurrency(value) {
+        return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+    function scalePrice(value) {
+        if (value <= 500000) {
+            return (value / 500000) * 100000;
+        } else {
+            return ((value - 500000) / 500000) * 900000 + 100000;
+        }
+    }
+
+    $("#amount").val(formatCurrency(scalePrice(minPrice)) + " - " + formatCurrency(scalePrice(maxPrice)));
+    $("#minPriceInput").val(minPrice);
+    $("#maxPriceInput").val(maxPrice);
 </script>
-
-
 
 </body>
 </html>
