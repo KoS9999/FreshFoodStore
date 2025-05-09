@@ -70,7 +70,7 @@ public class ProductDetailController {
             Map<Product, Double> cfScores = CFUtil.recommendByUserBehavior(user, allUsers, allReviews, allOrders, 20);
 
             Map<Product, Double> hybridScores = new HashMap<>();
-            double alpha = 0.4;
+            double alpha = 0.35;
 
             Set<Product> allKeys = new HashSet<>();
             allKeys.addAll(cbfScores.keySet());
@@ -93,6 +93,11 @@ public class ProductDetailController {
             List<Product> recommendedProducts = productService.findProductsByIds(recommendedProductIds);
 
             model.addAttribute("recommendedProducts", recommendedProducts);
+            System.out.println("Sản phẩm gợi ý:");
+            for (Product p : recommended) {
+                double score = hybridScores.getOrDefault(p, 0.0);
+                System.out.println(" - " + p.getProductName() + " (ID: " + p.getProductId() + ") | Score: " + score);
+            }
         } else {
             // Người dùng chưa đăng nhập, chỉ gợi ý dựa trên CBF
             List<Product> allProducts = productService.findAll();
