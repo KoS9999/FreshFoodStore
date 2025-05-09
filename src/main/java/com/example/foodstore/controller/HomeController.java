@@ -39,21 +39,30 @@ public class HomeController {
         model.addAttribute("categories", categories);
         model.addAttribute("keyword", keyword);
 
+        Map<Long, Double> allAverageRatings = new HashMap<>();
+
         if (!categories.isEmpty()) {
+            for (Category category : categories) {
+                List<Product> products = productService.findProductsByCategoryId(category.getCategoryId());
+                category.setProducts(products);
+                Map<Long, Double> ratingsForCategory = calculateAverageRatings(products);
+                allAverageRatings.putAll(ratingsForCategory);
+            }
+
             Long defaultCategoryId = categories.get(0).getCategoryId();
-            List<Product> products = productService.findProductsByCategoryId(defaultCategoryId);
-            Map<Long, Double> averageRatings = calculateAverageRatings(products);
-
-            model.addAttribute("products", products);
-            model.addAttribute("averageRatings", averageRatings);
+            List<Product> defaultProducts = productService.findProductsByCategoryId(defaultCategoryId);
+            model.addAttribute("products", defaultProducts);
         }
-
+        model.addAttribute("averageRatings", allAverageRatings);
         int currentMonth = java.time.LocalDate.now().getMonthValue();
         List<Product> seasonalProducts = productService.getProductsBySeasonMonth(currentMonth);
         model.addAttribute("seasonProducts", seasonalProducts);
-
+        List<Product> newestProducts = productService.findTop8ByOrderByEnteredDateDesc();
+        model.addAttribute("newestProducts", newestProducts);
+        List<Product> topSellingProducts = productService.getTop8BestSellingProducts();
+        model.addAttribute("topSellingProducts", topSellingProducts);
         Map<Long, Double> seasonalRatings = calculateAverageRatings(seasonalProducts);
-        model.addAttribute("averageRatings", seasonalRatings);
+        allAverageRatings.putAll(seasonalRatings);
 
         List<Blog> blogs = blogService.getAllBlogs();
         model.addAttribute("blogs", blogs);
