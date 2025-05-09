@@ -1422,15 +1422,21 @@
     /* --------------------------------------------------------
         36. Header menu sticky
     -------------------------------------------------------- */
-    $(window).on('scroll',function() {    
-        var scroll = $(window).scrollTop();
-        if (scroll < 445) {
-            $(".ltn__header-sticky").removeClass("sticky-active");
-        } else {
-            $(".ltn__header-sticky").addClass("sticky-active");
-        }
-    }); 
-
+    $(document).ready(function() {
+        $(".ltn__header-sticky").addClass("sticky-active");
+        let lastScrollTop = 0;
+        $(window).on('scroll', function() {
+            let scrollTop = $(this).scrollTop();
+            window.requestAnimationFrame(function() {
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    $(".ltn__header-sticky").removeClass("sticky-active");
+                } else {
+                    $(".ltn__header-sticky").addClass("sticky-active");
+                }
+                lastScrollTop = scrollTop;
+            });
+        });
+    });
 
     $(window).on('load',function(){
         /*-----------------
