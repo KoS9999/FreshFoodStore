@@ -56,6 +56,72 @@
         .table td span {
             font-size: 1.1em;
         }
+
+        .input-group.points-control {
+            display: flex;
+            align-items: stretch;
+            height: 50px;
+            gap: 10px;
+        }
+
+        .points-input,
+        .points-btn {
+            box-sizing: border-box;
+            height: 125%;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .points-input {
+            width: 80px;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1; /* Fix căn giữa dọc */
+        }
+
+        .points-btn {
+            width: 40px;
+            padding: 0;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 24px;
+        }
+        .minus-btn::before,
+        .plus-btn::before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .minus-btn::before {
+            content: "-";
+            font-size: 24px;
+            color: #f44336;
+        }
+
+        .plus-btn::before {
+            content: "+";
+            font-size: 24px;
+            color: #4CAF50;
+        }
+
+        .points-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        #usedPointsInput {
+            display: none;
+        }
     </style>
 </head>
 
@@ -106,7 +172,11 @@
             <h4 class="title-2">Áp dụng Điểm Thưởng</h4>
             <div class="row mb-3">
                 <div class="col-md-8">
-                    <input type="number" id="pointsToUse" class="form-control" placeholder="Nhập số điểm muốn dùng" min="0">
+                    <div class="input-group points-control">
+                        <input type="text" id="pointsToUse" class="form-control points-input" placeholder="0" min="0" readonly>
+                        <button type="button" class="btn points-btn minus-btn"></button>
+                        <button type="button" class="btn points-btn plus-btn"></button>
+                    </div>
                     <input type="hidden" id="usedPointsInput" value="0">
                 </div>
                 <div class="col-md-4">
@@ -145,31 +215,39 @@
                         </td>
                         <td><span th:text="${item.name}"></span></td>
                         <td><span th:text="${item.quantity}"></span></td>
-                        <td><span th:text="${item.unitPrice}"></span></td>
-                        <td><span th:text="${item.quantity * item.unitPrice}"></span></td>
+                        <td><span class="js-format-vnd" th:text="${item.unitPrice}"></span></td>
+                        <td><span class="js-format-vnd" th:text="${item.quantity * item.unitPrice}"></span></td>
                         <td style="display:none;">
                             <span class="itemid" th:text="${item.id}"></span>
                         </td>
                     </tr>
                     <tr>
+                        <td colspan="4"><strong>Delivery Distance</strong></td>
+                        <td><span id="distanceKm" th:text="${distanceKm} + ' km'"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><strong>Estimated Delivery Time</strong></td>
+                        <td><span id="estimatedTime" th:text="${estimatedTime}"></span></td>
+                    </tr>
+                    <tr>
                         <td colspan="4"><strong>Shipping and Handling</strong></td>
-                        <td><span th:text="${shippingCost}"></span></td>
+                        <td><span class="js-format-vnd" id="shippingCost" th:text="${shippingCost}"></span></td>
                     </tr>
                     <tr>
                         <td colspan="4"><strong>VAT</strong></td>
-                        <td><span th:text="${vat}"></span></td>
+                        <td><span class="js-format-vnd" th:text="${vat}"></span></td>
                     </tr>
                     <tr id="pointsDiscountRow" style="display:none;">
                         <td colspan="4"><strong>Giảm từ điểm thưởng</strong></td>
-                        <td><strong><span id="pointsDiscountAmount">- 0.00</span></strong></td>
+                        <td><strong><span class="js-format-vnd" id="pointsDiscountAmount"></span></strong></td>
                     </tr>
                     <tr id="discountRow" style="display:none;">
-                        <td colspan="4"><strong>Discount</strong></td>
-                        <td><strong><span id="discountAmount">- 0.00</span></strong></td>
+                        <td colspan="4"><strong>Giảm từ mã khuyến mãi</strong></td>
+                        <td><strong><span class="js-format-vnd" id="discountAmount"></span></strong></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>Order Total</strong></td>
-                        <td><strong><span id="orderTotal" th:text="${totalPrice + shippingCost + vat}"></span></strong></td>
+                        <td colspan="4"><strong>Tổng giá trị đơn hàng</strong></td>
+                        <td><strong><span class="js-format-vnd" id="orderTotal" th:text="${totalPrice + shippingCost + vat}"></span></strong></td>
                     </tr>
                     </tbody>
                 </table>
@@ -183,16 +261,20 @@
                     <form action="#" method="POST">
                         <div class="row">
                             <h6>Địa chỉ nhận hàng</h6>
-                                <div class="input-item input-item-address input-item-website ltn__custom-icon">
-                                    <textarea id="address" name="ltn__address" class="form-control" rows="2" placeholder="Nhập địa chỉ giao hàng..." required></textarea>
-                                </div>
+                            <div class="input-item input-item-address input-item-website ltn__custom-icon">
+                                <textarea id="address"
+                                          name="ltn__address"
+                                          class="form-control"
+                                          rows="2"
+                                          th:text="${users.address}"
+                                          readonly>
+                                </textarea>
+                            </div>
                             <h6>Số điện thoại</h6>
                                 <div class="input-item input-item-phone ltn__custom-icon">
                                     <textarea id="phone" name="ltn__phone" class="form-control" rows="2" placeholder="Nhập số điện thoại..."
-                                              oninput="validateNumber(this)" required title="Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)"></textarea>
-                                    <div id="phoneError" class="invalid-feedback" style="display:none; color: red; margin-bottom: 15px;">
-                                        Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)
-                                    </div>
+                                              th:text="${users.phone}"
+                                              readonly ></textarea>
                                 </div>
                             <h6>Ghi chú đơn hàng</h6>
                             <div class="input-item input-item-textarea ltn__custom-icon">
@@ -268,61 +350,7 @@
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
-<script>
-    function applyPoints() {
-        const points = parseInt(document.getElementById('pointsToUse').value);
-        const email = document.querySelector('input[name="app_user"]').value;
-        const pointsMessage = document.getElementById('pointsMessage');
-
-        if (isNaN(points) || points <= 0) {
-            pointsMessage.innerText = "Vui lòng nhập số điểm hợp lệ.";
-            return;
-        }
-
-        const redeemAmount = (points / 1000) * 2000;
-
-        fetch(`/api/payment/redeem?email=${email}&redeemAmountInVND=${redeemAmount}`, { method: 'POST' })
-            .then(res => res.json().then(data => ({ ok: res.ok, data })))
-            .then(({ ok, data }) => {
-                if (!ok) {
-                    pointsMessage.innerText = data.message || "Không đủ điểm.";
-                    return;
-                }
-
-                document.getElementById('usedPointsInput').value = points;
-                document.getElementById('usedPointsHiddenInput').value = points;
-                document.getElementById('usedPointsHiddenInputZaloPay').value = points;
-
-                pointsMessage.innerText = `Bạn đã dùng ${points} điểm để giảm ${redeemAmount.toLocaleString()} VNĐ`;
-
-                document.getElementById('pointsDiscountRow').style.display = '';
-                document.getElementById('pointsDiscountAmount').innerText = `- ${redeemAmount.toLocaleString()} VNĐ`;
-
-                const orderTotalEl = document.getElementById('orderTotal');
-                const currentTotal = parseFloat(orderTotalEl.innerText.replace(/[^\d.-]/g, ""));
-                orderTotalEl.innerText = `${(currentTotal - redeemAmount).toLocaleString()} VNĐ`;
-
-                const embed = {
-                    address: document.getElementById("address").value,
-                    phone: document.getElementById("phone").value,
-                    note: document.getElementById("note").value
-                };
-
-                ["embedDataInput", "embedDataInputCOD"].forEach(id => {
-                    const input = document.getElementById(id);
-                    if (input) input.value = JSON.stringify(embed);
-                });
-
-                console.log("[LOG] Điểm đã dùng:", points);
-                console.log("[LOG] embedData:", embed);
-            })
-            .catch(err => {
-                console.error("Lỗi khi gọi API redeem:", err);
-                pointsMessage.innerText = "Đã xảy ra lỗi. Vui lòng thử lại.";
-            });
-    }
-
-</script>
+<script th:src="@{/web/js/checkout.js}"></script>
 <script>
     function validateCheckout() {
         const address = document.getElementById('address').value.trim();
@@ -347,6 +375,42 @@
         validateCheckout();
     };
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pointsInput = document.getElementById('pointsToUse');
+        const usedPointsInput = document.getElementById('usedPointsInput');
+        const decreaseBtn = document.querySelector('.points-control .minus-btn');
+        const increaseBtn = document.querySelector('.points-control .plus-btn');
+        const step = 1000;
+        const maxPoints = 10000;
+
+        // Khởi tạo giá trị
+        pointsInput.value = '0';
+
+        decreaseBtn.addEventListener('click', function() {
+            let currentValue = parseInt(pointsInput.value) || 0;
+            currentValue = Math.max(0, currentValue - step);
+            updatePoints(currentValue);
+        });
+
+        increaseBtn.addEventListener('click', function() {
+            let currentValue = parseInt(pointsInput.value) || 0;
+            currentValue += step;
+            if (currentValue <= maxPoints) {
+                updatePoints(currentValue);
+            } else {
+                pointsInput.value = maxPoints;
+                usedPointsInput.value = maxPoints;
+            }
+        });
+
+        function updatePoints(value) {
+            pointsInput.value = value;
+            usedPointsInput.value = value;
+        }
+    });
+</script>
+
 </body>
 </html>
 
