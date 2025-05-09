@@ -34,6 +34,21 @@ public class Order implements Serializable {
 
     private String note;
 
+    @Column(name = "duration_text")
+    private String durationText;
+
+    @Column(name = "distance_km")
+    private Double distanceKm;
+
+    @Column(name = "shipping_cost")
+    private Double shippingCost;
+
+    @Column(name = "voucher_discount")
+    private Double voucherDiscount;
+
+    @Column(name = "redeem_amount")
+    private Double redeemAmount;
+
     private int status;
 
     @Enumerated(EnumType.STRING)
