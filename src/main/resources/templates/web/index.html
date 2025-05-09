@@ -7,6 +7,8 @@
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <!-- Place favicon.png in the root directory -->
     <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
     <!-- Font Icons css -->
@@ -19,6 +21,20 @@
 
     <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <style>
+        h1.section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 63px !important;
+            font-weight: 600;
+            color: #1F3914;
+            text-transform: capitalize;
+            letter-spacing: 1px;
+            line-height: 1.3;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -78,7 +94,7 @@
                                             </a>
                                         </div>
                                         <h6 class="slide-sub-title animated">
-                                            <img src="web/img/icons/icon-img/1.png" alt="#"> 100% genuine Products
+                                            <img th:src="@{/web/img/icons/icon-img/1.png}" alt="#"> 100% genuine Products
                                         </h6>
                                         <h1 class="slide-title animated">Our Garden's Most <br> Favorite Food</h1>
                                         <div class="slide-brief animated">
@@ -101,6 +117,8 @@
         </div>
     </div>
     <!-- SLIDER AREA END -->
+
+
     <!-- BANNER AREA START
 
     <div class="ltn__banner-area mt-120 mb-90">
@@ -137,89 +155,6 @@
     -->
     <!-- BANNER AREA END -->
 
-    <!-- FEATURE AREA START ( Feature - 3) -->
-    <div class="ltn__feature-area mt-100 mt--65 d-none">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="ltn__feature-item-box-wrap ltn__feature-item-box-wrap-2 ltn__border section-bg-6">
-                        <div class="ltn__feature-item ltn__feature-item-8">
-                            <div class="ltn__feature-icon">
-                                <img src="img/icons/svg/8-trolley.svg" alt="#">
-                            </div>
-                            <div class="ltn__feature-info">
-                                <h4>Free shipping</h4>
-                                <p>On all orders over $49.00</p>
-                            </div>
-                        </div>
-                        <div class="ltn__feature-item ltn__feature-item-8">
-                            <div class="ltn__feature-icon">
-                                <img src="img/icons/svg/9-money.svg" alt="#">
-                            </div>
-                            <div class="ltn__feature-info">
-                                <h4>15 days returns</h4>
-                                <p>Moneyback guarantee</p>
-                            </div>
-                        </div>
-                        <div class="ltn__feature-item ltn__feature-item-8">
-                            <div class="ltn__feature-icon">
-                                <img src="img/icons/svg/10-credit-card.svg" alt="#">
-                            </div>
-                            <div class="ltn__feature-info">
-                                <h4>Secure checkout</h4>
-                                <p>Protected by ZaloPay</p>
-                            </div>
-                        </div>
-                        <div class="ltn__feature-item ltn__feature-item-8">
-                            <div class="ltn__feature-icon">
-                                <img src="img/icons/svg/11-gift-card.svg" alt="#">
-                            </div>
-                            <div class="ltn__feature-info">
-                                <h4>Offer & gift here</h4>
-                                <p>On all orders over</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- FEATURE AREA END -->
-
-    <!-- ABOUT US AREA START -->
-    <div class="ltn__about-us-area pt-120 pb-120 d-none">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 align-self-center">
-                    <div class="about-us-img-wrap about-img-left">
-                        <img src="img/others/6.png" alt="About Us Image">
-                    </div>
-                </div>
-                <div class="col-lg-6 align-self-center">
-                    <div class="about-us-info-wrap">
-                        <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">Know More About Shop</h6>
-                            <h1 class="section-title">Trusted Organic <br class="d-none d-md-block">  Food  Store</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
-                        </div>
-                        <p>sellers who aspire to be good, do good, and spread goodness. We
-                                democratic, self-sustaining, two-sided marketplace which thrives
-                                on trust and is built on community and quality content.</p>
-                        <div class="about-author-info d-flex">
-                            <div class="author-name-designation  align-self-center mr-30">
-                                <h4 class="mb-0">Jerry Henson</h4>
-                                <small>/ Shop Director</small>
-                            </div>
-                            <div class="author-sign  align-self-center">
-                                <img src="img/icons/icon-img/author-sign.png" alt="#">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ABOUT US AREA END -->
 
     <!-- PRODUCT-MENU AREA START (product-item-3) -->
     <div class="ltn__product-tab-area ltn__product-gutter pt-115 pb-70">
@@ -227,9 +162,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area ltn__section-title-2 text-center">
-                        <h1 class="section-title">Our Products</h1>
+                        <h1 class="section-title">SẢN PHẨM CỦA CHÚNG TÔI</h1>
                     </div>
-
                     <!-- Tab Menu for Categories -->
                     <div class="ltn__tab-menu ltn__tab-menu-2 ltn__tab-menu-top-right-- text-uppercase text-center">
                         <div class="nav">
@@ -310,10 +244,14 @@
                                                                th:text="${product.productName}">Product Name</a>
                                                         </h2>
                                                         <div class="product-price">
-                                                            <span th:attr="data-order=${product.price}"
-                                                                  th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></span>
-                                                            <del th:if="${product.discount > 0}"
-                                                                 th:text="${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                                            <span class="js-price"
+                                                                  th:attr="data-price=${product.price}">
+                                                                  [[${product.price}]]
+                                                            </span>
+                                                            <del class="js-original-price"
+                                                                 th:if="${product.discount > 0}"
+                                                                 th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                                                [[${product.price + (product.price * product.discount / 100)}]]
                                                             </del>
                                                         </div>
                                                     </div>
@@ -331,25 +269,25 @@
     </div>
 
 
-
     <!-- COUNTDOWN AREA START -->
     <div class="ltn__call-to-action-area ltn__call-to-action-4 section-bg-1 pt-110 pb-120">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5">
-                    <img src="web/img/banner/banner10.png" alt="#">
+                    <img th:src="@{web/img/banner/banner10.png}" alt="#">
                 </div>
                 <div class="col-lg-7">
                     <div class="call-to-action-inner call-to-action-inner-4 text-color-white--- text-center---">
                         <div class="section-title-area ltn__section-title-2 text-center---">
-                            <h6 class="ltn__secondary-color">Todays Hot Deals</h6>
-                            <h1 class="section-title">FRESH FRUIT
-                                <br>NEW ARRIVAL
+                            <h6 class="ltn__secondary-color">
+                                Ưu đãi hấp dẫn hôm nay</h6>
+                            <h1 class="section-title">HÀNG MỚI VỀ
+                                <br>
                             </h1>
                         </div>
                         <div class="ltn__countdown ltn__countdown-3 bg-white--" data-countdown="2025/12/31"></div>
                         <div class="btn-wrapper animated">
-                            <a th:href="@{/shop}" class="theme-btn-1 btn btn-effect-1 text-uppercase">Shop now</a>
+                            <a th:href="@{/shop}" class="theme-btn-1 btn btn-effect-1 text-uppercase">Mua hàng ngay</a>
                         </div>
                     </div>
                 </div>
@@ -364,7 +302,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area ltn__section-title-2 text-center">
-                        <h1 class="section-title">Newest Products</h1>
+                        <h1 class="section-title">SẢN PHẨM MỚI NHẤT</h1>
                     </div>
                 </div>
             </div>
@@ -422,11 +360,14 @@
                                         <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
                                     </h2>
                                     <div class="product-price">
-                                        <span th:attr="data-order=${product.price}"
-                                              th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <span class="js-price"
+                                              th:attr="data-price=${product.price}">
+                                              [[${product.price}]]
                                         </span>
-                                        <del th:if="${product.discount > 0}"
-                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <del class="js-original-price"
+                                             th:if="${product.discount > 0}"
+                                             th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                            [[${product.price + (product.price * product.discount / 100)}]]
                                         </del>
                                     </div>
                                 </div>
@@ -438,35 +379,36 @@
         </div>
     </div>
     <!-- MƠI NHAT PRODUCT AREA START (product-item-3) -->
+
     <!-- COUNTER UP AREA START -->
-    <div class="ltn__counterup-area bg-image bg-overlay-theme-black-80 pt-115 pb-70" data-bg="img/bg/5.jpg">
+    <div class="ltn__counterup-area bg-image bg-overlay-theme-black-80 pt-115 pb-70" data-bg="">
         <div class="container">
             <div class="row">
                 <div class="col-md-3 col-sm-6 align-self-center">
                     <div class="ltn__counterup-item-3 text-color-white text-center">
                         <div class="counter-icon"> <img th:src="@{/web/img/icons/icon-img/2.png}" alt="#"> </div>
-                        <h1><span class="counter">733</span><span class="counterUp-icon">+</span> </h1>
+                        <h1><span class="counter">10000</span><span class="counterUp-icon">+</span> </h1>
                         <h6>Active Clients</h6>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 align-self-center">
                     <div class="ltn__counterup-item-3 text-color-white text-center">
                         <div class="counter-icon"> <img th:src="@{/web/img/icons/icon-img/3.png}" alt="#"> </div>
-                        <h1><span class="counter">33</span><span class="counterUp-letter">K</span><span class="counterUp-icon">+</span> </h1>
+                        <h1><span class="counter">99</span><span class="counterUp-letter">K</span><span class="counterUp-icon">+</span> </h1>
                         <h6>Products</h6>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 align-self-center">
                     <div class="ltn__counterup-item-3 text-color-white text-center">
                         <div class="counter-icon"> <img th:src="@{/web/img/icons/icon-img/4.png}" alt="#"> </div>
-                        <h1><span class="counter">100</span><span class="counterUp-icon">+</span> </h1>
+                        <h1><span class="counter">50</span><span class="counterUp-icon">+</span> </h1>
                         <h6>Get Rewards</h6>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 align-self-center">
                     <div class="ltn__counterup-item-3 text-color-white text-center">
                         <div class="counter-icon"> <img th:src="@{/web/img/icons/icon-img/5.png}" alt="#"> </div>
-                        <h1><span class="counter">21</span><span class="counterUp-icon">+</span> </h1>
+                        <h1><span class="counter">100</span><span class="counterUp-icon">+</span> </h1>
                         <h6>Country Cover</h6>
                     </div>
                 </div>
@@ -480,7 +422,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area ltn__section-title-2 text-center">
-                        <h1 class="section-title">Top Selling Products</h1>
+                        <h1 class="section-title">CÁC SẢN PHẨM BÁN CHẠY</h1>
                     </div>
                 </div>
             </div>
@@ -531,11 +473,14 @@
                                         <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
                                     </h2>
                                     <div class="product-price">
-                                        <span th:attr="data-order=${product.price}"
-                                              th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <span class="js-price"
+                                              th:attr="data-price=${product.price}">
+                                              [[${product.price}]]
                                         </span>
-                                        <del th:if="${product.discount > 0}"
-                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <del class="js-original-price"
+                                             th:if="${product.discount > 0}"
+                                             th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                            [[${product.price + (product.price * product.discount / 100)}]]
                                         </del>
                                     </div>
 
@@ -554,7 +499,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area ltn__section-title-2 text-center">
-                        <h1 class="section-title">Seasonal Products</h1>
+                        <h1 class="section-title">SẢN PHẨM THEO MÙA</h1>
                     </div>
                 </div>
             </div>
@@ -616,11 +561,14 @@
                                            th:text="${product.productName}">Product Name</a>
                                     </h2>
                                     <div class="product-price">
-                                        <span th:attr="data-order=${product.price}"
-                                              th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <span class="js-price"
+                                              th:attr="data-price=${product.price}">
+                                              [[${product.price}]]
                                         </span>
-                                        <del th:if="${product.discount > 0}"
-                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <del class="js-original-price"
+                                             th:if="${product.discount > 0}"
+                                             th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                            [[${product.price + (product.price * product.discount / 100)}]]
                                         </del>
                                     </div>
                                 </div>
@@ -640,7 +588,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area ltn__section-title-2 text-center">
-                        <h1 class="section-title white-color---">Leatest Blog</h1>
+                        <h1 class="section-title white-color---">BLOG MỚI NHẤT</h1>
                     </div>
                 </div>
             </div>
@@ -664,9 +612,17 @@
                                     </li>
                                 </ul>
                             </div>
-                            <h3 class="ltn__blog-title">
+                            <h3 class="ltn__blog-title" style="
+                                    display: -webkit-box;
+                                    -webkit-line-clamp: 2;
+                                    -webkit-box-orient: vertical;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    min-height: 3.6em;
+                                ">
                                 <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}">Blog Title</a>
                             </h3>
+
                             <div class="ltn__blog-meta-btn">
                                 <div class="ltn__blog-meta">
                                     <ul>
@@ -710,7 +666,7 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-12">
                                         <div class="modal-product-img">
-                                            <img src="img/product/4.png" alt="#">
+                                            <img src="" alt="#">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-12">
@@ -812,7 +768,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="modal-product-img">
-                                            <img src="img/product/default.png" alt="Product Image">
+                                            <img src="" alt="Product Image">
                                         </div>
                                         <div class="modal-product-info">
                                             <h5><a href="javascript:void(0);">Product Name</a></h5>
