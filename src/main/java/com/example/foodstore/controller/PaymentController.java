@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.crypto.Mac;
@@ -25,14 +24,12 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentController {
-    private Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Autowired
     private OrderRepository orderRepository;
@@ -58,7 +55,7 @@ public class PaymentController {
     private final String key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
     private static final String key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
     private final String endpoint = "https://sb-openapi.zalopay.vn/v2/create";
-    private final String callback_url = "https://60c3-171-252-153-252.ngrok-free.app/api/payment/callback";
+    private final String callback_url = "https://83fd-171-252-153-252.ngrok-free.app/api/payment/callback";
 
 
     @PostMapping("/check-voucher")
@@ -81,13 +78,13 @@ public class PaymentController {
             response.put("message", "Mã giảm giá đã hết hạn");
             return ResponseEntity.badRequest().body(response);
         }
+        System.out.println("TotalPrice " + totalPrice);
 
         double discountAmount = totalPrice * (voucher.getDiscountPercent() / 100);
-        double newTotal = totalPrice - discountAmount;
+        System.out.println("DiscountAmount " + discountAmount);
 
         response.put("message", "Mã giảm giá hợp lệ!");
         response.put("discountAmount", discountAmount);
-        response.put("newTotal", newTotal);
 
         return ResponseEntity.ok(response);
     }
@@ -118,8 +115,7 @@ public class PaymentController {
         }
 
         int requiredPoints = (redeemAmountInVND * 1000) / 2000;
-        user.setPoints(currentPoints - requiredPoints);
-        userRepository.save(user);
+
 
         response.put("message", "Đã quy đổi thành công.");
         response.put("usedPoints", requiredPoints);
@@ -145,7 +141,6 @@ public class PaymentController {
             System.out.println("items: " + items);
             System.out.println("embedData: " + embedDataJson);
 
-            double totalAmount = Double.parseDouble(totalPrice);
             JSONArray itemsArray = new JSONArray(items);
             JSONObject embedData = new JSONObject(embedDataJson);
 
@@ -155,10 +150,34 @@ public class PaymentController {
                 return ResponseEntity.status(404).body("User not found");
             }
             User user = userOptional.get();
+            double shippingCost = embedData.optDouble("shippingCost", 0.0);
+            double originalTotal = Double.parseDouble(totalPrice) ;
 
-            double originalTotal = Double.parseDouble(totalPrice);
             int redeemAmount = (usedPoints / 1000) * 2000;
+            double voucherDiscount = 0.0;
+            if (voucherCode != null && !voucherCode.isEmpty()) {
+                // Tìm voucher trong database bằng code
+                Optional<Voucher> voucherOptional = voucherRepository.findByCode(voucherCode);
 
+                if (voucherOptional.isPresent()) {
+                    Voucher voucher = voucherOptional.get();
+                    LocalDateTime now = LocalDateTime.now();
+
+                    if (voucher.isStatus() &&
+                            voucher.getStartDate().isBefore(now) &&
+                            voucher.getEndDate().isAfter(now)) {
+
+                        System.out.println("OriginalTotal: " + originalTotal);
+                        voucherDiscount = originalTotal * (voucher.getDiscountPercent() / 100.0);
+                        System.out.println("Voucher Discount: " + voucherDiscount);
+                    } else {
+                        System.out.println("Voucher không hợp lệ hoặc hết hạn");
+                    }
+                } else {
+                    System.out.println("Không tìm thấy voucher với mã: " + voucherCode);
+                }
+            }
+            System.out.println("Voucher Discount: " + voucherDiscount);
             double finalAmount = originalTotal;
 
             if (usedPoints > 0) {
@@ -169,17 +188,23 @@ public class PaymentController {
                 user.setPoints(user.getPoints() - usedPoints);
                 userRepository.save(user);
             }
-
+            finalAmount = finalAmount - voucherDiscount + shippingCost;
             Order order = new Order();
             order.setOrderDate(new Date());
             order.setAmount(finalAmount);
             order.setAddress(embedData.optString("address", ""));
             order.setPhone(embedData.optString("phone", ""));
             order.setNote(embedData.optString("note", ""));
+            order.setShippingCost(embedData.optDouble("shippingCost", 0.0));
+            order.setDurationText(embedData.optString("estimatedTime", ""));
+            order.setDistanceKm(embedData.optDouble("distanceKm", 0.0));
+
             order.setUser(user);
             order.setStatus(0);
             order.setOrderStatus(OrderStatus.PENDING);
             order.setUsedPoints(usedPoints);
+            order.setVoucherDiscount(voucherDiscount);
+            order.setRedeemAmount((double) redeemAmount);
 
             if (voucherCode != null && !voucherCode.isEmpty()) {
                 Optional<Voucher> voucherOpt = voucherRepository.findByCodeIgnoreCase(voucherCode);
@@ -253,14 +278,40 @@ public class PaymentController {
             System.out.println("embedData: " + embedDataJson);
             System.out.println("Voucher Code: " + voucherCode);
 
-
+            JSONObject embedData = new JSONObject(embedDataJson);
+            double shippingCost = embedData.optDouble("shippingCost", 0.0);
             double originalTotal = Double.parseDouble(totalPrice);
             int redeemAmount = (usedPoints / 1000) * 2000;
-            double finalTotal = originalTotal - redeemAmount;
+            double voucherDiscount = 0.0;
+            if (voucherCode != null && !voucherCode.isEmpty()) {
+                // Tìm voucher trong database bằng code
+                Optional<Voucher> voucherOptional = voucherRepository.findByCode(voucherCode);
+
+                if (voucherOptional.isPresent()) {
+                    Voucher voucher = voucherOptional.get();
+                    LocalDateTime now = LocalDateTime.now();
+
+                    if (voucher.isStatus() &&
+                            voucher.getStartDate().isBefore(now) &&
+                            voucher.getEndDate().isAfter(now)) {
+
+                        System.out.println("OriginalTotal: " + originalTotal);
+                        voucherDiscount = originalTotal * (voucher.getDiscountPercent() / 100.0);
+                        System.out.println("Voucher Discount: " + voucherDiscount);
+                    } else {
+                        System.out.println("Voucher không hợp lệ hoặc hết hạn");
+                    }
+                } else {
+                    System.out.println("Không tìm thấy voucher với mã: " + voucherCode);
+                }
+            }
+
+            double finalTotal = originalTotal - redeemAmount - voucherDiscount + shippingCost;
 
             System.out.println("ZaloPay - Original Total: " + originalTotal);
             System.out.println("ZaloPay - Used Points: " + usedPoints);
             System.out.println("ZaloPay - Redeem Amount (VND): " + redeemAmount);
+            System.out.println("ZaloPay - Voucher Discount (VND): " + voucherDiscount);
             System.out.println("ZaloPay - Final Total Sent to ZaloPay: " + finalTotal);
 
             long amount = Math.round(finalTotal);
@@ -274,10 +325,12 @@ public class PaymentController {
                 System.out.println("Item: " + item.toString());
             }
 
-            JSONObject embedData = new JSONObject(embedDataJson);
             embedData.put("redirecturl", redirectUrl);
             embedData.put("voucherCode", voucherCode);
             embedData.put("usedPoints", usedPoints + "");
+            embedData.put("voucherDiscount", voucherDiscount);
+            embedData.put("redeemAmount", redeemAmount);
+
             System.out.println("Embed Data: " + embedData);
 
             Map<String, Object> orderData = new HashMap<>();
@@ -337,6 +390,8 @@ public class PaymentController {
             }
             User user = userOptional.get();
             String voucherCode = embedData.optString("voucherCode", null);
+            double voucherDiscount = embedData.optDouble("voucherDiscount", 0.0);
+            double redeemAmount = embedData.optDouble("redeemAmount", 0.0);
             int usedPoints = Integer.parseInt(embedData.optString("usedPoints", "0"));
             if (usedPoints > 0) {
                 if (user.getPoints() < usedPoints) {
@@ -352,10 +407,16 @@ public class PaymentController {
             order.setAddress(embedData.optString("address", ""));
             order.setPhone(embedData.optString("phone", ""));
             order.setNote(embedData.optString("note", ""));
+            order.setShippingCost(embedData.optDouble("shippingCost", 0.0));
+            order.setDurationText(embedData.optString("estimatedTime", ""));
+            order.setDistanceKm(embedData.optDouble("distanceKm", 0.0));
             order.setUser(user);
             order.setStatus(1);
             order.setOrderStatus(OrderStatus.PENDING);
             order.setUsedPoints(usedPoints);
+            order.setVoucherDiscount(voucherDiscount);
+            order.setRedeemAmount(redeemAmount);
+
             if (voucherCode != null && !voucherCode.isEmpty()) {
                 order.setVoucherCode(voucherCode);
             }
