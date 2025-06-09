@@ -1,2 +1,6 @@
-package com.example.foodstore.entity;public enum BranchStatus {
+package com.example.foodstore.entity;
+
+public enum BranchStatus {
+    OPEN,
+    CLOSED
 }
