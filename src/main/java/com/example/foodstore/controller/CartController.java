@@ -137,6 +137,8 @@ public class CartController {
         double shippingCost = (shippingInfo != null) ? shippingInfo.getShippingCost() : 0.0;
         String estimatedTime = (shippingInfo != null) ? shippingInfo.getDurationText() : "Không xác định";
         double distanceKm = (shippingInfo != null) ? shippingInfo.getDistanceKm() : 0.0;
+        String branchName = (shippingInfo != null) ? shippingInfo.getBranchName() : "Không xác định";
+        String branchAddress = (shippingInfo != null) ? shippingInfo.getBranchAddress() : "Không xác định";
 
         model.addAttribute("users", user);
         model.addAttribute("user", appUser);
@@ -148,6 +150,8 @@ public class CartController {
         model.addAttribute("shippingCost", shippingCost);
         model.addAttribute("estimatedTime", estimatedTime);
         model.addAttribute("distanceKm", distanceKm);
+        model.addAttribute("branchName", branchName);
+        model.addAttribute("branchAddress", branchAddress);
         System.out.println("ShippingCost: " + shippingCost);
         return "web/checkout";
     }
