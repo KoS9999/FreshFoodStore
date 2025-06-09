@@ -18,8 +18,6 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String adminDashboard() {
-        notificationService.sendNewOrderNotification("/topic/admin", "Có đơn hàng mới từ khách hàng!");
-        notificationService.sendNewReviewNotification("/topic/admin", "Có đánh giá mới từ khách hàng!");
         return "admin/dashboard";
     }
 }
