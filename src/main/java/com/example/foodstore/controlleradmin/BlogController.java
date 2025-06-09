@@ -1,6 +1,7 @@
 package com.example.foodstore.controlleradmin;
 
 import com.example.foodstore.entity.Blog;
+import com.example.foodstore.entity.BlogCategory;
 import com.example.foodstore.service.BlogService;
 import com.example.foodstore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,19 @@ public class BlogController {
     }
 
     @GetMapping
-    public String getAllBlogs(Model model) {
-        List<Blog> blogs = blogService.getAllBlogs();
+    public String listBlogs(@RequestParam(value = "category", required = false) String category, Model model) {
+        BlogCategory categoryEnum = null;
+        if (category != null && !category.isEmpty()) {
+            try {
+                categoryEnum = BlogCategory.valueOf(category);
+            } catch (IllegalArgumentException e) {
+            }
+        }
+
+        List<Blog> blogs = categoryEnum != null ? blogService.findByCategory(categoryEnum) : blogService.getAllBlogs();
         model.addAttribute("blogs", blogs);
+        model.addAttribute("categories", BlogCategory.values());
+        model.addAttribute("selectedCategory", category);
         return "admin/blog-list";
     }
 
