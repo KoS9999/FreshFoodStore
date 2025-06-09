@@ -26,7 +26,7 @@ public class ForgotPasswordController {
             model.addAttribute("otp", otp);
             return "web/newpassword";
         } else {
-            model.addAttribute("error", "Invalid OTP. Please try again.");
+            model.addAttribute("error", "OTP không hợp lệ. Vui lòng nhập lại.");
             return "web/confirmOTPfgpw";
         }
     }
@@ -35,10 +35,10 @@ public class ForgotPasswordController {
     public String handleForgotPassword(@RequestParam String email, Model model) {
         boolean emailExists = accountService.sendResetPasswordEmail(email);
         if (emailExists) {
-            model.addAttribute("message", "An email has been sent to reset your password.");
+            model.addAttribute("message", "Mã OTP đã được gửi vào email của bạn");
             return "web/confirmOTPfgpw";
         } else {
-            model.addAttribute("error", "Email not found.");
+            model.addAttribute("error", "Email này chưa được đăng ký");
             return "web/forgotpassword";
         }
     }
@@ -47,14 +47,14 @@ public class ForgotPasswordController {
                                     @RequestParam String newPassword,
                                     @RequestParam String confirmPassword, Model model) {
         if (newPassword.length() < 8) {
-            model.addAttribute("error", "New password must be at least 8 characters long.");
+            model.addAttribute("error", "Mật khẩu mới phải ít nhất 8 ký tự.");
             model.addAttribute("otp", otp);
             return "web/newpassword";
         }
 
 
         if (!newPassword.equals(confirmPassword)) {
-            model.addAttribute("error", "Passwords do not match!");
+            model.addAttribute("error", "Mật khẩu không khớp với nhau.");
             model.addAttribute("otp", otp);
             return "web/newpassword";
         }
@@ -62,10 +62,10 @@ public class ForgotPasswordController {
         // Gọi service để cập nhật mật khẩu
         boolean isPasswordUpdated = accountService.updatePasswordWithOtp(otp, newPassword);
         if (isPasswordUpdated) {
-            model.addAttribute("message", "Your password has been updated successfully.");
+            model.addAttribute("message", "Mật khẩu của bạn đã được cập nhật thành công");
             return "web/login";
         } else {
-            model.addAttribute("error", "Failed to update password.");
+            model.addAttribute("error", "Lỗi khi cập nhật mật khẩu");
             return "web/newpassword";
         }
     }
