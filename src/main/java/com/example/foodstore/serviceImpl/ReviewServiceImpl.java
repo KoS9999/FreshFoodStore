@@ -60,8 +60,8 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException("Bạn đã đánh giá lần mua này!");
         }
 
-        String imageUrl1 = (image1 != null && !image1.isEmpty()) ? firebaseStorageService.uploadFile(image1) : null;
-        String imageUrl2 = (image2 != null && !image2.isEmpty()) ? firebaseStorageService.uploadFile(image2) : null;
+        String imageUrl1 = (image1 != null && !image1.isEmpty()) ? firebaseStorageService.uploadFileReviews(image1) : null;
+        String imageUrl2 = (image2 != null && !image2.isEmpty()) ? firebaseStorageService.uploadFileReviews(image2) : null;
 
         Review review = new Review(user, product, orderDetail, rating, reviewText, new Date(), null, imageUrl1, imageUrl2);
         review.setVisible(false);
@@ -94,10 +94,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         if (image1 != null && !image1.isEmpty()) {
-            review.setImageUrl1(firebaseStorageService.uploadFile(image1));
+            review.setImageUrl1(firebaseStorageService.uploadFileReviews(image1));
         }
         if (image2 != null && !image2.isEmpty()) {
-            review.setImageUrl2(firebaseStorageService.uploadFile(image2));
+            review.setImageUrl2(firebaseStorageService.uploadFileReviews(image2));
         }
 
         return reviewRepository.save(review);
