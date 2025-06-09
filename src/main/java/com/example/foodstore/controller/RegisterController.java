@@ -24,20 +24,20 @@ public class RegisterController {
                                @RequestParam String confirmpassword,
                                Model model) {
         if (password.length() < 8) {
-            model.addAttribute("error", "Password must be at least 8 characters long.");
+            model.addAttribute("error", "Mật khẩu phải ít nhất 8 ký tự");
             return "web/register";
         }
         if (!password.equals(confirmpassword)) {
-            model.addAttribute("error", "Passwords do not match!");
+                model.addAttribute("error", "Mật khẩu không khớp");
             return "web/register";
         }
 
         boolean isRegistered = accountService.registerUser(name, email, password);
         if (isRegistered) {
-            model.addAttribute("message", "OTP has been sent to your email.");
+            model.addAttribute("message", "OTP đã được gửi đến email.");
             return "web/confirmOTPregister";
         } else {
-            model.addAttribute("error", "Email already exists.");
+            model.addAttribute("error", "Email đã đăng ký trên hệ thống.");
             return "web/register";
         }
     }
@@ -49,7 +49,7 @@ public class RegisterController {
             model.addAttribute("message", "Registration successful!");
             return "web/login";
         } else {
-            model.addAttribute("error", "Invalid OTP. Please try again.");
+            model.addAttribute("error", "Mã xác thực OTP không chính xác, hãy thử lại!");
             return "web/confirmOTPregister";
         }
     }
