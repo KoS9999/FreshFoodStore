@@ -4424,7 +4424,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 /* Menu Icon */
 .menu-icon > a {
-  position: relative; }
+  position: relative;font-family: 'Roboto', Arial, sans-serif !important; font-size: 17px !important;}
   .menu-icon > a::before {
     content: "\f067";
     font-size: 8px;
@@ -4660,13 +4660,13 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   margin-bottom: 0; }
 
 .mini-cart-product-area {
-  max-height: calc(100% - (60px + 245px)); }
+  max-height: calc(80% - (60px + 245px)); }
 
 .ltn__utilize-cart-menu .ltn__mini-cart {
   max-height: calc(100% - (60px + 245px)); }
 
 .mini-cart-item {
-  padding-top: 20px;
+  padding-top: -20px;
   padding-left: 10px;
   margin-bottom: 20px;
   border-top: 1px solid var(--border-color-1); }
@@ -5068,6 +5068,31 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 /* ----------------------------------------------
     Header Sticky
 ---------------------------------------------- */
+.ltn__header-sticky {
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  transform: translateY(0);
+}
+
+.ltn__header-sticky.sticky-active {
+  transform: translateY(0);
+}
+
+.ltn__header-sticky:not(.sticky-active) {
+  transform: translateY(-100%);
+}
+
+body {
+  padding-top: 150px;
+}
 .sticky-active {
   -webkit-animation: 300ms ease-in-out 0s normal none 1 running fadeInDown;
   animation: 300ms ease-in-out 0s normal none 1 running fadeInDown;
@@ -6564,8 +6589,9 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   visibility: visible; }
 
 .product-title {
-  font-size: 18px;
-  margin-bottom: 5px; }
+  font-size: 20px;
+  margin-bottom: 5px;
+  font-family: 'Roboto', Arial, sans-serif !important;}
 
 .product-ratting {
   margin-bottom: 5px; }
