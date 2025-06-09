@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import net.coobird.thumbnailator.Thumbnails;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -103,8 +104,7 @@ public class ProductController {
         product.setCategory(category);
 
         // Gán mùa nếu có chọn
-        product.setSeasonMonths(seasonMonths != null ? seasonMonths : List.of());
-
+        product.setSeasonMonths(seasonMonths != null ? new ArrayList<>(seasonMonths) : new ArrayList<>());
         if (!mainImageFile.isEmpty()) {
             String mainFileName = mainImageFile.getOriginalFilename();
             File mainUploadPath = new File(uploadDir + "/main/");
@@ -153,8 +153,7 @@ public class ProductController {
         existingProduct.setEnteredDate(product.getEnteredDate());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setStatus(product.getStatus());
-        existingProduct.setSeasonMonths(seasonMonths != null ? seasonMonths : List.of());
-
+        existingProduct.setSeasonMonths(seasonMonths != null ? new ArrayList<>(seasonMonths) : new ArrayList<>());
         Category category = categoryService.findById(categoryId);
         if (category != null) {
             existingProduct.setCategory(category);
@@ -209,13 +208,6 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
-
-
-
-
-
 
 
 }
