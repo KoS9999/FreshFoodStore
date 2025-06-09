@@ -2,13 +2,13 @@ package com.example.foodstore.controller;
 
 import com.example.foodstore.entity.*;
 import com.example.foodstore.repository.ViewLogRepository;
-import com.example.foodstore.service.ProductImageService;
-import com.example.foodstore.service.ProductService;
-import com.example.foodstore.service.ReviewService;
-import com.example.foodstore.service.UserService;
+import com.example.foodstore.service.*;
 import com.example.foodstore.util.CBFUtil;
 import com.example.foodstore.util.CFUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +38,9 @@ public class ProductDetailController {
     @Autowired
     private ViewLogRepository viewLogRepository;
 
+    @Autowired
+    private ViewLogService viewLogService;
+
     @GetMapping("/{id}")
     public String productDetail(@PathVariable Long id, Model model, Principal principal) throws Exception {
         Product product = productService.findByProductId(id);
@@ -53,14 +56,25 @@ public class ProductDetailController {
         model.addAttribute("product", product);
         model.addAttribute("productImages", productImages);
 
-        User user = null;
         List<Product> recommended = new ArrayList<>();
+        List<Product> recentlyViewed = new ArrayList<>();
 
-        if (principal != null) {
-            user = userService.getLoggedInUser();
+        // Kiểm tra trạng thái đăng nhập bằng SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isLoggedIn = authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken);
+        System.out.println("isLoggedIn in controller: " + isLoggedIn);
+        model.addAttribute("isLoggedIn", isLoggedIn);
+
+        if (isLoggedIn) {
+            User user = userService.getLoggedInUser();
             viewLogRepository.save(new ViewLog(null, user, product, new Date()));
 
-            //Hybrid Recommendation (CBF + CF)
+            recentlyViewed = viewLogService.getRecentProducts(user.getUserId());
+            recentlyViewed = recentlyViewed.stream()
+                    .filter(p -> !p.getProductId().equals(product.getProductId()))
+                    .collect(Collectors.toList());
+
+            // Hệ thống gợi ý kết hợp (CBF + CF)
             List<Product> allProducts = productService.findAll();
             List<User> allUsers = userService.findAll();
             List<Review> allReviews = reviewService.findAll();
@@ -93,13 +107,15 @@ public class ProductDetailController {
             List<Product> recommendedProducts = productService.findProductsByIds(recommendedProductIds);
 
             model.addAttribute("recommendedProducts", recommendedProducts);
+            model.addAttribute("recentlyViewedProducts", recentlyViewed);
+
             System.out.println("Sản phẩm gợi ý:");
             for (Product p : recommended) {
                 double score = hybridScores.getOrDefault(p, 0.0);
                 System.out.println(" - " + p.getProductName() + " (ID: " + p.getProductId() + ") | Score: " + score);
             }
         } else {
-            // Người dùng chưa đăng nhập, chỉ gợi ý dựa trên CBF
+            // Người dùng chưa đăng nhập, chỉ sử dụng CBF để gợi ý
             List<Product> allProducts = productService.findAll();
             Map<Product, Double> cbfScores = CBFUtil.findSimilarProducts(product, allProducts, 6);
             recommended = new ArrayList<>(cbfScores.keySet());
@@ -108,30 +124,30 @@ public class ProductDetailController {
             List<Product> recommendedProducts = productService.findProductsByIds(recommendedProductIds);
 
             model.addAttribute("recommendedProducts", recommendedProducts);
+            model.addAttribute("recentlyViewedProducts", new ArrayList<>());
         }
 
         System.out.println("Số lượng sản phẩm gợi ý: " + recommended.size());
+        System.out.println("Số lượng sản phẩm đã xem (server): " + recentlyViewed.size());
 
         Map<Long, Double> averageRatings = calculateAverageRatings(recommended);
         model.addAttribute("averageRatings", averageRatings);
 
+        Map<Long, Double> recentlyViewedAverageRatings = calculateAverageRatings(recentlyViewed);
+        model.addAttribute("recentlyViewedAverageRatings", recentlyViewedAverageRatings);
+
         return "web/product-details";
     }
-
-
-
-
     private Map<Long, Double> calculateAverageRatings(List<Product> products) {
         Map<Long, Double> averageRatings = new HashMap<>();
-        for (Product product : products) {
-            List<Review> reviews = reviewService.getReviewsByProduct(product.getProductId());
-            double averageRating = reviews.stream()
+        for (Product p : products) {
+            List<Review> productReviews = reviewService.getReviewsWithUserByProduct(p.getProductId());
+            double avgRating = productReviews.stream()
                     .mapToInt(Review::getRating)
                     .average()
                     .orElse(0.0);
-            averageRatings.put(product.getProductId(), averageRating);
+            averageRatings.put(p.getProductId(), avgRating);
         }
         return averageRatings;
     }
-
 }
