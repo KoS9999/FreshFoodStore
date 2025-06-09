@@ -24,11 +24,13 @@ public class FirebaseStorageService {
 
     }
 
-    public String uploadFile(MultipartFile file) {
-        System.out.println("🔍 Đang upload ảnh lên Firebase: " + file.getOriginalFilename());
+    public String uploadFileReviews(MultipartFile file) {
+        System.out.println("🔍 Đang upload ảnh review lên Firebase: " + file.getOriginalFilename());
 
         try {
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String folder = "review/";
+
+            String fileName = folder + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
             Blob blob = storage.create(
                     BlobInfo.newBuilder(bucketName, fileName)
@@ -48,7 +50,7 @@ public class FirebaseStorageService {
         }
     }
     public String uploadFileBlogs(MultipartFile file) {
-        System.out.println("🔍 Đang upload ảnh lên Firebase: " + file.getOriginalFilename());
+        System.out.println("🔍 Đang upload ảnh blog lên Firebase: " + file.getOriginalFilename());
 
         try {
             String folder = "blogs/";
