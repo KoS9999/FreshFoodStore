@@ -5,12 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Broccoli - Organic Food HTML Template</title>
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <!-- plugins css -->
@@ -95,6 +95,7 @@
             position: relative;
             font-size: 24px;
         }
+
         .minus-btn::before,
         .plus-btn::before {
             position: absolute;
@@ -131,18 +132,20 @@
     <div th:replace="~{web/header :: header}"></div>
 
     <!-- Vùng Breadcrumb -->
-    <div class="ltn__breadcrumb-area  ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image" data-bg="img/bg/9.jpg">
+    <div class="ltn__breadcrumb-area  ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ltn__breadcrumb-inner ltn__breadcrumb-inner-2 justify-content-between">
                         <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">// Welcome to our store</h6>
+                            <h6 class="section-subtitle ltn__secondary-color"
+                                style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                // Chào mừng đến với cửa hàng chúng tôi</h6>
                             <h1 class="section-title white-color">Thanh toán</h1>
                         </div>
                         <div class="ltn__breadcrumb-list">
                             <ul>
-                                <li><a th:href="@{/index}">Home</a></li>
+                                <li><a th:href="@{/index}">Trang chủ</a></li>
                                 <li>Thanh toán</li>
                             </ul>
                         </div>
@@ -155,7 +158,8 @@
     <!-- Vùng Checkout -->
     <div class="ltn__checkout-area mb-105">
         <div class="container">
-            <h4 class="title-2">Áp dụng Voucher</h4>
+            <h4 class="title-2" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                Áp dụng Voucher</h4>
             <div class="row mb-3">
                 <div class="col-md-8">
                     <input type="text" id="voucherCode" class="form-control" placeholder="Nhập mã giảm giá">
@@ -169,11 +173,13 @@
                 </div>
             </div>
             <p id="voucherMessage" class="text-success"></p>
-            <h4 class="title-2">Áp dụng Điểm Thưởng</h4>
+            <h4 class="title-2" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                Áp dụng điểm tích lũy</h4>
             <div class="row mb-3">
                 <div class="col-md-8">
                     <div class="input-group points-control">
-                        <input type="text" id="pointsToUse" class="form-control points-input" placeholder="0" min="0" readonly>
+                        <input type="text" id="pointsToUse" class="form-control points-input" placeholder="0" min="0"
+                               readonly>
                         <button type="button" class="btn points-btn minus-btn"></button>
                         <button type="button" class="btn points-btn plus-btn"></button>
                     </div>
@@ -197,21 +203,23 @@
         <div class="container">
             <!-- Vùng Cart Totals -->
             <div class="row">
-                <h4 class="title-2">Tổng số giỏ hàng</h4>
+                <h4 class="title-2" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                    Tổng số giỏ hàng</h4>
                 <table id="itemsTable" class="table">
                     <thead>
                     <tr>
-                        <th>Image</th>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
+                        <th>Ảnh sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Giá mỗi sản phẩm</th>
+                        <th>Tổng cộng</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="item : ${cartItems}">
                         <td>
-                            <img th:src="@{/uploads/main/{fileName}(fileName=${item.productImage})}" alt="Product Image" width="100" height="100">
+                            <img th:src="@{/uploads/main/{fileName}(fileName=${item.productImage})}" alt="Product Image"
+                                 width="100" height="100">
                         </td>
                         <td><span th:text="${item.name}"></span></td>
                         <td><span th:text="${item.quantity}"></span></td>
@@ -222,32 +230,45 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>Delivery Distance</strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Chi nhánh giao
+                            hàng</strong></td>
+                        <td style="width: 40%;"><span id="branchInfo"
+                                                      th:text="${branchName} + ' - ' + ${branchAddress}"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Khoảng cách giao
+                            hàng</strong></td>
                         <td><span id="distanceKm" th:text="${distanceKm} + ' km'"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>Estimated Delivery Time</strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Thời gian giao hàng ước
+                            tính</strong></td>
                         <td><span id="estimatedTime" th:text="${estimatedTime}"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>Shipping and Handling</strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Chi phí vận
+                            chuyển</strong></td>
                         <td><span class="js-format-vnd" id="shippingCost" th:text="${shippingCost}"></span></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>VAT</strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>VAT</strong></td>
                         <td><span class="js-format-vnd" th:text="${vat}"></span></td>
                     </tr>
                     <tr id="pointsDiscountRow" style="display:none;">
-                        <td colspan="4"><strong>Giảm từ điểm thưởng</strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Giảm từ điểm
+                            thưởng</strong></td>
                         <td><strong><span class="js-format-vnd" id="pointsDiscountAmount"></span></strong></td>
                     </tr>
                     <tr id="discountRow" style="display:none;">
-                        <td colspan="4"><strong>Giảm từ mã khuyến mãi</strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Giảm từ mã khuyến
+                            mãi</strong></td>
                         <td><strong><span class="js-format-vnd" id="discountAmount"></span></strong></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><strong>Tổng giá trị đơn hàng</strong></td>
-                        <td><strong><span class="js-format-vnd" id="orderTotal" th:text="${totalPrice + shippingCost + vat}"></span></strong></td>
+                        <td colspan="4" style="text-align: center; padding-left: 20px;"><strong>Tổng giá trị đơn
+                            hàng</strong></td>
+                        <td><strong><span class="js-format-vnd" id="orderTotal"
+                                          th:text="${totalPrice + shippingCost + vat}"></span></strong></td>
                     </tr>
                     </tbody>
                 </table>
@@ -256,11 +277,16 @@
 
             <!-- Vùng thông tin -->
             <div class="ltn__checkout-single-content mt-50">
-                <h4 class="title-2">Thông tin giao hàng</h4>
+                <h4 class="title-2" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                    Thông tin giao hàng</h4>
+                <h4 class="title-5" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                    (lấy từ thông tin tài khoản)</h4>
+                <br>
                 <div class="ltn__checkout-single-content-info">
                     <form action="#" method="POST">
                         <div class="row">
-                            <h6>Địa chỉ nhận hàng</h6>
+                            <h6 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                Địa chỉ nhận hàng</h6>
                             <div class="input-item input-item-address input-item-website ltn__custom-icon">
                                 <textarea id="address"
                                           name="ltn__address"
@@ -270,18 +296,21 @@
                                           readonly>
                                 </textarea>
                             </div>
-                            <h6>Số điện thoại</h6>
-                                <div class="input-item input-item-phone ltn__custom-icon">
-                                    <textarea id="phone" name="ltn__phone" class="form-control" rows="2" placeholder="Nhập số điện thoại..."
+                            <h6 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                Số điện thoại</h6>
+                            <div class="input-item input-item-phone ltn__custom-icon">
+                                    <textarea id="phone" name="ltn__phone" class="form-control" rows="2"
+                                              placeholder="Nhập số điện thoại..."
                                               th:text="${users.phone}"
-                                              readonly ></textarea>
-                                </div>
-                            <h6>Ghi chú đơn hàng</h6>
+                                              readonly></textarea>
+                            </div>
+                            <h6 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                Ghi chú đơn hàng</h6>
                             <div class="input-item input-item-textarea ltn__custom-icon">
-                                <textarea id="note" name="ltn__message" class="form-control"  rows="2" placeholder="Thêm ghi chú nếu cần..."></textarea>
+                                <textarea id="note" name="ltn__message" class="form-control" rows="2"
+                                          placeholder="Thêm ghi chú nếu cần..." maxlength="100"></textarea>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -290,50 +319,83 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ltn__checkout-payment-method mt-50">
-                        <h4 class="title-2">Phương thức thanh toán</h4>
+                        <h4 class="title-2" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            Phương thức thanh toán</h4>
                         <div id="checkout_accordion_1">
-                            <p>Dữ liệu cá nhân của bạn sẽ được sử dụng để xử lý đơn hàng, hỗ trợ trải nghiệm của bạn trên trang web này, và các mục đích khác được mô tả trong chính sách bảo mật của chúng tôi.</p>
                             <div class="card">
-                                <h5 class="ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-2" aria-expanded="true">
-                                    Thanh toán khi nhận hàng (COD)<img th:src="@{/web/img/icons/cash.png}" alt="#">
-                                </h5>
-                                <div id="faq-item-2-2" class="collapse show" data-bs-parent="#checkout_accordion_1">
-                                    <div class="card-body">
-                                        <p>Thanh toán bằng tiền mặt khi nhận hàng.</p>
-                                        <form th:action="@{/api/payment/createCODOrder}" method="post" id="codForm">
-                                            <input type="hidden" name="app_user" th:value="${user}" />
-                                            <input type="hidden" name="totalPrice" id="totalPriceInput" th:value="${totalPrice}" />
-                                            <input type="hidden" name="items" id="itemsInputCOD" />
-                                            <input type="hidden" name="embedData" id="embedDataInputCOD" />
-                                            <input type="hidden" name="voucherCode" id="voucherCodeInput" />
-                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInput" value="0" />
-
-                                            <button type="button" id="createCODBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #ff7700;" disabled>
-                                                Thanh toán COD
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-3" aria-expanded="false">
+                                <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse"
+                                    data-bs-target="#faq-item-2-3" aria-expanded="false">
                                     ZaloPay <img th:src="@{/web/img/icons/zalopay.png}" alt="#">
                                 </h5>
                                 <div id="faq-item-2-3" class="collapse" data-bs-parent="#checkout_accordion_1">
                                     <div class="card-body">
                                         <p>ZaloPay là phương thức thanh toán hiện đại.</p>
                                         <form th:action="@{/api/payment/createPayment}" method="post" id="zalopayForm">
-                                            <input type="hidden" name="app_user" th:value="${user}" />
-                                            <input type="hidden" name="totalPrice" id="totalPriceInputZaloPay" th:value="${totalPrice}" />
-                                            <input type="hidden" name="items" id="itemsInput" />
-                                            <input type="hidden" name="embedData" id="embedDataInput" />
-                                            <input type="hidden" name="voucherCode" id="voucherCodeInputZaloPay" />
-                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInputZaloPay" value="0" />
-                                            <input type="hidden" name="redirect_url" value="http://localhost:9090/order-success" />
+                                            <input type="hidden" name="app_user" th:value="${user}"/>
+                                            <input type="hidden" name="totalPrice" id="totalPriceInputZaloPay"
+                                                   th:value="${totalPrice}"/>
+                                            <input type="hidden" name="items" id="itemsInput"/>
+                                            <input type="hidden" name="embedData" id="embedDataInput"/>
+                                            <input type="hidden" name="voucherCode" id="voucherCodeInputZaloPay"/>
+                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInputZaloPay"
+                                                   value="0"/>
+                                            <input type="hidden" name="redirect_url"
+                                                   value="http://localhost:9090/order-success"/>
 
-                                            <button type="button" id="createPaymentBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #004cef; " disabled >Thanh toán qua ZaloPay</button>
+                                            <button type="button" id="createPaymentBtn"
+                                                    class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                                                    style="background-color: #004cef; " disabled>Thanh toán qua ZaloPay
+                                            </button>
                                         </form>
 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse"
+                                    data-bs-target="#faq-item-2-4" aria-expanded="false">
+                                    VNPay <img th:src="@{/web/img/icons/vnpay.png}" alt="#">
+                                </h5>
+                                <div id="faq-item-2-4" class="collapse" data-bs-parent="#checkout_accordion_1">
+                                    <div class="card-body">
+                                        <p>VNPay là phương thức thanh toán hiện đại.</p>
+                                        <form th:action="@{/api/payment/createVNPayPayment}" method="post" id="vnpayForm">
+                                            <input type="hidden" name="app_user" th:value="${user}"/>
+                                            <input type="hidden" name="totalPrice" id="totalPriceInputVNPay" th:value="${totalPrice}"/>
+                                            <input type="hidden" name="items" id="itemsInputVNPay"/>
+                                            <input type="hidden" name="embedData" id="embedDataInputVNPay"/>
+                                            <input type="hidden" name="voucherCode" id="voucherCodeInputVNPay"/>
+                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInputVNPay" value="0"/>
+                                            <input type="hidden" name="redirect_url" value="http://localhost:9090/order-success"/>
+                                            <button type="button" id="createVNPayBtn" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="background-color: #f34c7a;">Thanh toán qua VNPay</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse"
+                                    data-bs-target="#faq-item-2-2" aria-expanded="false">
+                                    Thanh toán khi nhận hàng (COD)<img th:src="@{/web/img/icons/cash.png}" alt="#">
+                                </h5>
+                                <div id="faq-item-2-2" class="collapse" data-bs-parent="#checkout_accordion_1">
+                                    <div class="card-body">
+                                        <p>Thanh toán bằng tiền mặt khi nhận hàng.</p>
+                                        <form th:action="@{/api/payment/createCODOrder}" method="post" id="codForm">
+                                            <input type="hidden" name="app_user" th:value="${user}"/>
+                                            <input type="hidden" name="totalPrice" id="totalPriceInput"
+                                                   th:value="${totalPrice}"/>
+                                            <input type="hidden" name="items" id="itemsInputCOD"/>
+                                            <input type="hidden" name="embedData" id="embedDataInputCOD"/>
+                                            <input type="hidden" name="voucherCode" id="voucherCodeInput"/>
+                                            <input type="hidden" name="usedPoints" id="usedPointsHiddenInput"
+                                                   value="0"/>
+
+                                            <button type="button" id="createCODBtn"
+                                                    class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                                                    style="background-color: #ff7700;" disabled>
+                                                Thanh toán COD
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -347,69 +409,22 @@
 
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
+<div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 9999;">
+    <div id="errorToast" class="toast align-items-center text-white bg-warning border-0 shadow-lg fs-6 position-fixed top-50 start-50 translate-middle z-3"
+         role="alert" aria-live="assertive" aria-atomic="true"
+         style="min-width: 300px;">
+        <div class="d-flex">
+            <div class="toast-body fw-semibold">
+            </div>
+            <button type="button" class="btn-close btn-close-dark me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
 <script th:src="@{/web/js/checkout.js}"></script>
-<script>
-    function validateCheckout() {
-        const address = document.getElementById('address').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const isFormValid = address !== '' && phone !== '' && phone.length === 10;
-        const codButton = document.getElementById('createCODBtn');
-        const zaloPayButton = document.getElementById('createPaymentBtn');
-
-        if (isFormValid) {
-            codButton.disabled = false;
-            zaloPayButton.disabled = false;
-        } else {
-            codButton.disabled = true;
-            zaloPayButton.disabled = true;
-        }
-    }
-
-    document.getElementById('address').addEventListener('input', validateCheckout);
-    document.getElementById('phone').addEventListener('input', validateCheckout);
-
-    window.onload = function() {
-        validateCheckout();
-    };
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const pointsInput = document.getElementById('pointsToUse');
-        const usedPointsInput = document.getElementById('usedPointsInput');
-        const decreaseBtn = document.querySelector('.points-control .minus-btn');
-        const increaseBtn = document.querySelector('.points-control .plus-btn');
-        const step = 1000;
-        const maxPoints = 10000;
-
-        // Khởi tạo giá trị
-        pointsInput.value = '0';
-
-        decreaseBtn.addEventListener('click', function() {
-            let currentValue = parseInt(pointsInput.value) || 0;
-            currentValue = Math.max(0, currentValue - step);
-            updatePoints(currentValue);
-        });
-
-        increaseBtn.addEventListener('click', function() {
-            let currentValue = parseInt(pointsInput.value) || 0;
-            currentValue += step;
-            if (currentValue <= maxPoints) {
-                updatePoints(currentValue);
-            } else {
-                pointsInput.value = maxPoints;
-                usedPointsInput.value = maxPoints;
-            }
-        });
-
-        function updatePoints(value) {
-            pointsInput.value = value;
-            usedPointsInput.value = value;
-        }
-    });
-</script>
 
 </body>
 </html>

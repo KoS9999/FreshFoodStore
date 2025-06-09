@@ -1,104 +1,281 @@
 <!doctype html>
-<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
-
+<html class="no-js" lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Broccoli - Organic Food HTML Template</title>
-    <meta name="robots" content="noindex, follow" />
+    <title>Broccoli - Mẫu HTML Thực Phẩm Hữu Cơ</title>
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <!-- Favicon -->
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <!-- Plugins css -->
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
     <!-- Main Stylesheet -->
-    <link rel="stylesheet" th:href="@{/web/css/style.css}">
+    <link rel="stylesheet" th:href="@{/web/css/style.css}"/>
     <!-- Responsive css -->
-    <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <link rel="stylesheet" th:href="@{/web/css/responsive.css}"/>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 500;
+        }
+
+        /* Đảm bảo font được áp dụng cho các phần tử cụ thể */
+        h1, h4, p, a, button, input, .alert {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 500;
+        }
+
+        .captcha-input-wrapper {
+            flex: 1;
+            max-width: 250px;
+            position: relative;
+            order: 1; /* Đảm bảo ô nhập ở bên trái */
+        }
+
+        .captcha-input-wrapper input {
+            width: 100%;
+            padding-right: 35px;
+            box-sizing: border-box;
+        }
+
+        .captcha-reload-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            fill: #333;
+            margin-top: -13px;
+        }
+
+        #captcha-section {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+
+        #captchaCanvas {
+            order: 2;
+            margin-top: -30px;
+        }
+
+        .error-container {
+            min-height: 60px;
+            margin-top: 10px;
+        }
+
+        .error-container .alert {
+            margin-bottom: 0;
+            transition: opacity 0.3s ease;
+        }
+    </style>
 </head>
 
 <body>
-
-<!-- Body main wrapper start -->
 <div class="body-wrapper">
-
-    <div class="ltn__utilize-overlay"></div>
-
-    <!-- LOGIN AREA START -->
     <div class="ltn__login-area pb-65">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area text-center">
-                        <h1 class="section-title">Sign In <br>To Your Account</h1>
-                        <p>"Đăng nhập ngay để khám phá thực phẩm organic chất lượng, an toàn cho sức khỏe và tận hưởng những tính năng tuyệt vời trên website của chúng tôi."</p>
+                        <h1 class="section-title">ĐĂNG NHẬP<br>VÀO TÀI KHOẢN CỦA BẠN</h1>
+                        <p>Đăng nhập ngay để khám phá thực phẩm hữu cơ chất lượng...</p>
                     </div>
                 </div>
             </div>
             <div class="row">
+                <!-- Form -->
                 <div class="col-lg-6">
                     <div class="account-login-inner">
-                        <form th:action="@{/perform_login}" method="post" class="ltn__form-box contact-form-box" onsubmit="disableSubmitButton()">
+                        <form th:action="@{/perform_login}" method="post"
+                              class="ltn__form-box contact-form-box" onsubmit="return validateForm()">
                             <input type="text" name="username" placeholder="Email*" required />
-                            <input type="password" name="password" placeholder="Password*" required id="password" oninput="checkPasswordLength()" />
-                            <div th:if="${error}" class="alert alert-danger">
-                                <p th:text="${error}"></p>
+                            <input type="password" name="password" placeholder="Mật khẩu*" required id="password"
+                                   oninput="checkPasswordLength()" />
+
+                            <!-- CAPTCHA -->
+                            <div id="captcha-section" style="display: none;">
+                                <div class="captcha-input-wrapper">
+                                    <input type="text" id="captchaInput" placeholder="Nhập mã CAPTCHA" />
+                                    <svg class="captcha-reload-icon" onclick="generateCaptcha()" viewBox="0 0 24 24">
+                                        <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                                    </svg>
+                                </div>
+                                <canvas id="captchaCanvas" width="150" height="50"></canvas>
                             </div>
+
+                            <!-- Nút submit -->
                             <div class="btn-wrapper mt-0">
-                                <button id="submit-btn" class="theme-btn-1 btn btn-block" type="submit" disabled>SIGN IN</button>
+                                <button id="submit-btn" class="theme-btn-1 btn btn-block" type="submit" disabled
+                                        style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    ĐĂNG NHẬP
+                                </button>
                             </div>
+
+                            <!-- Link quên mật khẩu -->
                             <div class="go-to-btn mt-20">
-                                <a th:href="@{/forgotpassword}"><small>FORGOTTEN YOUR PASSWORD?</small></a>
+                                <a th:href="@{/forgotpassword}">
+                                    <small>QUÊN MẬT KHẨU?</small>
+                                </a>
+                            </div>
+
+                            <!-- Vùng lỗi -->
+                            <div class="error-container">
+                                <div id="captcha-error" class="alert alert-danger" style="display: none;">
+                                    Mã CAPTCHA không đúng. Vui lòng thử lại.
+                                </div>
+                                <div th:if="${error}" class="alert alert-danger" id="server-error">
+                                    <p th:text="${error}"></p>
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
+
+                <!-- Đăng ký -->
                 <div class="col-lg-6">
                     <div class="account-create text-center pt-50">
-                        <h4>DON'T HAVE AN ACCOUNT?</h4>
-                        <p>"Hãy tạo tài khoản để không bỏ lỡ những món ăn tươi ngon và an toàn từ thiên nhiên."</p>
+                        <h4>CHƯA CÓ TÀI KHOẢN?</h4>
+                        <p>Hãy tạo tài khoản để không bỏ lỡ thực phẩm tươi ngon.</p>
                         <div class="btn-wrapper">
-                            <a th:href="@{/register}" class="theme-btn-1 btn black-btn">CREATE ACCOUNT</a>
+                            <a th:href="@{/register}" class="theme-btn-1 btn black-btn" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                TẠO TÀI KHOẢN</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- LOGIN AREA END -->
-
 </div>
-<!-- Body main wrapper end -->
 
-<!-- All JS Plugins -->
+<!-- JS -->
 <script th:src="@{/web/js/plugins.js}"></script>
-<!-- Main JS -->
 <script th:src="@{/web/js/main.js}"></script>
 
 <script>
-    // Kiểm tra độ dài mật khẩu và kích hoạt nút submit
+    let failedAttempts = parseInt(localStorage.getItem('failedAttempts')) || 0;
+    let captchaText = '';
+
     function checkPasswordLength() {
         const password = document.getElementById('password').value;
-        const submitButton = document.getElementById('submit-btn');
+        document.getElementById('submit-btn').disabled = password.length < 8;
+    }
 
-        // Nếu mật khẩu có ít nhất 8 ký tự, kích hoạt nút submit
-        if (password.length >= 8) {
-            submitButton.disabled = false;  // Kích hoạt nút submit
-        } else {
-            submitButton.disabled = true;  // Vô hiệu hóa nút submit
+    function disableSubmitButton() {
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.innerText = "Đang đăng nhập...";
+    }
+
+    function generateCaptcha() {
+        const canvas = document.getElementById('captchaCanvas');
+        const ctx = canvas.getContext('2d');
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789';
+        captchaText = '';
+        for (let i = 0; i < 6; i++) {
+            captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '24px "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+        ctx.fontWeight = '500';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(captchaText, canvas.width / 2, canvas.height / 2);
+
+        for (let i = 0; i < 300; i++) {
+            ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.3})`;
+            ctx.beginPath();
+            ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        for (let i = 0; i < 200; i++) {
+            ctx.strokeStyle = `rgba(0,0,0,${Math.random() * 0.5})`;
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+            ctx.stroke();
         }
     }
 
-    // Disable nút submit khi form được gửi
-    function disableSubmitButton() {
-        const submitButton = document.getElementById('submit-btn');
-        submitButton.disabled = true;
-        submitButton.innerText = "Đang đăng nhập...";
+    function validateForm() {
+        disableSubmitButton();
+        const captchaSection = document.getElementById('captcha-section');
+        const captchaInput = document.getElementById('captchaInput')?.value;
+        const captchaErrorDiv = document.getElementById('captcha-error');
+        const serverErrorDiv = document.getElementById('server-error');
+
+        // Nếu CAPTCHA đang hiển thị
+        if (captchaSection.style.display === 'flex') {
+            if (!captchaInput || captchaInput !== captchaText) {
+                // CAPTCHA sai
+                failedAttempts++;
+                localStorage.setItem('failedAttempts', failedAttempts);
+                captchaErrorDiv.style.display = 'block';
+                setTimeout(() => {
+                    captchaErrorDiv.style.display = 'none';
+                }, 3000);
+
+                // Reset CAPTCHA
+                generateCaptcha();
+                document.getElementById('captchaInput').value = '';
+
+                // Kích hoạt lại nút submit
+                const submitButton = document.getElementById('submit-btn');
+                submitButton.disabled = false;
+                submitButton.innerText = 'ĐĂNG NHẬP';
+
+                return false;
+            }
+        }
+
+        return true;
     }
+
+    window.onload = function() {
+        const serverErrorDiv = document.getElementById('server-error');
+        const captchaSection = document.getElementById('captcha-section');
+
+        // Kiểm tra nếu có lỗi server (sai email/mật khẩu)
+        if (serverErrorDiv) {
+            failedAttempts = parseInt(localStorage.getItem('failedAttempts')) || 0;
+            failedAttempts++; // Tăng số lần thử thất bại
+            localStorage.setItem('failedAttempts', failedAttempts);
+
+            // Ẩn thông báo lỗi sau 3 giây
+            setTimeout(() => {
+                serverErrorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Nếu không có lỗi server và không có tham số lỗi trong URL, reset failedAttempts
+        if (!serverErrorDiv && window.location.search.indexOf('error') === -1) {
+            failedAttempts = 0;
+            localStorage.setItem('failedAttempts', failedAttempts);
+            captchaSection.style.display = 'none';
+        }
+
+        // Hiện CAPTCHA nếu failedAttempts >= 5
+        if (failedAttempts >= 5) {
+            captchaSection.style.display = 'flex';
+            generateCaptcha();
+        }
+    };
 </script>
 
 </body>

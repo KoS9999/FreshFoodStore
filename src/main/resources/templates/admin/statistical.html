@@ -1,107 +1,284 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Admin - Thống kê</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Thống kê</title>
 
-	<!-- App favicon -->
-	<link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-	<!-- Icon CSS -->
-	<link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
+    <!-- CSS -->
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 
-	<!-- Vendor CSS -->
-	<link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom CSS for Modern Design -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
 
-	<!-- Main CSS -->
-	<link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+        .cr-main-content {
+            padding: 20px;
+        }
+
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Table Styling */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: #f9fff7;
+            color: #2e7d32;
+            font-weight: 600;
+            padding: 12px;
+            border-bottom: 2px solid #e0e0e0;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e8f5e9;
+        }
+
+        /* DataTables Pagination and Search */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            border-radius: 6px;
+            margin: 0 3px;
+            padding: 6px 12px;
+            color: #388e3c !important;
+            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #e8f5e9 !important;
+            border-color: #4caf50 !important;
+            color: #2e7d32 !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #4caf50 !important;
+            border-color: #4caf50 !important;
+            color: #ffffff !important;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            margin-left: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .dataTables_wrapper .dataTables_length select:focus {
+            border-color: #4caf50;
+            outline: none;
+        }
+
+        /* Toast Styling */
+        .toast-container {
+            z-index: 9999;
+        }
+
+        .toast {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-success {
+            background-color: #28a745 !important;
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important;
+        }
+    </style>
 </head>
 <body>
 <main class="wrapper sb-default">
-	<div id="cr-overlay">
-		<div class="loader"></div>
-	</div>
+    <div id="cr-overlay">
+        <div class="loader"></div>
+    </div>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
-	<div th:replace="~{admin/header :: header}"></div>
-	<div th:replace="~{admin/sidebar :: sidebar}"></div>
+    <!-- Main Content -->
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Quản lý Thống kê</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Thống kê</li>
+                    </ul>
+                </div>
+            </div>
 
-	<!-- main content -->
-	<div class="cr-main-content">
-		<div class="container-fluid">
-			<div class="cr-page-title cr-page-title-2">
-				<div class="cr-breadcrumb">
-					<h5>Quản lý Thống kê</h5>
-					<ul>
-						<li><a href="index.html">Carrot</a></li>
-						<li>Quản lý Thống kê</li>
-					</ul>
-				</div>
-			</div>
+            <!-- DataTable -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card" id="ordertbl">
+                        <div class="table-responsive">
+                            <table id="report_data_table" class="table">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th th:text="${reportType}"></th>
+                                    <th>Số lượng bán</th>
+                                    <th>Doanh thu</th>
+                                    <th>Giá trung bình</th>
+                                    <th>Giá thấp nhất</th>
+                                    <th>Giá cao nhất</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="row, stat : ${reportData}">
+                                    <td th:text="${stat.index + 1}"></td>
+                                    <td th:text="${row[0]}"></td>
+                                    <td th:text="${row[1]}"></td>
+                                    <td th:text="${#numbers.formatDecimal(row[2], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
+                                    <td th:text="${#numbers.formatDecimal(row[3], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
+                                    <td th:text="${#numbers.formatDecimal(row[4], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
+                                    <td th:text="${#numbers.formatDecimal(row[5], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-			<!-- DataTable -->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="cr-card" id="ordertbl">
-						<div class="table-responsive">
-							<table id="report_data_table" class="table">
-								<thead>
-								<tr>
-									<th>#</th>
-									<th th:text="${reportType}"></th>
-									<th>Số lượng bán</th>
-									<th>Doanh thu</th>
-									<th>Giá trung bình</th>
-									<th>Giá thấp nhất</th>
-									<th>Giá cao nhất</th>
-								</tr>
-								</thead>
-								<tbody>
-								<tr th:each="row, stat : ${reportData}">
-									<td th:text="${stat.index + 1}"></td>
-									<td th:text="${row[0]}"></td>
-									<td th:text="${row[1]}"></td>
-									<td th:text="${#numbers.formatDecimal(row[2], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
-									<td th:text="${#numbers.formatDecimal(row[3], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
-									<td th:text="${#numbers.formatDecimal(row[4], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
-									<td th:text="${#numbers.formatDecimal(row[5], 1, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<footer>
-		<div class="container-fluid">
-			<div class="copyright">
-				<!-- Footer content -->
-			</div>
-		</div>
-	</footer>
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 toast-error" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6 toast-success" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </main>
 
 <!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/admin/js/vendor/jquery.datatables.min.js}"></script>
+<script th:src="@{/admin/js/vendor/jquery.dataTables.min.js}"></script>
 <script th:src="@{/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
 
+<!-- Custom JavaScript for DataTable -->
 <script>
-	$(document).ready(function() {
-		$('#report_data_table').DataTable({
-			"pageLength": 5
-		});
-	});
+    $(document).ready(function () {
+        $('#report_data_table').DataTable({
+            "pageLength": 5,
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_ bản ghi",
+                "zeroRecords": "Không tìm thấy dữ liệu",
+                "info": "Hiển thị trang _PAGE_ của _PAGES_",
+                "infoEmpty": "Không có bản ghi nào",
+                "infoFiltered": "(lọc từ _MAX_ bản ghi)",
+                "search": "Tìm kiếm:",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>

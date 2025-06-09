@@ -1,233 +1,374 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chỉnh Sửa Voucher</title>
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Cập nhật Voucher</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-    <!-- Vendor CSS -->
+    <!-- CSS -->
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
     <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+
+    <!-- Custom CSS for Modern Design -->
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fa;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
         }
 
-        .cr-page-title h5 {
-            font-size: 24px;
-            color: #2d3e50;
-        }
-
-        .cr-breadcrumb ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .cr-breadcrumb li {
-            display: inline;
-            font-size: 14px;
-            color: #007bff;
-        }
-
-        .cr-breadcrumb li:not(:last-child)::after {
-            content: ' > ';
-            color: #888;
+        .cr-main-content {
+            padding: 20px;
         }
 
         .cr-card {
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            background-color: #fff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-group {
             margin-bottom: 20px;
         }
 
-        .cr-card-content {
-            padding: 20px;
+        .form-group label {
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: block;
         }
 
         .form-control {
-            border-radius: 5px;
-            box-shadow: none;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
         }
 
         .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
         }
 
-        .form-check-label {
-            margin-right: 15px;
+        /* Radio Buttons */
+        .radio-toggle-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
         }
 
-        label {
-            font-size: 14px;
-            color: #555;
+        .radio-toggle-group input[type="radio"] {
+            display: none;
         }
 
-        .btn {
-            font-size: 16px;
+        .radio-toggle-group label {
             padding: 10px 20px;
-            border-radius: 5px;
+            border: 2px solid #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #333;
+            background-color: #fff;
             transition: all 0.3s ease;
         }
 
-        .btn-success {
-            background-color: #28a745;
-            border: none;
+        .radio-toggle-group input[type="radio"]:checked + label {
+            background-color: #4caf50;
+            border-color: #4caf50;
+            color: #fff;
+            box-shadow:0 0 0 4px rgba(76, 175, 80, 0.2);
         }
 
-        .btn-success:hover {
-            background-color: #218838;
+        .radio-toggle-group label:hover {
+            border-color: #4caf50;
         }
 
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .btn-secondary:hover {
-            background-color: #5a6268;
+        .form-actions .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
         }
 
-        .mb-3 {
-            margin-bottom: 20px;
+        .form-actions .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
         }
 
-        .form-check-input {
-            margin-right: 8px;
+        .form-actions .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
         }
 
-        .form-check {
-            display: inline-block;
-            margin-right: 20px;
+        .form-actions .btn-danger {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
         }
 
-        .cr-page-title {
-            margin-bottom: 30px;
+        .form-actions .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
         }
 
-        .container-fluid {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Toast Styling */
+        .toast-container {
+            z-index: 9999;
         }
 
-        /* For mobile view */
+        .toast {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-success {
+            background-color: #28a745 !important;
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .cr-page-title h5 {
-                font-size: 20px;
+            .cr-card {
+                padding: 20px;
             }
 
-            .btn {
-                font-size: 14px;
-                padding: 8px 16px;
+            .cr-page-title h5 {
+                font-size: 1.5rem;
             }
 
             .form-control {
-                font-size: 14px;
-                padding: 10px;
+                font-size: 0.9rem;
             }
 
-            .form-check-label {
-                font-size: 12px;
+            .form-actions .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
             }
         }
     </style>
-
 </head>
-
 <body>
 <main class="wrapper sb-default">
-    <div th:replace="~{admin/header :: header}"></div>
-    <div th:replace="~{admin/sidebar :: sidebar}"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
+    <!-- Main Content -->
     <div class="cr-main-content">
         <div class="container-fluid">
-            <div class="cr-page-title">
+            <div class="cr-page-title cr-page-title-2">
                 <div class="cr-breadcrumb">
-                    <h5>Chỉnh Sửa Voucher</h5>
+                    <h5>Cập nhật Voucher</h5>
                     <ul>
-                        <li><a th:href="@{/admin}">Admin</a></li>
-                        <li>Chỉnh Sửa Voucher</li>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Cập nhật Voucher</li>
                     </ul>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-12">
-                    <div class="cr-card card-default product-list">
+                    <div class="cr-card card-default">
                         <div class="cr-card-content">
-                            <form th:action="@{/admin/vouchers/update}" th:object="${voucher}" method="post">
+                            <form th:action="@{/admin/vouchers/update}" th:object="${voucher}" method="POST" id="voucherForm">
                                 <input type="hidden" th:field="*{voucherid}">
-
-                                <div class="mb-3">
-                                    <label>Mã Voucher</label>
-                                    <input type="text" class="form-control" th:field="*{code}" required>
+                                <div class="form-group">
+                                    <label for="code">Mã Voucher</label>
+                                    <input type="text" id="code" th:field="*{code}" class="form-control"
+                                           placeholder="Nhập mã voucher">
                                 </div>
-                                <div class="mb-3">
-                                    <label>Tên Voucher</label>
-                                    <input type="text" class="form-control" th:field="*{name}" required>
+                                <div class="form-group">
+                                    <label for="name">Tên Voucher</label>
+                                    <input type="text" id="name" th:field="*{name}" class="form-control"
+                                           placeholder="Nhập tên voucher">
                                 </div>
-                                <div class="mb-3">
-                                    <label>Phần Trăm Giảm</label>
-                                    <input type="number" class="form-control" th:field="*{discountPercent}" required>
+                                <div class="form-group">
+                                    <label for="discountPercent">Phần Trăm Giảm</label>
+                                    <input type="number" id="discountPercent" th:field="*{discountPercent}" class="form-control"
+                                           placeholder="Nhập phần trăm giảm" min="0" max="100">
                                 </div>
-                                <div class="mb-3">
-                                    <label>Trạng thái Voucher</label>
-                                    <div>
-                                        <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" th:field="*{status}" th:value="true" checked>
-                                            Hoạt động
-                                        </label>
-                                        <label class="form-check-label">
-                                            <input type="radio" class="form-check-input" th:field="*{status}" th:value="false">
-                                            Tạm ngừng
-                                        </label>
+                                <div class="form-group">
+                                    <label>Trạng Thái Voucher</label>
+                                    <div class="radio-toggle-group">
+                                        <input type="radio" id="active" name="status" class="custom-radio" th:field="*{status}" th:value="true">
+                                        <label for="active">Hoạt động</label>
+                                        <input type="radio" id="inactive" name="status" class="custom-radio" th:field="*{status}" th:value="false">
+                                        <label for="inactive">Tạm ngừng</label>
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label>Ngày Bắt Đầu: <span th:text="${formattedStartDate}"></span></label>
-                                    <br>
-                                    <label>Điều chỉnh: </label>
-                                    <input type="datetime-local" class="form-control"
-                                           th:field="*{startDate}"
-                                           th:value="${formattedStartDate}">
+                                <div class="form-group">
+                                    <label for="startDate">Ngày Bắt Đầu: <span th:text="${formattedStartDate}"></span></label>
+                                    <input type="datetime-local" id="startDate" th:field="*{startDate}" class="form-control" th:value="${formattedStartDate}">
                                 </div>
-
-                                <div class="mb-3">
-                                    <label>Ngày Kết Thúc: <span th:text="${formattedEndDate}"></span></label>
-                                    <br>
-                                    <label>Điều chỉnh: </label>
-                                    <input type="datetime-local" class="form-control"
-                                           th:field="*{endDate}"
-                                           th:value="${formattedEndDate}">
+                                <div class="form-group">
+                                    <label for="endDate">Ngày Kết Thúc: <span th:text="${formattedEndDate}"></span></label>
+                                    <input type="datetime-local" id="endDate" th:field="*{endDate}" class="form-control" th:value="${formattedEndDate}">
                                 </div>
-
-                                <button type="submit" class="btn btn-success">Cập Nhật</button>
-                                <a th:href="@{/admin/vouchers}" class="btn btn-secondary">Hủy</a>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Cập nhật Voucher</button>
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href='/admin/vouchers'">Hủy</button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 toast-error" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6 toast-success" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
     </div>
 </main>
 
+<!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Custom JavaScript for Form Validation and Toast -->
+<script>
+    // Toast Function
+    function showToast(type, message) {
+        const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        toast.show();
+    }
+
+    // Form Submission with Toast
+    document.getElementById('voucherForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Get form field values
+        const code = document.getElementById('code').value.trim();
+        const name = document.getElementById('name').value.trim();
+        const discountPercent = document.getElementById('discountPercent').value;
+        let startDate = document.getElementById('startDate').value;
+        let endDate = document.getElementById('endDate').value;
+
+        // Use current dates if startDate or endDate are empty
+        if (!startDate) {
+            startDate = document.querySelector('#startDate').getAttribute('value');
+        }
+        if (!endDate) {
+            endDate = document.querySelector('#endDate').getAttribute('value');
+        }
+
+        // Validate discount percentage
+        if (discountPercent < 0 || discountPercent > 100) {
+            showToast('error', 'Phần trăm giảm phải từ 0 đến 100!');
+            return false;
+        }
+
+        // Validate date order
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (end <= start) {
+            showToast('error', 'Ngày kết thúc phải sau ngày bắt đầu!');
+            return false;
+        }
+
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        try {
+            const response = await fetch(e.target.action, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast('success', 'Cập nhật voucher thành công!');
+                setTimeout(() => window.location.href = '/admin/vouchers', 2000);
+            } else {
+                showToast('error', 'Cập nhật voucher thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            showToast('error', 'Đã xảy ra lỗi khi cập nhật voucher.');
+            console.error('Error:', error);
+        }
+    });
+</script>
 </body>
 </html>

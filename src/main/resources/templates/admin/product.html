@@ -1,179 +1,185 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Admin - Product List</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản trị - Danh sách sản phẩm</title>
 
-	<!-- App favicon -->
-	<link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
-	<!-- Icon CSS -->
-	<link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
+    <!-- Icon CSS -->
+    <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
 
-	<!-- Vendor CSS -->
-	<link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+    <!-- Vendor CSS -->
+    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
 
-	<!-- Main CSS -->
-	<link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
-	<style>
-		.table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-bottom: 20px;
-			background-color: #ffffff;
-		}
+    <!-- Main CSS -->
+    <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
 
-		.table th {
-			background-color: #f2f9f2;
-			color: #3c763d;
-			font-weight: bold;
-			padding: 12px;
-			text-align: center;
-			border: 1px solid #e0e0e0;
-		}
+        .table th {
+            background-color: #f2f9f2;
+            color: #3c763d;
+            font-weight: bold;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
 
-		.table td {
-			padding: 10px;
-			text-align: center;
-			border: 1px solid #e0e0e0;
-		}
+        .table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
 
-		.table tr:hover {
-			background-color: #f1f8f1;
-		}
+        .table tr:hover {
+            background-color: #f1f8f1;
+        }
 
-		.tbl-thumb {
-			width: 50px;
-			height: 50px;
-			object-fit: cover;
-			border-radius: 5px;
-		}
+        .tbl-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
 
-		.btn-outline-success {
-			color: #28a745;
-			border-color: #28a745;
-			border-radius: 5px;
-			padding: 8px 15px;
-			text-transform: uppercase;
-		}
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+            border-radius: 5px;
+            padding: 8px 15px;
+            text-transform: uppercase;
+        }
 
-		.btn-outline-success:hover {
-			background-color: #28a745;
-			color: #fff;
-		}
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: #fff;
+        }
 
-		.dropdown-menu {
-			border-radius: 5px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
+        .dropdown-menu {
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-		.dropdown-item:hover {
-			background-color: #f1f8f1;
-		}
-
-
-	</style>
-
-
+        .dropdown-item:hover {
+            background-color: #f1f8f1;
+        }
+    </style>
 </head>
 
 <body>
 <main class="wrapper sb-default">
-	<div id="cr-overlay">
-		<div class="loader"></div>
-	</div>
+    <div id="cr-overlay">
+        <div class="loader"></div>
+    </div>
 
-	<div th:replace="~{admin/header :: header}"></div>
-	<div th:replace="~{admin/sidebar :: sidebar}"></div>
+    <div th:replace="~{admin/header :: header}"></div>
+    <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
-	<div class="cr-main-content">
-		<div class="container-fluid">
-			<div class="cr-page-title cr-page-title-2">
-				<div class="cr-breadcrumb">
-					<h5>Product List</h5>
-					<ul>
-						<li><a th:href="@{/admin}">Dashboard</a></li>
-						<li>Product List</li>
-					</ul>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="cr-card card-default product-list">
-						<div class="cr-card-content">
-							<div class="d-flex justify-content-end mb-3">
-								<a class="cr-btn default-btn color-success" th:href="@{/admin/products/add}">Thêm sản phẩm</a>
-							</div>
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Danh sách sản phẩm</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Trang chủ</a></li>
+                        <li>Danh sách sản phẩm</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default product-list">
+                        <div class="cr-card-content">
+                            <div class="d-flex justify-content-end mb-3">
+                                <a class="cr-btn default-btn color-success" th:href="@{/admin/products/add}">Thêm sản
+                                    phẩm</a>
+                            </div>
 
-							<div class="table-responsive">
-								<table id="product_list" class="table" style="width:100%">
-									<thead>
-									<tr>
-										<th>Product</th>
-										<th>Name</th>
-										<th>Category</th>
-										<th>Price</th>
-										<th>Discount</th>
-										<th>Stock</th>
-										<th>Date</th>
-										<th>Description</th>
-										<th>Action</th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr th:each="product : ${products}">
-										<td><img class="tbl-thumb" th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image"></td>
-										<td th:text="${product.productName}">Product Name</td>
-										<td th:text="${product.category.categoryName}">Category</td>
-										<td th:attr="data-order=${product.price}"
-											th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
-										</td>
-										<td th:text="${product.discount} + '%'">0% OFF</td>
-										<td th:text="${product.quantity}">0</td>
-										<td th:text="${#dates.format(product.enteredDate, 'dd/MM/yyyy')}">Date</td>
-										<td th:text="${product.description}">Description</td>
-										<td>
-											<div class="d-flex justify-content-center">
-												<button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
-														data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-													<span class="sr-only"><i class="ri-settings-3-line"></i></span>
-												</button>
-												<div class="dropdown-menu">
-													<a class="dropdown-item" th:href="@{'/admin/products/edit/' + ${product.productId}}">Edit</a>
-													<a class="dropdown-item" th:href="@{'/admin/products/addImages/' + ${product.productId}}">Add Images</a>
-													<a class="dropdown-item" th:href="@{'/admin/products/delete/' + ${product.productId}}" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">Delete</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                            <div class="table-responsive">
+                                <table id="product_list" class="table" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Tên</th>
+                                        <th>Thể loại</th>
+                                        <th>Giá</th>
+                                        <th>Giảm giá</th>
+                                        <th>Số lượng</th>
+                                        <th>Ngày</th>
+                                        <th>Mô tả</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="product : ${products}">
+                                        <td><img class="tbl-thumb"
+                                                 th:src="@{'/uploads/main/' + ${product.productImage}}"
+                                                 alt="Product Image"></td>
+                                        <td th:text="${product.productName}">Product Name</td>
+                                        <td th:text="${product.category.categoryName}">Category</td>
+                                        <td th:attr="data-order=${product.price}"
+                                            th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                        </td>
+                                        <td th:text="${product.discount} + '%'">0% OFF</td>
+                                        <td th:text="${product.quantity}">0</td>
+                                        <td th:text="${#dates.format(product.enteredDate, 'dd/MM/yyyy')}">Date</td>
+                                        <td th:text="${product.description}">Description</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <button type="button"
+                                                        class="btn btn-outline-success dropdown-toggle dropdown-toggle-split"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false" data-display="static">
+                                                    <span class="sr-only"><i class="ri-settings-3-line"></i></span>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item"
+                                                       th:href="@{'/admin/products/edit/' + ${product.productId}}">Edit</a>
+                                                    <a class="dropdown-item"
+                                                       th:href="@{'/admin/products/addImages/' + ${product.productId}}">Add
+                                                        Images</a>
+                                                    <a class="dropdown-item"
+                                                       th:href="@{'/admin/products/delete/' + ${product.productId}}"
+                                                       onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">Delete</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<footer>
-		<div class="container-fluid">
-			<div class="copyright">
+    <footer>
+        <div class="container-fluid">
+            <div class="copyright">
 
-			</div>
-		</div>
-	</footer>
+            </div>
+        </div>
+    </footer>
 </main>
 
 <!-- Vendor Scripts -->

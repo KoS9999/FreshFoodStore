@@ -4,16 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chỉnh sửa đánh giá</title>
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
     <style>
-        .btn-success { background-color: #28a745; color: #fff; }
-        .btn-warning { background-color: #ffc107; color: #000; }
-        .text-success { color: #28a745 !important; }
-        .text-danger { color: #dc3545 !important; }
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
         .review-form-wrapper {
             max-width: 600px;
             margin: 40px auto;
@@ -69,72 +83,80 @@
 
     <div class="ltn__comment-reply-area ltn__form-box mb-30">
         <div class="review-form-wrapper">
-        <form id="editReviewForm" method="post" enctype="multipart/form-data">
-            <input type="hidden" id="reviewId" name="reviewId" th:value="${review.reviewId}">
-            <input type="hidden" id="userId" name="userId" th:value="${review.user.userId}">
-            <input type="hidden" id="productId" name="productId" th:value="${review.product.productId}">
-            <input type="hidden" id="orderDetailId" name="orderDetailId" th:value="${review.orderDetail.orderDetailId}">
+            <form id="editReviewForm" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="reviewId" name="reviewId" th:value="${review.reviewId}">
+                <input type="hidden" id="userId" name="userId" th:value="${review.user.userId}">
+                <input type="hidden" id="productId" name="productId" th:value="${review.product.productId}">
+                <input type="hidden" id="orderDetailId" name="orderDetailId"
+                       th:value="${review.orderDetail.orderDetailId}">
 
-            <div class="mb-30">
-                <div class="add-a-review">
-                    <h6>Chỉnh sửa đánh giá của bạn:</h6>
-                    <div class="product-ratting">
-                        <ul>
-                            <li><a href="#" onclick="setRating(1)"><i class="far fa-star" id="star1"></i></a></li>
-                            <li><a href="#" onclick="setRating(2)"><i class="far fa-star" id="star2"></i></a></li>
-                            <li><a href="#" onclick="setRating(3)"><i class="far fa-star" id="star3"></i></a></li>
-                            <li><a href="#" onclick="setRating(4)"><i class="far fa-star" id="star4"></i></a></li>
-                            <li><a href="#" onclick="setRating(5)"><i class="far fa-star" id="star5"></i></a></li>
-                        </ul>
+                <div class="mb-30">
+                    <div class="add-a-review">
+                        <h6>Chỉnh sửa đánh giá của bạn:</h6>
+                        <div class="product-ratting">
+                            <ul>
+                                <li><a href="#" onclick="setRating(1)"><i class="far fa-star" id="star1"></i></a></li>
+                                <li><a href="#" onclick="setRating(2)"><i class="far fa-star" id="star2"></i></a></li>
+                                <li><a href="#" onclick="setRating(3)"><i class="far fa-star" id="star3"></i></a></li>
+                                <li><a href="#" onclick="setRating(4)"><i class="far fa-star" id="star4"></i></a></li>
+                                <li><a href="#" onclick="setRating(5)"><i class="far fa-star" id="star5"></i></a></li>
+                            </ul>
+                        </div>
+                        <input type="hidden" id="rating" name="rating" th:value="${review.rating}">
                     </div>
-                    <input type="hidden" id="rating" name="rating" th:value="${review.rating}">
                 </div>
-            </div>
 
-            <div class="input-item input-item-textarea ltn__custom-icon">
-                <textarea id="reviewText" name="reviewText" placeholder="Nhập nhận xét của bạn..." required th:text="${review.reviewText}"></textarea>
-            </div>
-
-            <label>Hình ảnh hiện tại:</label>
-            <div>
-                <div th:if="${review.imageUrl1}">
-                    <img th:src="${review.imageUrl1}" width="100">
-                    <input type="checkbox" name="deleteImage1" value="true"> Xóa ảnh 1
+                <div class="input-item input-item-textarea ltn__custom-icon">
+                    <textarea id="reviewText" name="reviewText" placeholder="Nhập nhận xét của bạn..." required
+                              th:text="${review.reviewText}"></textarea>
                 </div>
-                <div th:if="${review.imageUrl2}">
-                    <img th:src="${review.imageUrl2}" width="100">
-                    <input type="checkbox" name="deleteImage2" value="true"> Xóa ảnh 2
+
+                <label>Hình ảnh hiện tại:</label>
+                <div>
+                    <div th:if="${review.imageUrl1}">
+                        <img th:src="${review.imageUrl1}" width="100">
+                        <input type="checkbox" name="deleteImage1" value="true"> Xóa ảnh 1
+                    </div>
+                    <div th:if="${review.imageUrl2}">
+                        <img th:src="${review.imageUrl2}" width="100">
+                        <input type="checkbox" name="deleteImage2" value="true"> Xóa ảnh 2
+                    </div>
                 </div>
-            </div>
 
-            <label>Thay đổi hình ảnh (tối đa 2 ảnh):</label>
-            <div>
-                <input type="file" id="image1" name="image1" accept="image/*" class="form-control">
-                <input type="file" id="image2" name="image2" accept="image/*" class="form-control">
-            </div>
+                <label>Thay đổi hình ảnh (tối đa 2 ảnh):</label>
+                <div>
+                    <input type="file" id="image1" name="image1" accept="image/*" class="form-control">
+                    <input type="file" id="image2" name="image2" accept="image/*" class="form-control">
+                </div>
 
-            <div class="btn-wrapper">
-                <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit" id="updateButton">Cập nhật đánh giá</button>
-            </div>
-        </form>
+                <div class="btn-wrapper">
+                    <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit" id="updateButton">Cập nhật
+                        đánh giá
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
     <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 9999;">
-        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px;">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6"
+             role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px;">
             <div class="d-flex">
                 <div class="toast-body fw-semibold">
                     ✅ Đánh giá đã được cập nhật!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
-        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 mt-2" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px;">
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 mt-2"
+             role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px;">
             <div class="d-flex">
                 <div class="toast-body fw-semibold">
                     ❌ Có lỗi xảy ra, vui lòng thử lại!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -160,6 +182,7 @@
             }
         }
     }
+
     function showToast(toastId) {
         const toastEl = document.getElementById(toastId);
         const toast = new bootstrap.Toast(toastEl);

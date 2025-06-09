@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="admin, dashboard, ecommerce, panel" />
+    <meta name="keywords" content="admin, dashboard, ecommerce, panel"/>
     <meta name="description" content="Carrot - Admin.">
 
-    <title>Admin - Order Details</title>
+    <title>Quản trị - Chi tiết đơn hàng</title>
 
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
@@ -31,7 +31,7 @@
                     <h5>Order Details</h5>
                     <ul>
                         <li><a th:href="@{/admin/orders}">Orders</a></li>
-                        <li>Order Details</li>
+                        <li>Chi tiết đơn hàng</li>
                     </ul>
                 </div>
             </div>
@@ -41,19 +41,22 @@
                 <div class="col-md-12">
                     <div class="cr-card">
                         <div class="cr-card-header">
-                            <h4 class="cr-card-title">Order Information</h4>
+                            <h4 class="cr-card-title">Thông tin đơn hàng</h4>
                         </div>
                         <div class="cr-card-content card-default">
                             <div class="order-info">
-                                <div><strong>Order ID:</strong> <span th:text="${order.orderId}"></span></div>
-                                <div><strong>Customer:</strong> <span th:text="${order.user.name}"></span></div>
-                                <div><strong>Shipping Address:</strong> <span th:text="${order.address}"></span></div>
-                                <div><strong>Total Price:</strong> <span th:text="${order.amount}"></span></div>
-                                <div><strong>Order Status:</strong>
-                                    <span th:class="'status-badge ' + ${order.orderStatus.name()}" th:text="${order.orderStatus.name()}"></span>
+                                <div><strong>Mã đơn hàng:</strong> <span th:text="${order.orderId}"></span></div>
+                                <div><strong>Khách hàng:</strong> <span th:text="${order.user.name}"></span></div>
+                                <div><strong>Địa chỉ:</strong> <span th:text="${order.address}"></span></div>
+                                <div><strong>Số điện thoại: </strong> <span th:text="${order.phone}"></span></div>
+                                <div><strong>Tổng giá trị đơn hàng:</strong> <span th:text="${order.amount}"></span></div>
+                                <div><strong>Trạng thái đơn hàng:</strong>
+                                    <span th:class="'status-badge ' + ${order.orderStatus.name()}"
+                                          th:text="${order.orderStatus.name()}"></span>
                                 </div>
-                                <div><strong>Payment Status:</strong>
-                                    <span th:class="'status-badge ' + (${order.status == 1 ? 'PAID' : 'UNPAID'})" th:text="${order.status == 1 ? 'Paid' : 'Unpaid'}"></span>
+                                <div><strong>Trạng thái thanh toán:</strong>
+                                    <span th:class="'status-badge ' + (${order.status == 1 ? 'PAID' : 'UNPAID'})"
+                                          th:text="${order.status == 1 ? 'Paid' : 'Unpaid'}"></span>
                                 </div>
                             </div>
                         </div>
@@ -66,23 +69,24 @@
                 <div class="col-md-12">
                     <div class="cr-card">
                         <div class="cr-card-header">
-                            <h4 class="cr-card-title">Order Items</h4>
+                            <h4 class="cr-card-title">Đơn hàng</h4>
                         </div>
                         <div class="cr-card-content card-default">
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Product</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Subtotal</th>
+                                        <th>Ảnh</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Số lượng</th>
+                                        <th>Giá mỗi sản phẩm</th>
+                                        <th>Tổng giá sản phẩm</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="detail : ${orderDetails}">
-                                        <td><img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image" class="table-img"></td>
+                                        <td><img th:src="@{'/uploads/main/' + ${detail.product.productImage}}"
+                                                 alt="Product Image" class="table-img"></td>
                                         <td th:text="${detail.product.productName}"></td>
                                         <td th:text="${detail.quantity}"></td>
                                         <td th:text="${detail.price}"></td>
@@ -99,7 +103,7 @@
             <!-- Back to Orders -->
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <a th:href="@{/admin/orders}" class="btn btn-secondary">Back to Orders</a>
+                    <a th:href="@{/admin/orders}" class="btn btn-secondary">Về đơn hàng</a>
                 </div>
             </div>
         </div>

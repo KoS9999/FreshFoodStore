@@ -7,11 +7,11 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>FreshFood - Organic Food</title>
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <!-- plugins css -->
@@ -38,27 +38,40 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
+
         .tag-color-0 {
             background-color: #88c244 !important;
         }
+
         .tag-color-1 {
             background-color: #f39c12 !important;
         }
+
         .tag-color-2 {
             background-color: #3498db !important;
         }
+
         .tag-color-3 {
             background-color: #9b59b6 !important;
         }
+
         .tag-color-4 {
             background-color: #e74c3c !important;
         }
+
         .tag-color-5 {
             background-color: #16a085 !important;
         }
+
         .related-tags a:hover {
             background-color: #88c244;
             color: #fff;
+        }
+        .markdown-content,
+        .markdown-content * {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+            color: #333;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -101,15 +114,17 @@
                             <div class="ltn__blog-meta">
                                 <ul>
                                     <li class="ltn__blog-author">
-                                        <a href="#"><i class="far fa-user"></i>By: <span th:text="${blog.author}"></span></a>
+                                        <a href="#"><i class="far fa-user"></i>By: <span
+                                                th:text="${blog.author}"></span></a>
                                     </li>
                                     <li class="ltn__blog-date">
-                                        <i class="far fa-calendar-alt"></i> <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}"></span>
+                                        <i class="far fa-calendar-alt"></i> <span
+                                            th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}"></span>
                                     </li>
                                 </ul>
                             </div>
 
-                            <p th:utext="${blog.htmlContent}"></p>
+                            <div th:utext="${blog.htmlContent}" class="markdown-content"></div>
                         </div>
                     </div>
                 </div>

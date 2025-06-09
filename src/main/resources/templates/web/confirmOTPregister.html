@@ -5,12 +5,12 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Broccoli - Confirm OTP</title>
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <!-- Plugins css -->
@@ -19,13 +19,82 @@
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
     <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <style>
+        .otp-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .otp-input {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+            caret-color: #8BB436;
+        }
+
+        .otp-input:focus {
+            border-color: #8BB436;
+            background-color: #ffffff;
+            box-shadow: 0 0 8px rgba(139, 180, 54, 0.3);
+            transform: scale(1.05);
+        }
+
+        .otp-input::placeholder {
+            color: #9ca3af;
+            opacity: 0.6;
+        }
+
+        .otp-input::-webkit-outer-spin-button,
+        .otp-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .otp-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .btn-wrapper {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .theme-btn-1 {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn-1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 180, 54, 0.3);
+        }
+
+        @media (max-width: 576px) {
+            .otp-input {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
 <!-- Body main wrapper start -->
 <div class="body-wrapper">
-
     <div class="ltn__utilize-overlay"></div>
 
     <!-- CONFIRM OTP AREA START -->
@@ -34,8 +103,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area text-center">
-                        <h1 class="section-title">Confirm Your OTP</h1>
-                        <p>Please enter the OTP sent to your email to complete your registration.</p>
+                        <h1 class="section-title">Xác thực OTP của bạn</h1>
+                        <p>Vui lòng nhập OTP được gửi đến email của bạn để hoàn tất đăng ký.</p>
                     </div>
                 </div>
             </div>
@@ -43,9 +112,17 @@
                 <div class="col-lg-6 offset-lg-3">
                     <div class="account-login-inner">
                         <form th:action="@{/confirmOTPregister}" method="post" class="ltn__form-box contact-form-box">
-                            <input type="text" name="otp" placeholder="Enter OTP*" required>
+                            <div class="otp-input-container">
+                                <input type="number" maxlength="1" class="otp-input" required>
+                                <input type="number" maxlength="1" class="otp-input" required>
+                                <input type="number" maxlength="1" class="otp-input" required>
+                                <input type="number" maxlength="1" class="otp-input" required>
+                                <input type="number" maxlength="1" class="otp-input" required>
+                                <input type="number" maxlength="1" class="otp-input" required>
+                            </div>
+                            <input type="hidden" name="otp" id="otp" value="">
                             <div class="btn-wrapper mt-0">
-                                <button class="theme-btn-1 btn btn-block" type="submit">CONFIRM OTP</button>
+                                <button class="theme-btn-1 btn btn-block" type="submit">Xác nhận</button>
                             </div>
                         </form>
                     </div>
@@ -54,7 +131,6 @@
         </div>
     </div>
     <!-- CONFIRM OTP AREA END -->
-
 </div>
 <!-- Body main wrapper end -->
 
@@ -62,6 +138,52 @@
 <script th:src="@{/web/js/plugins.js}"></script>
 <!-- Main JS -->
 <script th:src="@{/web/js/main.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const otpInputs = document.querySelectorAll(".otp-input");
+        const hiddenOtpInput = document.getElementById("otp");
 
+        otpInputs.forEach((input, index) => {
+            input.addEventListener("input", (e) => {
+                const value = e.target.value;
+                if (!/^\d$/.test(value)) {
+                    e.target.value = "";
+                    return;
+                }
+                if (value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                collectOtp();
+            });
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener("paste", (e) => {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+                const numbers = pasteData.slice(0, otpInputs.length).split("");
+                otpInputs.forEach((input, i) => {
+                    input.value = numbers[i] || "";
+                });
+                const lastFilledIndex = numbers.length - 1;
+                if (lastFilledIndex >= 0 && lastFilledIndex < otpInputs.length) {
+                    otpInputs[lastFilledIndex].focus();
+                } else {
+                    otpInputs[otpInputs.length - 1].focus();
+                }
+                collectOtp();
+            });
+        });
+
+        function collectOtp() {
+            const otp = Array.from(otpInputs).map((input) => input.value).join("");
+            hiddenOtpInput.value = otp;
+        }
+    });
+</script>
 </body>
 </html>

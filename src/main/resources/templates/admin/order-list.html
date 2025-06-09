@@ -2,174 +2,180 @@
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="keywords" content="admin, dashboard, ecommerce, panel" />
-	<meta name="description" content="Carrot - Admin.">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="admin, dashboard, ecommerce, panel"/>
+    <meta name="description" content="Carrot - Admin.">
 
-	<title>Admin - Order List</title>
+    <title>Quản trị - Danh sách đơn hàng</title>
 
-	<link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-	<link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
-	<link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
-	<link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
-	<style>
-		.dropdown-menu {
-			display: none;
-			position: absolute;
-			background-color: white;
-			min-width: 160px;
-			box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-			z-index: 1000;
-		}
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+    <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <style>
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
 
-		.dropdown:hover .dropdown-menu {
-			display: block;
-		}
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
 
-		.status-label {
-			padding: 6px 12px;
-			border-radius: 6px;
-			cursor: pointer;
-			font-weight: 500;
-			display: inline-block;
-		}
+        .status-label {
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-block;
+        }
 
-		.dropdown-item {
-			padding: 8px 12px;
-			display: block;
-			color: #333;
-			text-decoration: none;
-		}
+        .dropdown-item {
+            padding: 8px 12px;
+            display: block;
+            color: #333;
+            text-decoration: none;
+        }
 
-		.dropdown-item:hover {
-			background-color: #f0f0f0;
-		}
-		.table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-bottom: 20px;
-			background-color: #ffffff;
-		}
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
 
-		.table th {
-			background-color: #f2f9f2;
-			color: #3c763d;
-			font-weight: bold;
-			padding: 12px;
-			text-align: center;
-			border: 1px solid #e0e0e0;
-		}
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
 
-		.table td {
-			padding: 10px;
-			text-align: center;
-			border: 1px solid #e0e0e0;
-		}
+        .table th {
+            background-color: #f2f9f2;
+            color: #3c763d;
+            font-weight: bold;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
 
-		.table tr:hover {
-			background-color: #f1f8f1;
-		}
+        .table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
 
-	</style>
+        .table tr:hover {
+            background-color: #f1f8f1;
+        }
+
+    </style>
 </head>
 
 <body>
 <main class="wrapper sb-default">
-	<!-- Loader -->
-	<div id="cr-overlay">
-		<div class="loader"></div>
-	</div>
-	<!-- Gọi fragment header -->
-	<div th:replace="~{admin/header :: header}"></div>
-	<div th:replace="~{admin/sidebar :: sidebar}"></div>
+    <!-- Loader -->
+    <div id="cr-overlay">
+        <div class="loader"></div>
+    </div>
+    <!-- Gọi fragment header -->
+    <div th:replace="~{admin/header :: header}"></div>
+    <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
-	<!-- main content -->
-	<div class="cr-main-content">
-		<div class="container-fluid">
-			<div class="cr-page-title cr-page-title-2">
-				<div class="cr-breadcrumb">
-					<h5>Order List</h5>
-					<ul>
-						<li><a th:href="@{/admin/dashboard}">Carrot</a></li>
-						<li>Order List</li>
-					</ul>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="cr-card" id="ordertbl">
-						<div class="cr-card-header">
-							<h4 class="cr-card-title">Recent Orders</h4>
-							<div class="header-tools">
-								<a href="javascript:void(0)" class="m-r-10 cr-full-card"><i class="ri-fullscreen-line"></i></a>
-								<div class="cr-date-range dots">
-									<span></span>
-								</div>
-							</div>
-						</div>
-						<div class="cr-card-content card-default">
-							<div class="order-table">
-								<div class="table-responsive tbl-1200">
-									<table id="recent_order" class="table">
-										<thead>
-										<tr>
-											<th>Order ID</th>
-											<th>Customer</th>
-											<th>Shipping Address</th>
-											<th>Phone Number</th>
-											<th>Note</th>
-											<th>Payment Status</th>
-											<th>Voucher</th>
-											<th>Total Price</th>
-											<th>Order Status</th>
-											<th>Actions</th>
-										</tr>
-										</thead>
-										<tbody>
-										<tr th:each="order : ${orders}">
-											<td th:text="${order.orderId}"></td>
-											<td th:text="${order.user.name}"></td>
-											<td th:text="${order.address}"></td>
-											<td th:text="${order.phone}"></td>
-											<td th:text="${order.note}"></td>
-											<td>
-												<!-- Nút chỉnh trạng thái thanh toán -->
-												<div class="dropdown d-inline-block">
+    <!-- main content -->
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Danh sách đơn hàng</h5>
+                    <ul>
+                        <li><a th:href="@{/admin/dashboard}">Carrot</a></li>
+                        <li>Danh sách đơn hàng</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card" id="ordertbl">
+                        <div class="cr-card-header">
+                            <h4 class="cr-card-title">Đơn hàng gần đây</h4>
+                            <div class="header-tools">
+                                <a href="javascript:void(0)" class="m-r-10 cr-full-card"><i
+                                        class="ri-fullscreen-line"></i></a>
+                                <div class="cr-date-range dots">
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cr-card-content card-default">
+                            <div class="order-table">
+                                <div class="table-responsive tbl-1200">
+                                    <table id="recent_order" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Khách hàng</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Ghi chú</th>
+                                            <th>Trạng thái thanh toán</th>
+                                            <th>Voucher</th>
+                                            <th>Tổng giá trị</th>
+                                            <th>Trạng thái đơn hàng</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="order : ${orders}">
+                                            <td th:text="${order.orderId}"></td>
+                                            <td th:text="${order.user.name}"></td>
+                                            <td th:text="${order.address}"></td>
+                                            <td th:text="${order.phone}"></td>
+                                            <td th:text="${order.note}"></td>
+                                            <td>
+                                                <!-- Nút chỉnh trạng thái thanh toán -->
+                                                <div class="dropdown d-inline-block">
 													<span class="status-label"
-														  th:classappend="' ' + (${order.status} == 1 ? 'text-bg-success' : 'text-bg-danger')">
+                                                          th:classappend="' ' + (${order.status} == 1 ? 'text-bg-success' : 'text-bg-danger')">
 														<span th:text="${order.status == 1 ? 'PAID' : 'UNPAID'}">Status</span>
 													</span>
-													<div class="dropdown-menu show-on-hover bg-white">
-														<a class="dropdown-item text-success" th:if="${order.status != 1}"
-														   th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/1'}">Mark as Paid</a>
+                                                    <div class="dropdown-menu show-on-hover bg-white">
+                                                        <a class="dropdown-item text-success"
+                                                           th:if="${order.status != 1}"
+                                                           th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/1'}">Mark
+                                                            as Paid</a>
 
-														<a class="dropdown-item text-danger" th:if="${order.status != 0}"
-														   th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/0'}">Mark as Unpaid</a>
-													</div>
-												</div>
+                                                        <a class="dropdown-item text-danger"
+                                                           th:if="${order.status != 0}"
+                                                           th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/0'}">Mark
+                                                            as Unpaid</a>
+                                                    </div>
+                                                </div>
 
-											</td>
-											<td th:text="${order.voucherCode}"></td>
-											<td th:attr="data-order=${order.amount}"
-												th:text="${#numbers.formatDecimal(order.amount, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                            </td>
+                                            <td th:text="${order.voucherCode}"></td>
+                                            <td th:attr="data-order=${order.amount}"
+                                                th:text="${#numbers.formatDecimal(order.amount, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
 
-											</td>
-											<td>
-												<!-- Nút chỉnh trạng thái đơn hàng -->
-												<div class="dropdown d-inline-block">
+                                            </td>
+                                            <td>
+                                                <!-- Nút chỉnh trạng thái đơn hàng -->
+                                                <div class="dropdown d-inline-block">
 													<span class="status-label"
-														  th:classappend=" ' ' +
+                                                          th:classappend=" ' ' +
 															(${order.orderStatus.name() == 'PENDING'} ? 'text-bg-warning' :
 															(${order.orderStatus.name() == 'CONFIRMED'} ? 'text-bg-primary' :
 															(${order.orderStatus.name() == 'SHIPPING'} ? 'text-bg-info' :
@@ -177,42 +183,48 @@
 															(${order.orderStatus.name() == 'CANCELED'} ? 'text-bg-danger' : 'text-bg-secondary')))))">
 														<span th:text="${order.orderStatus.name()}">Status</span>
 													</span>
-													<div class="dropdown-menu show-on-hover bg-white">
-														<a class="dropdown-item text-warning" th:if="${order.orderStatus.name() != 'PENDING'}"
-														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/PENDING'}">Pending</a>
-														<a class="dropdown-item text-primary" th:if="${order.orderStatus.name() != 'CONFIRMED'}"
-														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CONFIRMED'}">Confirmed</a>
-														<a class="dropdown-item text-info" th:if="${order.orderStatus.name() != 'SHIPPING'}"
-														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/SHIPPING'}">Shipping</a>
-														<a class="dropdown-item text-success" th:if="${order.orderStatus.name() != 'DELIVERED'}"
-														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/DELIVERED'}">Delivered</a>
-														<a class="dropdown-item text-danger" th:if="${order.orderStatus.name() != 'CANCELED'}"
-														   th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CANCELED'}">Canceled</a>
-													</div>
-												</div>
-											</td>
-											<td>
-												<a th:href="@{'/admin/orders/' + ${order.orderId}}" class="btn btn-info">Details</a>
-											</td>
-										</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                                    <div class="dropdown-menu show-on-hover bg-white">
+                                                        <a class="dropdown-item text-warning"
+                                                           th:if="${order.orderStatus.name() != 'PENDING'}"
+                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/PENDING'}">Pending</a>
+                                                        <a class="dropdown-item text-primary"
+                                                           th:if="${order.orderStatus.name() != 'CONFIRMED'}"
+                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CONFIRMED'}">Confirmed</a>
+                                                        <a class="dropdown-item text-info"
+                                                           th:if="${order.orderStatus.name() != 'SHIPPING'}"
+                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/SHIPPING'}">Shipping</a>
+                                                        <a class="dropdown-item text-success"
+                                                           th:if="${order.orderStatus.name() != 'DELIVERED'}"
+                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/DELIVERED'}">Delivered</a>
+                                                        <a class="dropdown-item text-danger"
+                                                           th:if="${order.orderStatus.name() != 'CANCELED'}"
+                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CANCELED'}">Canceled</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{'/admin/orders/' + ${order.orderId}}"
+                                                   class="btn btn-info">Details</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<footer>
-		<div class="container-fluid">
-			<div class="copyright">
-				<p><span id="copyright_year"></span> © Carrot, All rights Reserved.</p>
-			</div>
-		</div>
-	</footer>
+    <footer>
+        <div class="container-fluid">
+            <div class="copyright">
+                <p><span id="copyright_year"></span> © Carrot, All rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
 </main>
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
 <script th:src="@{/admin/js/vendor/simplebar.min.js}"></script>

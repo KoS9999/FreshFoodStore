@@ -1,104 +1,289 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="admin, dashboard, ecommerce, panel" />
-    <meta name="description" content="Carrot - Admin.">
-
-    <title>Admin - Edit User</title>
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Cập nhật khách hàng</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-    <!-- Icon CSS -->
-    <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
-
-    <!-- Vendor CSS -->
-    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
+    <!-- CSS -->
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 
-    <!-- Main CSS -->
-    <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <!-- Custom CSS for Modern Design -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .cr-main-content {
+            padding: 20px;
+        }
+
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-actions .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .form-actions .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
+        }
+
+        .form-actions .btn-danger {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .form-actions .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        /* Toast Styling */
+        .toast-container {
+            z-index: 9999;
+        }
+
+        .toast {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-success {
+            background-color: #28a745 !important;
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important;
+        }
+    </style>
 </head>
-
 <body>
 <main class="wrapper sb-default">
-    <div id="cr-overlay">
-        <div class="loader"></div>
-    </div>
-    <header class="cr-header" th:replace="~{admin/header :: header}"></header>
-    <div class="cr-sidebar-overlay"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
     <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
+    <!-- Main Content -->
     <div class="cr-main-content">
         <div class="container-fluid">
-            <div class="cr-page-title-2">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Edit User</h3>
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Cập Nhật Khách Hàng</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Cập Nhật Khách Hàng</li>
+                    </ul>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default">
+                        <div class="cr-card-content">
+                            <form th:action="@{/admin/users/update}" th:object="${user}" method="POST" id="userForm">
+                                <input type="hidden" th:field="*{userId}"/>
 
-            <form th:action="@{/admin/users/update}" th:object="${user}" method="post">
-                <!-- Trường ẩn chứa ID của người dùng -->
-                <input type="hidden" th:field="*{userId}">
+                                <div class="form-group">
+                                    <label for="userName">Tên Khách Hàng</label>
+                                    <input type="text" th:field="*{name}" id="userName" class="form-control"
+                                           placeholder="Nhập tên khách hàng" required>
+                                </div>
 
-                <div class="form-group">
-                    <label for="userName">Name</label>
-                    <input type="text" th:field="*{name}" id="userName" class="form-control" placeholder="Enter name" required>
+                                <div class="form-group">
+                                    <label for="userPhone">Số Điện Thoại</label>
+                                    <input type="text" th:field="*{phone}" id="userPhone" class="form-control"
+                                           placeholder="Nhập số điện thoại">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="userAddress">Địa Chỉ</label>
+                                    <input type="text" th:field="*{address}" id="userAddress" class="form-control"
+                                           placeholder="Nhập địa chỉ">
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Lưu Thay Đổi</button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="window.location.href='/admin/users'">Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="userPhone">Phone</label>
-                    <input type="text" th:field="*{phone}" id="userPhone" class="form-control" placeholder="Enter phone">
-                </div>
-
-                <div class="form-group">
-                    <label for="userAddress">Address</label>
-                    <input type="text" th:field="*{address}" id="userAddress" class="form-control" placeholder="Enter address">
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <a href="javascript:history.back()" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
+            </div>
         </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container-fluid">
-            <div class="copyright">
-                <p><span id="copyright_year"></span> © Carrot, All rights Reserved.</p>
-                <p>Design by MaraviyaInfotech.</p>
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 toast-error" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
-    </footer>
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6 toast-success" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </main>
 
 <!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
-<script th:src="@{/admin/js/vendor/simplebar.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/admin/js/vendor/apexcharts.min.js}"></script>
-<script th:src="@{/admin/js/vendor/jquery-jvectormap-1.2.2.min.js}"></script>
-<script th:src="@{/admin/js/vendor/jquery-jvectormap-world-mill-en.js}"></script>
-<script th:src="@{/admin/js/vendor/owl.carousel.min.js}"></script>
-<script th:src="@{/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
-<script th:src="@{/admin/js/vendor/moment.min.js}"></script>
-<script th:src="@{/admin/js/vendor/daterangepicker.js}"></script>
-<script th:src="@{/admin/js/vendor/date-range.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Custom JavaScript for Form Validation and Toast -->
+<script>
+    // Toast Function
+    function showToast(type, message) {
+        const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        toast.show();
+    }
+
+    // Form Submission with Toast
+    document.getElementById('userForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate required fields
+        const userName = document.getElementById('userName').value.trim();
+        if (!userName) {
+            showToast('error', 'Vui lòng điền tên khách hàng!');
+            e.stopImmediatePropagation();
+            return false;
+        }
+
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        try {
+            const response = await fetch(e.target.action, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast('success', 'Cập nhật khách hàng thành công!');
+                setTimeout(() => window.location.href = '/admin/users', 2000);
+            } else {
+                showToast('error', 'Cập nhật khách hàng thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            showToast('error', 'Đã xảy ra lỗi khi cập nhật khách hàng.');
+            console.error('Error:', error);
+        }
+    });
+</script>
 </body>
 </html>

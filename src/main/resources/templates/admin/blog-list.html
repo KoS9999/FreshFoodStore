@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Blog List</title>
+    <title>Quản trị - Danh sách Blog</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
@@ -77,9 +77,7 @@
         .table td a:hover {
             text-decoration: underline;
         }
-        .table tr:hover {
-            background-color: #f1f8f1;
-        }
+
         .btn-warning {
             background-color: #ffc107;
             color: white;
@@ -98,6 +96,26 @@
 
         .btn-danger:hover {
             opacity: 0.8;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-container label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-container select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+            min-width: 200px;
         }
     </style>
 </head>
@@ -126,8 +144,19 @@
                 <div class="col-md-12">
                     <div class="cr-card card-default blog-list">
                         <div class="cr-card-content">
-                            <div class="d-flex justify-content-end mb-3">
-                                <a class="cr-btn default-btn color-success" th:href="@{/admin/blogs/create}">Thêm bài viết</a>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="filter-container">
+                                    <label for="categoryFilter">Danh mục:</label>
+                                    <select id="categoryFilter" class="form-select">
+                                        <option value="">Tất cả</option>
+                                        <option th:each="category : ${categories}"
+                                                th:value="${category}"
+                                                th:text="${category.displayName}">Category
+                                        </option>
+                                    </select>
+                                </div>
+                                <a class="cr-btn default-btn color-success" th:href="@{/admin/blogs/create}">Thêm bài
+                                    viết</a>
                             </div>
 
                             <div class="table-responsive">
@@ -138,6 +167,7 @@
                                         <th>Tác giả</th>
                                         <th>Ngày tạo</th>
                                         <th>Trạng thái</th>
+                                        <th>Danh mục</th>
                                         <th>Hành động</th>
                                     </tr>
                                     </thead>
@@ -147,16 +177,17 @@
                                         <td th:text="${blog.author}">Author</td>
                                         <td th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}">Date</td>
                                         <td th:text="${blog.status}">Status</td>
+                                        <td th:text="${blog.category.displayName}">Category</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
                                                 <a th:href="@{'/admin/blogs/edit/' + ${blog.id}}"
                                                    class="btn btn-warning btn-sm" style="margin-right: 10px;">
-                                                    Edit
+                                                    SỬA
                                                 </a>
                                                 <a th:href="@{'/admin/blogs/delete/' + ${blog.id}}"
                                                    class="btn btn-danger btn-sm"
                                                    onclick="return confirm('Bạn có chắc muốn xóa bài viết này?');">
-                                                    Delete
+                                                    XÓA
                                                 </a>
                                             </div>
                                         </td>
@@ -186,5 +217,27 @@
 <script th:src="@{/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
 <script th:src="@{/admin/js/vendor/datatables.responsive.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        const table = $('#blog_list').DataTable({
+            responsive: true,
+            language: {
+                "sZeroRecords": "Không tìm thấy bản ghi phù hợp",
+                "sEmptyTable": "Không có dữ liệu để hiển thị",
+                "sInfoEmpty": "Không có mục nào để hiển thị",
+            }
+        });
+        $('#categoryFilter').on('change', function () {
+            const selectedValue = $(this).val();
+            const displayName = $('#categoryFilter option:selected').text();
+            if (selectedValue === '') {
+                table.column(4).search('').draw();
+            } else {
+                table.column(4).search(displayName).draw();
+            }
+        });
+    });
+</script>
 </body>
 </html>

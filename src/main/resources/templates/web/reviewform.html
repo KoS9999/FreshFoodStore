@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
 
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
@@ -155,7 +155,8 @@
                 </div>
 
                 <div class="input-item input-item-textarea ltn__custom-icon">
-                    <textarea id="reviewText" name="reviewText" placeholder="Nhập nhận xét của bạn..." required></textarea>
+                    <textarea id="reviewText" name="reviewText" placeholder="Nhập nhận xét của bạn..."
+                              required></textarea>
                 </div>
 
                 <div class="input-item input-item-file ">
@@ -166,7 +167,9 @@
 
 
                 <div class="btn-wrapper">
-                    <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit" id="submitButton">Đánh giá</button>
+                    <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit" id="submitButton">Đánh
+                        giá
+                    </button>
                 </div>
             </form>
         </div>
@@ -174,21 +177,25 @@
 
     <!-- Toast Container -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                     ✅ Phản hồi đã được lưu thành công!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
 
-        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                     Có lỗi xảy ra, vui lòng thử lại!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -215,6 +222,7 @@
             }
         }
     }
+
     function showToast(toastId) {
         const toastEl = document.getElementById(toastId);
         const toast = new bootstrap.Toast(toastEl);

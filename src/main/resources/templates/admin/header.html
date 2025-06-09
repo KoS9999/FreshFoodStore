@@ -23,15 +23,19 @@
                     <div class="cr-right-tool cr-flag-drop language">
                         <div class="cr-hover-drop">
                             <div class="cr-hover-tool">
-                                <img class="flag" th:src="@{/admin/img/flag/us.png}" alt="flag">
+                                <img class="flag" th:src="@{/admin/img/flag/vi.png}" alt="flag">
                             </div>
                             <div class="cr-hover-drop-panel right">
                                 <ul>
-                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/us.png}" alt="flag">English</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/in.png}" alt="flag">Hindi</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/de.png}" alt="flag"> Deutsch</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/it.png}" alt="flag">Italian</a></li>
-                                    <li><a href="javascript:void(0)"><img class="flag" th:src="@{/admin/img/flag/jp.png}" alt="flag">Japanese</a></li>
+                                    <li><a href="javascript:void(0)"><img class="flag"
+                                                                          th:src="@{/admin/img/flag/vi.png}" alt="flag">VietNam</a>
+                                    </li>
+                                    <li><a href="javascript:void(0)"><img class="flag"
+                                                                          th:src="@{/admin/img/flag/us.png}" alt="flag">English</a>
+                                    </li>
+                                    <li><a href="javascript:void(0)"><img class="flag"
+                                                                          th:src="@{/admin/img/flag/jp.png}" alt="flag">Japanese</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -44,12 +48,18 @@
                             <div class="cr-hover-drop-panel right">
                                 <h6 class="title">Apps</h6>
                                 <ul>
-                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/1.png}" alt="app">English</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/2.png}" alt="app">Hindi</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/3.png}" alt="app"> Deutsch</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/4.png}" alt="app">Italian</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/5.png}" alt="app">Japanese</a></li>
-                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/6.png}" alt="app">Japanese</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/1.png}"
+                                                                          alt="app">English</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/2.png}"
+                                                                          alt="app">Hindi</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/3.png}"
+                                                                          alt="app"> Deutsch</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/4.png}"
+                                                                          alt="app">Italian</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/5.png}"
+                                                                          alt="app">Japanese</a></li>
+                                    <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/6.png}"
+                                                                          alt="app">Japanese</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -71,7 +81,7 @@
                     <div class="cr-right-tool cr-user-drop">
                         <div class="cr-hover-drop">
                             <div class="cr-hover-tool">
-                                <img class="user" th:src="@{/admin/img/user/1.jpg}" alt="user">
+                                <img class="user" th:src="@{/admin/img/user/admin.png}" alt="user">
                             </div>
                             <div class="cr-hover-drop-panel right">
                                 <div class="details">
@@ -83,11 +93,13 @@
                                 </ul>
                                 <ul class="border-top">
                                     <li>
-                                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <a href="#"
+                                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             <i class="ri-logout-circle-r-line"></i>Logout
                                         </a>
-                                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                        <form id="logout-form" th:action="@{/logout}" method="post"
+                                              style="display: none;">
+                                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                                         </form>
                                     </li>
                                 </ul>

@@ -1,281 +1,486 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="UTF-8">
-	<title>Admin - Cập Nhật Sản Phẩm</title>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Cập nhật sản phẩm</title>
 
-	<link th:href="@{/admin/css/style.css}" rel="stylesheet">
-	<style>
-		.season-checkbox-container {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-			gap: 10px;
-			padding: 10px;
-			background-color: #f9f9f9;
-			border-radius: 10px;
-			border: 1px solid #ddd;
-		}
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-		.season-checkbox {
-			display: flex;
-			align-items: center;
-			padding: 8px 10px;
-			border: 1px solid transparent;
-			border-radius: 8px;
-			cursor: pointer;
-			transition: 0.3s ease;
-			font-weight: 500;
-			font-size: 15px;
-		}
+    <!-- Vendor CSS -->
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
 
-		.season-checkbox input[type="checkbox"] {
-			margin-right: 8px;
-			transform: scale(1.2);
-		}
+    <!-- Main CSS -->
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 
-		/* Hiệu ứng hover */
-		.season-checkbox:hover {
-			opacity: 0.85;
-			border-color: #999;
-		}
+    <!-- Custom CSS for Modern Design -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
 
-		/* Màu theo mùa */
-		.season-checkbox.spring {
-			background: #fff0f5;
-			color: #c2185b;
-		}
+        .cr-main-content {
+            padding: 20px;
+        }
 
-		.season-checkbox.summer {
-			background: #fffde7;
-			color: #f9a825;
-		}
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
 
-		.season-checkbox.autumn {
-			background: #fbe9e7;
-			color: #bf360c;
-		}
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
 
-		.season-checkbox.winter {
-			background: #e3f2fd;
-			color: #1565c0;
-		}
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
 
-	</style>
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
 
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Drag-and-Drop Area for Main Image */
+        .image-upload-container {
+            border: 2px dashed #4caf50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9fff7;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .image-upload-container.dragover {
+            background-color: #e8f5e9;
+        }
+
+        .image-upload-container label {
+            font-size: 1.1rem;
+            color: #388e3c;
+            cursor: pointer;
+        }
+
+        .image-upload-container input[type="file"] {
+            display: none;
+        }
+
+        .image-preview img, .current-images img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Current Images Section */
+        .current-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .image-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Season Checkboxes */
+        .season-checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background-color: #f9fff7;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .season-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .season-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+            accent-color: #4caf50;
+        }
+
+        .season-checkbox:hover {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .season-checkbox input[type="checkbox"]:checked + span {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-actions .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .form-actions .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
+        }
+
+        .form-actions .btn-danger {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .form-actions .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        /* Toast Styling */
+        .toast-success-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1055;
+        }
+
+        .toast-success {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-error {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-body {
+            color: white;
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body>
 <main class="wrapper sb-default">
-	<!-- Header -->
-	<header th:replace="~{admin/header :: header}"></header>
-	<!-- Sidebar -->
-	<aside th:replace="~{admin/sidebar :: sidebar}"></aside>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
-	<!-- Main content -->
-	<div class="cr-main-content">
-		<div class="container-fluid">
-			<div class="modal">
-				<div class="modal-header">
-					<h2>Cập nhật sản phẩm</h2>
-				</div>
+    <!-- Main Content -->
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <!-- Page Title & Breadcrumb -->
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Cập Nhật Sản Phẩm</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Cập Nhật Sản Phẩm</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default product-list">
+                        <div class="cr-card-content">
+                            <form th:action="@{/admin/products/update/{id}(id=${product.productId})}" th:object="${product}" method="post" enctype="multipart/form-data" id="productForm">
+                                <input type="hidden" th:field="*{productId}"/>
 
-				<form th:action="@{/admin/products/update/{id}(id=${product.productId})}" method="post" enctype="multipart/form-data">
-					<input type="hidden" th:field="*{product.productId}"/>
-					<!-- Tên sản phẩm -->
-					<div class="form-group">
-						<label for="productName">Tên sản phẩm</label>
-						<input type="text" id="productName" th:field="*{product.productName}" class="form-control" required>
-					</div>
+                                <!-- Product Name -->
+                                <div class="form-group">
+                                    <label for="productName">Tên Sản Phẩm</label>
+                                    <input type="text" id="productName" th:field="*{productName}" class="form-control" placeholder="Nhập tên sản phẩm" required>
+                                </div>
 
-					<!-- Thể loại sản phẩm -->
-					<div class="form-group">
-						<label for="categoryId">Thể Loại</label>
-						<select id="categoryId" name="categoryId" class="form-control" required>
-							<option value="" disabled>Chọn thể loại</option>
-							<option th:each="category : ${categories}" th:value="${category.categoryId}"
-									th:text="${category.categoryName}"
-									th:selected="${category.categoryId == product.category.categoryId}"></option>
-						</select>
-					</div>
+                                <!-- Product Category -->
+                                <div class="form-group">
+                                    <label for="categoryId">Danh Mục</label>
+                                    <select id="categoryId" name="categoryId" class="form-select" required>
+                                        <option value="" disabled>Chọn danh mục</option>
+                                        <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.categoryName}" th:selected="${category.categoryId == product.category.categoryId}"></option>
+                                    </select>
+                                </div>
 
-					<!-- Đơn giá -->
-					<div class="form-group">
-						<label for="price">Đơn Giá</label>
-						<input type="number" id="price" name="price" th:value="${product.price}" class="form-control" placeholder="Đơn giá" min="0" step="0.01" required>
-					</div>
+                                <!-- Price -->
+                                <div class="form-group">
+                                    <label for="price">Đơn Giá</label>
+                                    <input type="number" id="price" th:field="*{price}" class="form-control" placeholder="Nhập đơn giá" min="0" step="0.01" required>
+                                </div>
 
-					<!-- Giảm giá -->
-					<div class="form-group">
-						<label for="discount">Giảm Giá (%)</label>
-						<input type="number" id="discount" name="discount" th:value="${product.discount}" class="form-control" placeholder="Nhập % giảm giá" min="0" max="100">
-					</div>
+                                <!-- Discount -->
+                                <div class="form-group">
+                                    <label for="discount">Giảm Giá (%)</label>
+                                    <input type="number" id="discount" th:field="*{discount}" class="form-control" placeholder="Nhập phần trăm giảm giá" min="0" max="100">
+                                </div>
 
-					<!-- Số lượng -->
-					<div class="form-group">
-						<label for="quantity">Số Lượng</label>
-						<input type="number" id="quantity" name="quantity" th:value="${product.quantity}" class="form-control" placeholder="Nhập số lượng" min="0" required>
-					</div>
+                                <!-- Quantity -->
+                                <div class="form-group">
+                                    <label for="quantity">Số Lượng</label>
+                                    <input type="number" id="quantity" th:field="*{quantity}" class="form-control" placeholder="Nhập số lượng" min="0" required>
+                                </div>
 
-					<!-- Ngày thêm -->
-					<div class="form-group">
-						<label for="enteredDate">Ngày Thêm</label>
-						<input type="date" id="enteredDate" name="enteredDate" th:value="${#dates.format(product.enteredDate, 'yyyy-MM-dd')}" class="form-control" required>
-					</div>
+                                <!-- Entered Date -->
+                                <div class="form-group">
+                                    <label for="enteredDate">Ngày Thêm</label>
+                                    <input type="date" id="enteredDate" th:field="*{enteredDate}" th:value="${#dates.format(product.enteredDate, 'yyyy-MM-dd')}" class="form-control" required>
+                                </div>
 
-					<!-- Ảnh chính -->
-					<div class="form-group">
-						<label for="mainImageFile">Ảnh chính</label>
-						<input type="file" id="mainImageFile" name="mainImageFile" accept="image/*">
-						<div style="margin-top: 10px;">
-							<img th:if="${product.productImage}" th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image" width="100">
-						</div>
-					</div>
+                                <!-- Main Image -->
+                                <div class="form-group">
+                                    <label for="mainImageFile">Ảnh Chính</label>
+                                    <div class="image-upload-container" id="dropArea">
+                                        <label for="mainImageFile">
+                                            <i class="ri-upload-cloud-2-line" style="font-size: 2rem; color: #4caf50;"></i><br>
+                                            Kéo và thả ảnh tại đây hoặc nhấp để chọn
+                                        </label>
+                                        <input type="file" id="mainImageFile" name="mainImageFile" accept="image/*">
+                                    </div>
+                                    <div class="image-preview" id="imagePreview">
+                                        <img th:if="${product.productImage}" th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Main Image">
+                                    </div>
+                                </div>
 
-					<!-- Ảnh phụ -->
-					<div class="form-group">
-						<label>Ảnh phụ hiện tại</label>
+                                <!-- Additional Images -->
+                                <div class="form-group">
+                                    <label>Ảnh Phụ</label>
+                                    <div class="current-images" id="currentImagesList">
+                                        <div th:each="image : ${product.images}" class="image-item">
+                                            <img th:src="@{'/uploads/additional/' + ${image.imageUrl}}" alt="Additional Image">
+                                        </div>
+                                    </div>
+                                </div>
 
-						<!-- Hiển thị danh sách ảnh phụ hiện tại của sản phẩm -->
-						<div id="currentImagesList" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-							<div th:each="image : ${product.images}" style="position: relative;">
-								<img th:src="@{'/uploads/additional/' + ${image.imageUrl}}" alt="Additional Image" width="80">
-							</div>
-						</div>
+                                <!-- Description -->
+                                <div class="form-group">
+                                    <label for="description">Mô Tả Sản Phẩm</label>
+                                    <textarea id="description" th:field="*{description}" class="form-control" placeholder="Nhập mô tả sản phẩm" rows="4" maxlength="999"></textarea>
+                                </div>
 
-						<!-- Danh sách ảnh mới chọn -->
-						<div id="selectedFilesList" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-							<!-- Danh sách tên các file sẽ hiển thị ở đây -->
-						</div>
-					</div>
+                                <!-- Season Months -->
+                                <div class="form-group">
+                                    <label class="mb-2">Mùa Vụ Sản Phẩm (Tháng):</label>
+                                    <div class="season-checkbox-container">
+                                        <th:block th:each="i : ${#numbers.sequence(1,12)}">
+                                            <label class="season-checkbox">
+                                                <input type="checkbox" name="seasonMonths" th:value="${i}" th:checked="${product.seasonMonths != null and product.seasonMonths.contains(i)}">
+                                                <span>Tháng <span th:text="${i}">1</span></span>
+                                            </label>
+                                        </th:block>
+                                    </div>
+                                </div>
 
-					<!-- Mô tả sản phẩm -->
-					<div class="form-group">
-						<label for="description">Mô Tả Sản Phẩm</label>
-						<textarea id="description" name="description" class="form-control" placeholder="Mô tả sản phẩm" rows="3" maxlength="999" th:text="${product.description}"></textarea>
-					</div>
+                                <!-- Status -->
+                                <div class="form-group">
+                                    <label for="status">Trạng Thái</label>
+                                    <select id="status" th:field="*{status}" class="form-select">
+                                        <option value="true" th:selected="*{status == true}">Hiển Thị</option>
+                                        <option value="false" th:selected="*{status == false}">Ẩn</option>
+                                    </select>
+                                </div>
 
-					<!-- Mùa của sản phẩm -->
-					<div class="form-group">
-						<label class="mb-2">Mùa của sản phẩm (tháng):</label>
-						<div class="season-checkbox-container">
-							<th:block th:each="i : ${#numbers.sequence(1,12)}">
-								<label class="season-checkbox"
-									   th:classappend="${i <= 3} ? 'spring' :
-                                   (${i <= 6} ? 'summer' :
-                                   (${i <= 9} ? 'autumn' : 'winter'))">
-									<input type="checkbox" name="seasonMonths"
-										   th:value="${i}"
-										   th:checked="${product.seasonMonths != null and product.seasonMonths.contains(i)}">
-									<span>
-										<span th:if="${i <= 3}">🌸</span>
-										<span th:if="${i > 3 and i <= 6}">☀️</span>
-										<span th:if="${i > 6 and i <= 9}">🍂</span>
-										<span th:if="${i > 9}">❄️</span>
-										Tháng <span th:text="${i}">1</span>
-									</span>
+                                <!-- Form Actions -->
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Cập Nhật Sản Phẩm</button>
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href='/admin/products'">Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-								</label>
-							</th:block>
-						</div>
-					</div>
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
+    </div>
 
-					<!-- Trạng thái -->
-					<div class="form-group">
-						<label for="status">Trạng Thái</label>
-						<select id="status" name="status" class="form-control">
-							<option value="true" th:selected="${product.status == true}">Hiển Thị</option>
-							<option value="false" th:selected="${product.status == false}">Ẩn</option>
-						</select>
-					</div>
-
-					<div class="form-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
-						<button type="submit" class="cr-btn default-btn color-success">Cập nhật Sản Phẩm</button>
-						<button type="button" class="btn btn-secondary color-danger" style="color: white; background-color: red; border-color: red;" onclick="window.location.href='/admin/products'">Hủy</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+    <!-- Toast Containers -->
+    <div class="toast-success-container">
+        <div class="toast" id="notificationToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
 </main>
 
-
-<script>
-	let selectedFiles = [];
-
-	// Xử lý sự kiện khi chọn ảnh phụ mới
-	document.getElementById('additionalImageFiles').addEventListener('change', function(event) {
-		const selectedFilesList = document.getElementById('selectedFilesList');
-
-		// Thêm các tệp mới vào danh sách đã chọn, kiểm tra để tránh trùng lặp
-		Array.from(event.target.files).forEach((file) => {
-			if (!selectedFiles.some(f => f.name === file.name)) {
-				selectedFiles.push(file);
-			}
-		});
-
-		// Cập nhật lại giao diện hiển thị danh sách
-		renderSelectedFilesList();
-
-		// Xóa tệp sau khi đã chọn để có thể chọn lại nhiều lần
-		event.target.value = '';
-	});
-
-	function renderSelectedFilesList() {
-		const selectedFilesList = document.getElementById('selectedFilesList');
-		selectedFilesList.innerHTML = ''; // Xóa các phần tử trước đó
-
-		selectedFiles.forEach((file, index) => {
-			const fileDiv = document.createElement('div');
-			fileDiv.style.display = 'flex';
-			fileDiv.style.alignItems = 'center';
-			fileDiv.style.marginRight = '10px';
-			fileDiv.style.position = 'relative';
-
-			const fileName = document.createElement('span');
-			fileName.textContent = file.name;
-			fileName.style.marginRight = '5px';
-
-			// Nút xóa nhỏ màu đỏ
-			const removeButton = document.createElement('button');
-			removeButton.innerHTML = '&times;';
-			removeButton.style.backgroundColor = 'transparent';
-			removeButton.style.border = 'none';
-			removeButton.style.color = 'red';
-			removeButton.style.cursor = 'pointer';
-			removeButton.style.fontSize = '16px';
-			removeButton.style.position = 'absolute';
-			removeButton.style.top = '-5px';
-			removeButton.style.right = '-5px';
-
-			// Sự kiện để xóa tệp khi nhấn vào nút X
-			removeButton.addEventListener('click', () => {
-				selectedFiles.splice(index, 1); // Xóa tệp khỏi danh sách
-				renderSelectedFilesList(); // Cập nhật lại giao diện
-			});
-
-			fileDiv.appendChild(fileName);
-			fileDiv.appendChild(removeButton);
-			selectedFilesList.appendChild(fileDiv);
-		});
-	}
-
-	// Hàm xóa ảnh phụ hiện tại
-	function removeCurrentImage(imageId) {
-		fetch(`/admin/products/delete-image/${imageId}`, { method: 'DELETE' })
-				.then(response => {
-					if (response.ok) {
-						alert("Ảnh đã được xóa thành công!");
-						// Xóa ảnh khỏi giao diện mà không cần tải lại trang
-						document.querySelector(`#currentImagesList img[onclick="removeCurrentImage(${imageId})"]`).parentElement.remove();
-					} else {
-						alert("Lỗi khi xóa ảnh.");
-					}
-				})
-				.catch(error => console.error('Error:', error));
-	}
-</script>
+<!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Custom JavaScript for Drag-and-Drop and Toast -->
+<script>
+    // Drag-and-Drop for Main Image
+    const dropArea = document.getElementById('dropArea');
+    const mainImageFile = document.getElementById('mainImageFile');
+    const imagePreview = document.getElementById('imagePreview');
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('dragover');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('dragover');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            mainImageFile.files = files;
+            previewMainImage(files[0]);
+        }
+    });
+
+    mainImageFile.addEventListener('change', () => {
+        if (mainImageFile.files.length > 0) {
+            previewMainImage(mainImageFile.files[0]);
+        }
+    });
+
+    function previewMainImage(file) {
+        imagePreview.innerHTML = '';
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            imagePreview.appendChild(img);
+        }
+    }
+
+    // Form Submission with Toast
+    document.getElementById('productForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate required fields
+        const productName = document.getElementById('productName').value.trim();
+        const categoryId = document.getElementById('categoryId').value;
+        const price = document.getElementById('price').value;
+        const quantity = document.getElementById('quantity').value;
+        const enteredDate = document.getElementById('enteredDate').value;
+
+        if (!productName || !categoryId || !price || !quantity || !enteredDate) {
+            showToast('Vui lòng điền đầy đủ các trường bắt buộc!', 'toast-error');
+            return;
+        }
+
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        try {
+            const response = await fetch(e.target.action, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast('Cập nhật sản phẩm thành công!', 'toast-success');
+                setTimeout(() => window.location.href = '/admin/products', 3000);
+            } else {
+                showToast('Cập nhật sản phẩm thất bại. Vui lòng thử lại.', 'toast-error');
+            }
+        } catch (error) {
+            showToast('Đã xảy ra lỗi khi cập nhật sản phẩm.', 'toast-error');
+            console.error('Error:', error);
+        }
+    });
+
+    // Show Toast Function
+    function showToast(message, toastClass) {
+        const toast = document.getElementById('notificationToast');
+        toast.className = `toast ${toastClass}`;
+        document.getElementById('toastMessage').textContent = message;
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+    }
+</script>
 </body>
 </html>

@@ -3,8 +3,14 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
-    <title></title>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <title>Trang web của bạn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, * {
+            font-family: 'Roboto', Arial, sans-serif !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,8 +31,10 @@
                     <div class="col-md-7">
                         <div class="ltn__top-bar-menu">
                             <ul>
-                                <li><a href="locations.html"><i class="icon-placeholder"></i> 1 Vo Van Ngan, Thu Duc</a></li>
-                                <li><a href="mailto:info@webmail.com?Subject=Flower%20greetings%20to%20you"><i class="icon-mail"></i> info@webmail.com</a></li>
+                                <li><a href="locations.html"><i class="icon-placeholder"></i> 1 Vo Van Ngan, Thu Duc</a>
+                                </li>
+                                <li><a href="mailto:info@webmail.com?Subject=Flower%20greetings%20to%20you"><i
+                                        class="icon-mail"></i> info@webmail.com</a></li>
                             </ul>
                         </div>
                     </div>
@@ -38,7 +46,8 @@
                                         <!-- ltn__language-menu -->
                                         <div class="ltn__drop-menu ltn__currency-menu ltn__language-menu">
                                             <ul>
-                                                <li><a href="#" class="dropdown-toggle"><span class="active-currency"></span></a>
+                                                <li><a href="#" class="dropdown-toggle"><span
+                                                        class="active-currency"></span></a>
 
                                                 </li>
                                             </ul>
@@ -48,10 +57,13 @@
                                         <!-- ltn__social-media -->
                                         <div class="ltn__social-media">
                                             <ul>
-                                                <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                                <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                                </li>
                                                 <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                                <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
-                                                <li><a href="#" title="Dribbble"><i class="fab fa-dribbble"></i></a></li>
+                                                <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                                                </li>
+                                                <li><a href="#" title="Dribbble"><i class="fab fa-dribbble"></i></a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </li>
@@ -75,41 +87,36 @@
                             <nav>
                                 <div class="ltn__main-menu">
                                     <ul>
-                                        <li class="menu-icon"><a href="#">Home</a>
+                                        <li class="menu-icon"><a th:href="@{/index}">Trang chủ</a>
                                             <ul class="sub-menu menu-pages-img-show ltn__sub-menu-col-2---">
                                                 <li>
-                                                    <a th:href="@{/index}">Home</a>
+                                                    <a th:href="@{/index}">Trang chủ</a>
                                                 </li>
 
                                             </ul>
                                         </li>
-                                        <li class="menu-icon"><a th:href="@{/about}">About</a>
+                                        <li class="menu-icon"><a th:href="@{/about}">Về chúng tôi</a>
                                             <ul>
-                                                <li><a th:href="@{/about}">About</a></li>
-                                                <li><a th:href="@{/shop}">Services</a></li>
-                                                <li><a th:href="@{/shop}">Gallery-02</a></li>
-                                                <li><a th:href="@{/shop}">Team</a></li>
+                                                <li><a th:href="@{/about}">Cam kết</a></li>
+                                                <li><a th:href="@{/contact}">Liên hệ</a></li>
+                                                <li><a th:href="@{/shop}">Dịch vụ</a></li>
+                                                <li><a th:href="@{/shop}">Các chi nhánh</a></li>
+                                                <li><a th:href="@{/shop}">Đội ngũ</a></li>
                                                 <li><a th:href="@{/shop}">FAQ</a></li>
-                                                <li><a th:href="@{/shop}">Google Map Locations</a></li>
                                             </ul>
                                         </li>
-                                        <li class="menu-icon"><a href="#">Store</a>
+                                        <li class="menu-icon"><a href="#">Cửa hàng</a>
                                             <ul>
-                                                <li><a th:href="@{/shop}">Product</a></li>
-                                                <li><a th:href="@{/wishlist}">Wishlist</a></li>
-                                                <li><a th:href="@{/cart/checkout}">Checkout</a></li>
-                                                <li><a th:href="@{/shop}">Other Pages <span class="float-end">>></span></a>
-                                                    <ul>
-                                                        <li><a href="#">Order Tracking</a></li>
-                                                    </ul>
+                                                <li><a th:href="@{/shop}">Các sản phẩm</a></li>
+                                                <li sec:authorize="isAuthenticated()">
+                                                    <a th:href="@{/cart/checkout}">Thanh toán</a>
+                                                </li>
+                                                <li sec:authorize="isAuthenticated()">
+                                                    <a th:href="@{/wishlist}">Yêu thích</a>
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li class="menu-icon"><a th:href="@{/news}">News</a>
-                                        </li>
-
-                                        <li><a th:href="@{/contact}">Contact</a></li>
-
+                                        <li class="menu-icon"><a th:href="@{/news}">Bài viết</a></li>
                                         <li class="special-link"><a th:href="@{/shop}">GET A QUOTE</a></li>
                                     </ul>
                                 </div>
@@ -127,7 +134,8 @@
                             </div>
                             <div class="header-search-1-form">
                                 <form th:action="@{/shop}" method="get">
-                                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Search here..."/>
+                                    <input type="text" name="keyword" th:value="${keyword}"
+                                           placeholder="Search here..."/>
                                     <button type="submit">
                                         <span><i class="icon-search"></i></span>
                                     </button>
@@ -143,25 +151,25 @@
                                     <ul>
                                         <!-- Kiểm tra nếu người dùng đã đăng nhập -->
                                         <li sec:authorize="isAuthenticated()">
-                                            <a th:href="@{/account}">My Account</a>
+                                            <a th:href="@{/account}">Tài khoản</a>
                                         </li>
                                         <li sec:authorize="isAuthenticated()">
-                                            <a th:href="@{/wishlist}">Wishlist</a>
+                                            <a th:href="@{/wishlist}">Yêu thích</a>
                                         </li>
                                         <li sec:authorize="isAuthenticated()">
                                             <!-- Liên kết logout -->
                                             <a th:href="@{/logout}"
                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                Logout
+                                                Đăng xuất
                                             </a>
                                         </li>
 
                                         <!-- Kiểm tra nếu người dùng chưa đăng nhập -->
                                         <li sec:authorize="!isAuthenticated()">
-                                            <a th:href="@{/login}">Sign in</a>
+                                            <a th:href="@{/login}">Đăng nhập</a>
                                         </li>
                                         <li sec:authorize="!isAuthenticated()">
-                                            <a th:href="@{/register}">Register</a>
+                                            <a th:href="@{/register}">Đăng ký</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -170,7 +178,7 @@
 
                         <!-- Form logout ẩn -->
                         <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                         </form>
 
                         <!-- mini-cart -->
@@ -186,9 +194,12 @@
                         <div class="mobile-menu-toggle d-xl-none">
                             <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">
                                 <svg viewBox="0 0 800 600">
-                                    <path d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200" id="top"></path>
+                                    <path d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200"
+                                          id="top"></path>
                                     <path d="M300,320 L540,320" id="middle"></path>
-                                    <path d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190" id="bottom" transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
+                                    <path d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190"
+                                          id="bottom"
+                                          transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
                                 </svg>
                             </a>
                         </div>
@@ -204,21 +215,29 @@
     <div id="ltn__utilize-cart-menu" class="ltn__utilize ltn__utilize-cart-menu">
         <div class="ltn__utilize-menu-inner ltn__scrollbar">
             <div class="ltn__utilize-menu-head">
-                <span class="ltn__utilize-menu-title">Cart</span>
+                <span class="ltn__utilize-menu-title"
+                      style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500; font-size: 18px">
+                    Giỏ hàng của bạn</span>
                 <button class="ltn__utilize-close">×</button>
             </div>
             <div class="mini-cart-product-area ltn__scrollbar">
-                <ul class="cart-list">
+                <ul class="mini-cart-item clearfix">
                     <p>Hiện tại bạn chưa có sản phẩm nào trong giỏ hàng!</p>
                 </ul>
             </div>
             <div class="mini-cart-footer">
                 <div class="mini-cart-sub-total">
-                    <h5>Tổng cộng: <span id="cartTotalPrice">0 VNĐ</span></h5>
+                    <h5 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">Tổng cộng: <span id="cartTotalPrice">0 VNĐ</span></h5>
                 </div>
                 <div class="btn-wrapper">
-                    <a href="" th:href="@{/wishlist}" class="theme-btn-1 btn btn-effect-1">Wishlist</a>
-                    <a href="#" th:href="@{/cart/checkout}" class="theme-btn-2 btn btn-effect-2" id="checkoutBtn">Checkout</a>
+                    <a href="" th:href="@{/wishlist}"
+                       class="theme-btn-2 btn btn-effect-1"
+                       style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 13px">
+                        Yêu thích</a>
+                    <a href="#" th:href="@{/cart/checkout}"
+                       class="theme-btn-1 btn btn-effect-2" id="checkoutBtn"
+                       style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 13px">
+                        Thanh toán</a>
                 </div>
                 <p></p>
             </div>
@@ -227,7 +246,6 @@
     <!-- Utilize Cart Menu End -->
 
 
-    <!-- Utilize Mobile Menu Start -->
     <!-- Utilize Mobile Menu Start -->
     <div id="ltn__utilize-mobile-menu" class="ltn__utilize ltn__utilize-mobile-menu">
         <div class="ltn__utilize-menu-inner ltn__scrollbar">
@@ -265,7 +283,6 @@
         </div>
     </div>
     <!-- Utilize Mobile Menu End -->
-
 
 
 </div>

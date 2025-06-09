@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>FreshFood - Organic Food</title>
-    <meta name="robots" content="noindex, follow" />
+    <title>FreshFood - Thực phẩm sạch</title>
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
@@ -23,26 +23,28 @@
             background-color: #8BB436;
             color: white;
         }
-
     </style>
 </head>
 
 <body>
-
 <div class="body-wrapper">
-
     <!-- HEADER AREA START -->
     <div th:replace="~{web/header :: header}"></div>
     <div class="ltn__utilize-overlay"></div>
 
     <!-- BREADCRUMB AREA START -->
-    <div class="ltn__breadcrumb-area ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image" data-bg="img/bg/9.jpg">
+    <div class="ltn__breadcrumb-area ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image"
+         data-bg="img/bg/9.jpg">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ltn__breadcrumb-inner text-center">
-                        <h6 class="section-subtitle ltn__secondary-color">// Welcome to our store</h6>
-                        <h1 class="section-title white-color">All Products</h1>
+                        <h6 class="section-subtitle ltn__secondary-color"
+                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            // Chào mừng đến với cửa hàng chúng tôi</h6>
+                        <h1 class="section-title white-color"
+                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            Tất cả sản phẩm</h1>
                     </div>
                 </div>
             </div>
@@ -58,33 +60,43 @@
                 <div class="col-lg-3">
                     <!-- Search Widget -->
                     <div class="widget ltn__search-widget">
-                        <h4 class="ltn__widget-title">Search Products</h4>
+                        <h4 class="ltn__widget-title"
+                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            Tìm kiếm sản phẩm</h4>
                         <form th:action="@{/shop}" method="get">
-                            <input type="text" name="keyword" th:value="${keyword}" placeholder="Search here...">
+                            <input type="text" name="keyword" th:value="${keyword}"
+                                   placeholder="Tìm kiếm tại đây..."
+                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
 
-
                     <!-- Category Widget -->
                     <div class="widget ltn__menu-widget">
-                        <h4 class="ltn__widget-title">Product Categories</h4>
+                        <h4 class="ltn__widget-title"
+                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            Danh mục sản phẩm</h4>
                         <ul>
                             <li th:each="category : ${categories}">
-                                <a th:href="@{/shop(categoryId=${category.categoryId})}" th:text="${category.categoryName}"></a>
+                                <a th:href="@{/shop(categoryId=${category.categoryId})}"
+                                   th:text="${category.categoryName}"
+                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></a>
                             </li>
                         </ul>
                     </div>
 
-
                     <!-- Price Filter Widget -->
                     <div class="widget">
-                        <h4>Filter by Price</h4>
+                        <h4 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            Lọc theo giá</h4>
                         <form th:action="@{/shop}" method="get">
                             <div class="price_filter">
                                 <div class="price_slider_amount">
-                                    <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-                                    <button type="submit">Filter</button>
+                                    <input type="text" id="amount" readonly
+                                           style="border:0; color:#f6931f; font-weight:bold; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    <button type="submit"
+                                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                        Lọc</button>
                                     <!-- Hidden inputs để gửi dữ liệu minPrice và maxPrice -->
                                     <input type="hidden" id="minPriceInput" name="minPrice" th:value="${minPrice}">
                                     <input type="hidden" id="maxPriceInput" name="maxPrice" th:value="${maxPrice}">
@@ -93,8 +105,6 @@
                             </div>
                         </form>
                     </div>
-
-
                 </div>
 
                 <!-- Product List -->
@@ -104,18 +114,21 @@
                             <li>
                                 <div class="ltn__grid-list-tab-menu">
                                     <div class="nav">
-                                        <a class="active" data-bs-toggle="tab" href="#liton_product_grid"><i class="fas fa-th-large"></i></a>
-                                        <a data-bs-toggle="tab" href="#liton_product_list"><i class="fas fa-list"></i></a>
+                                        <a class="active" data-bs-toggle="tab" href="#liton_product_grid"><i
+                                                class="fas fa-th-large"></i></a>
+                                        <a data-bs-toggle="tab" href="#liton_product_list"><i
+                                                class="fas fa-list"></i></a>
                                     </div>
                                 </div>
                             </li>
                             <li>
                                 <div class="short-by text-center">
-                                    <select class="nice-select">
-                                        <option>Default sorting</option>
-                                        <option>Sort by popularity</option>
-                                        <option>Sort by price: low to high</option>
-                                        <option>Sort by price: high to low</option>
+                                    <select class="nice-select"
+                                            style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                        <option>Sắp xếp mặc định</option>
+                                        <option>Sắp xếp theo độ phổ biến</option>
+                                        <option>Sắp xếp theo giá: thấp đến cao</option>
+                                        <option>Sắp xếp theo giá: cao đến thấp</option>
                                     </select>
                                 </div>
                             </li>
@@ -128,30 +141,38 @@
                             <div class="row">
                                 <!-- Kiểm tra nếu danh sách sản phẩm trống -->
                                 <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center">
-                                    <p>Không có sản phẩm phù hợp</p>
+                                    <p style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                        Không có sản phẩm phù hợp</p>
                                 </div>
                                 <!-- Hiển thị các sản phẩm nếu có -->
                                 <div th:each="product : ${products}" class="col-xl-4 col-sm-6 col-6">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
                                             <a th:href="@{/product-details/{id}(id=${product.productId})}">
-                                                <img th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image">
+                                                <img th:src="@{'/uploads/main/' + ${product.productImage}}"
+                                                     alt="Hình ảnh sản phẩm">
                                             </a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li th:if="${!product.status}" style="background-color: #ff8585;">
-                                                        <span>Out of Stock</span>
+                                                        <span style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                                            Hết hàng</span>
                                                     </li>
                                                     <li th:if="${product.discount > 0}" class="sale-badge">
-                                                        <span th:text="'Discount: ' + ${product.discount} + '%'"></span>
+                                                        <span th:text="'Giảm giá: ' + ${product.discount} + '%'"
+                                                              style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></span>
                                                     </li>
                                                 </ul>
                                             </div>
                                             <div class="product-hover-action">
                                                 <ul>
-                                                    <li><a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a></li>
+                                                    <li><a href="#" title="Xem nhanh" data-bs-toggle="modal"
+                                                           data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a>
+                                                    </li>
                                                     <li th:if="${product.status}">
-                                                        <a href="#" class="product-add1" th:data-product-id="${product.productId}" title="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                        <a href="#" class="product-add1"
+                                                           th:data-product-id="${product.productId}"
+                                                           title="Thêm vào giỏ hàng"><i class="fas fa-shopping-cart"></i></a>
                                                     </li>
                                                     <li th:if="${product.status == true}">
                                                         <a href="javascript:void(0);"
@@ -159,7 +180,7 @@
                                                            th:data-product-id="${product.productId}"
                                                            th:data-product-name="${product.productName}"
                                                            th:src="@{/uploads/main/{filename}(filename=${product.productImage})}"
-                                                           title="Add to Wishlist">
+                                                           title="Thêm vào danh sách yêu thích">
                                                             <i class="far fa-heart"></i>
                                                         </a>
                                                     </li>
@@ -180,7 +201,9 @@
                                                 </ul>
                                             </div>
                                             <h2 class="product-title">
-                                                <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
+                                                <a th:href="@{/product-details/{id}(id=${product.productId})}"
+                                                   th:text="${product.productName}">
+                                                    Tên sản phẩm</a>
                                             </h2>
                                             <div class="product-price">
                                                 <span class="js-price"
@@ -204,25 +227,63 @@
                     <div th:if="${!#lists.isEmpty(products)}" class="ltn__pagination-area text-center">
                         <div class="ltn__pagination">
                             <ul>
-                                <!-- Nút Trái -->
+                                <!-- Nút Trang Đầu -->
                                 <li>
-                                    <a href="#" th:href="@{/shop(page=${currentPage - 1})}" th:class="${currentPage == 1 ? 'disabled' : ''}">
+                                    <a th:if="${currentPage > 1}"
+                                       th:href="@{/shop(page=1, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                       th:class="${currentPage == 1 ? 'disabled' : ''}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                    <a th:unless="${currentPage > 1}"
+                                       class="disabled">
                                         <i class="fas fa-angle-double-left"></i>
                                     </a>
                                 </li>
 
-                                <!-- Các trang số -->
-                                <li th:each="i : ${#numbers.sequence(1, totalPages)}">
-                                    <a th:href="@{/shop(page=${i}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
-                                       th:text="${i}"
-                                       th:class="${i == currentPage ? 'active' : ''}">
+                                <!-- Nút Trang Trước -->
+                                <li>
+                                    <a th:if="${currentPage > 1}"
+                                       th:href="@{/shop(page=${currentPage - 1}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                       th:class="${currentPage == 1 ? 'disabled' : ''}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                    <a th:unless="${currentPage > 1}"
+                                       class="disabled">
+                                        <i class="fas fa-angle-left"></i>
                                     </a>
                                 </li>
 
+                                <!-- Các trang số (hiển thị tối đa 3 trang) -->
+                                <li th:each="i : ${#numbers.sequence(T(java.lang.Math).max(1, currentPage - 1), T(java.lang.Math).min(totalPages, currentPage + 1))}">
+                                    <a th:href="@{/shop(page=${i}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                       th:text="${i}"
+                                       th:class="${i == currentPage ? 'active' : ''}"
+                                       style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    </a>
+                                </li>
 
-                                <!-- Nút Phải -->
+                                <!-- Nút Trang Kế Tiếp -->
                                 <li>
-                                    <a href="#" th:href="@{/shop(page=${currentPage + 1})}" th:class="${currentPage == totalPages ? 'disabled' : ''}">
+                                    <a th:if="${currentPage < totalPages}"
+                                       th:href="@{/shop(page=${currentPage + 1}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                       th:class="${currentPage == totalPages ? 'disabled' : ''}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                    <a th:unless="${currentPage < totalPages}"
+                                       class="disabled">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+
+                                <!-- Nút Trang Cuối -->
+                                <li>
+                                    <a th:if="${currentPage < totalPages}"
+                                       th:href="@{/shop(page=${totalPages}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                                       th:class="${currentPage == totalPages ? 'disabled' : ''}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                    <a th:unless="${currentPage < totalPages}"
+                                       class="disabled">
                                         <i class="fas fa-angle-double-right"></i>
                                     </a>
                                 </li>
@@ -240,7 +301,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">×</span>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -253,12 +314,15 @@
                                         </div>
                                         <div class="modal-product-info">
                                             <h5><a id="modal-product-name" href="#"></a></h5>
-                                            <p class="added-cart">
+                                            <p class="added-cart"
+                                               style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
                                                 <i class="fa fa-check-circle"></i>
-                                                Successfully added to your Wishlist
+                                                Đã thêm thành công vào danh sách yêu thích
                                             </p>
                                             <div class="btn-wrapper">
-                                                <a th:href="@{/wishlist}" class="theme-btn-1 btn btn-effect-1">View Wishlist</a>
+                                                <a th:href="@{/wishlist}" class="theme-btn-1 btn btn-effect-1"
+                                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                                    Xem danh sách yêu thích</a>
                                             </div>
                                         </div>
                                     </div>
@@ -275,7 +339,6 @@
 
     <!-- FOOTER AREA START -->
     <div th:replace="~{web/footer :: footer}"></div>
-
 </div>
 
 <script th:src="@{/web/js/plugins.js}"></script>
@@ -286,40 +349,8 @@
     let minPrice = [[${minPrice}]];
     let maxPrice = [[${maxPrice}]];
 
-
-    $("#slider-range").slider({
-        range: true,
-        min: 0,
-        max: 1000000,
-        values: [minPrice, maxPrice],
-        slide: function (event, ui) {
-            let scaledMin = scalePrice(ui.values[0]);
-            let scaledMax = scalePrice(ui.values[1]);
-
-            $("#amount").val(formatCurrency(scaledMin) + " - " + formatCurrency(scaledMax));
-            $("#minPriceInput").val(ui.values[0]);
-            $("#maxPriceInput").val(ui.values[1]);
-        },
-        change: function (event, ui) {
-            let value = ui.values[0];
-
-            let step;
-            if (value <= 100000) {
-                step = 5000;
-            }
-            else if (value <= 500000) {
-                step = 20000;
-            }
-            else {
-                step = 50000;
-            }
-
-            $(this).slider("option", "step", step);
-        }
-    });
-
     function formatCurrency(value) {
-        return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        return value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
     }
 
     function scalePrice(value) {
@@ -330,10 +361,47 @@
         }
     }
 
-    $("#amount").val(formatCurrency(scalePrice(minPrice)) + " - " + formatCurrency(scalePrice(maxPrice)));
-    $("#minPriceInput").val(minPrice);
-    $("#maxPriceInput").val(maxPrice);
-</script>
+    function unscalePrice(scaledValue) {
+        if (scaledValue <= 100000) {
+            return (scaledValue / 100000) * 500000;
+        } else {
+            return ((scaledValue - 100000) / 900000) * 500000 + 500000;
+        }
+    }
 
+    $("#slider-range").slider({
+        range: true,
+        min: 0,
+        max: 1000000,
+        values: [unscalePrice(minPrice), unscalePrice(maxPrice)],
+        slide: function (event, ui) {
+            let scaledMin = scalePrice(ui.values[0]);
+            let scaledMax = scalePrice(ui.values[1]);
+
+            $("#amount").val(formatCurrency(scaledMin) + " - " + formatCurrency(scaledMax));
+
+            $("#minPriceInput").val(Math.round(scaledMin));
+            $("#maxPriceInput").val(Math.round(scaledMax));
+        },
+        change: function (event, ui) {
+            let value = ui.values[0];
+
+            let step;
+            if (value <= 100000) {
+                step = 5000;
+            } else if (value <= 500000) {
+                step = 20000;
+            } else {
+                step = 50000;
+            }
+
+            $(this).slider("option", "step", step);
+        }
+    });
+
+    $("#amount").val(formatCurrency(minPrice) + " - " + formatCurrency(maxPrice));
+    $("#minPriceInput").val(Math.round(minPrice));
+    $("#maxPriceInput").val(Math.round(maxPrice));
+</script>
 </body>
 </html>

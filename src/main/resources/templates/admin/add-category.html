@@ -1,55 +1,191 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="admin, dashboard, ecommerce, panel" />
-    <meta name="description" content="Carrot - Admin.">
-
-    <title>Admin - Add Category</title>
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Thêm Danh Mục</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-
-    <!-- Icon CSS -->
-    <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
-
-    <!-- Vendor CSS -->
-    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
+    <!-- CSS -->
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet"> <!-- Thêm remixicon.css -->
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 
-    <!-- Main CSS -->
-    <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <!-- Custom CSS for Modern Design -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .cr-main-content {
+            padding: 20px;
+        }
+
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Drag-and-Drop Area */
+        .image-upload-container {
+            border: 2px dashed #4caf50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9fff7;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .image-upload-container.dragover {
+            background-color: #e8f5e9;
+        }
+
+        .image-upload-container label {
+            font-size: 1.1rem;
+            color: #388e3c;
+            cursor: pointer;
+        }
+
+        .image-upload-container input[type="file"] {
+            display: none;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+        }
+
+        .image-preview img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-actions .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .form-actions .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
+        }
+
+        .form-actions .btn-danger {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .form-actions .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        /* Toast Styling */
+        .toast-container {
+            z-index: 9999;
+        }
+
+        .toast {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-success {
+            background-color: #28a745 !important;
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important;
+        }
+    </style>
 </head>
-
 <body>
 <main class="wrapper sb-default">
-    <!-- Loader -->
-    <div id="cr-overlay">
-        <div class="loader"></div>
-    </div>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
-    <!-- Gọi fragment header -->
-    <div th:replace="~{admin/header :: header}"></div>
-
-    <!-- Gọi fragment sidebar -->
-    <div th:replace="~{admin/sidebar :: sidebar}"></div>
-
-    <!-- main content -->
+    <!-- Main Content -->
     <div class="cr-main-content">
         <div class="container-fluid">
-            <!-- Page title & breadcrumb -->
             <div class="cr-page-title cr-page-title-2">
                 <div class="cr-breadcrumb">
                     <h5>Thêm Danh Mục Mới</h5>
@@ -63,19 +199,31 @@
                 <div class="col-md-12">
                     <div class="cr-card card-default product-list">
                         <div class="cr-card-content">
-                            <form th:action="@{/admin/categories/save}" th:object="${category}" method="post" enctype="multipart/form-data">
+                            <form th:action="@{/admin/categories/save}" th:object="${category}" method="POST"
+                                  enctype="multipart/form-data" id="categoryForm">
                                 <div class="form-group">
                                     <label for="categoryName">Tên Danh Mục</label>
-                                    <input type="text" th:field="*{categoryName}" id="categoryName" class="form-control" placeholder="Nhập tên danh mục" required>
+                                    <input type="text" th:field="*{categoryName}" id="categoryName" class="form-control"
+                                           placeholder="Nhập tên danh mục" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="categoryImageFile">Hình Ảnh Danh Mục</label>
-                                    <input type="file" name="categoryImageFile" id="categoryImageFile" class="form-control" required>
+                                    <div class="image-upload-container" id="dropArea">
+                                        <label for="categoryImageFile">
+                                            <i class="ri-upload-cloud-2-line" style="font-size: 2rem; color: #4caf50;"></i><br>
+                                            Kéo và thả ảnh tại đây hoặc nhấp để chọn
+                                        </label>
+                                        <input type="file" id="categoryImageFile" name="categoryImageFile" accept="image/*"
+                                               required>
+                                    </div>
+                                    <div class="image-preview" id="imagePreview"></div>
                                 </div>
 
-                                <div class="form-group mt-3">
-                                    <button type="submit" class="cr-btn-primary">Thêm Danh Mục</button>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Thêm Danh Mục</button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="window.location.href='/admin/categories'">Hủy</button>
                                 </div>
                             </form>
                         </div>
@@ -88,34 +236,131 @@
         <footer>
             <div class="container-fluid">
                 <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
                 </div>
             </div>
         </footer>
     </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 toast-error" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6 toast-success" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </main>
 
-<!-- Vendor Custom -->
+<!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
-<script th:src="@{/admin/js/vendor/simplebar.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/admin/js/vendor/apexcharts.min.js}"></script>
-<script th:src="@{/admin/js/vendor/jquery-jvectormap-1.2.2.min.js}"></script>
-<script th:src="@{/admin/js/vendor/jquery-jvectormap-world-mill-en.js}"></script>
-<script th:src="@{/admin/js/vendor/owl.carousel.min.js}"></script>
-<!-- Data Tables -->
-<script th:src="@{/admin/js/vendor/jquery.datatables.min.js}"></script>
-<script th:src="@{/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
-<script th:src="@{/admin/js/vendor/datatables.responsive.min.js}"></script>
-<!-- Calendar -->
-<script th:src="@{/admin/js/vendor/jquery.simple-calendar.js}"></script>
-<!-- Date Range Picker -->
-<script th:src="@{/admin/js/vendor/moment.min.js}"></script>
-<script th:src="@{/admin/js/vendor/daterangepicker.js}"></script>
-<script th:src="@{/admin/js/vendor/date-range.js}"></script>
-
-<!-- Main Custom -->
 <script th:src="@{/admin/js/main.js}"></script>
-<script th:src="@{/admin/js/data/ecommerce-chart-data.js}"></script>
-</body>
 
+<!-- Custom JavaScript for Drag-and-Drop and Toast -->
+<script>
+    // Drag-and-Drop Functionality
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('categoryImageFile');
+    const imagePreview = document.getElementById('imagePreview');
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('dragover');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('dragover');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+            previewImage(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            previewImage(fileInput.files[0]);
+        }
+    });
+
+    function previewImage(file) {
+        imagePreview.innerHTML = '';
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            imagePreview.appendChild(img);
+        }
+    }
+
+    // Toast Function
+    function showToast(type, message) {
+        const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        toast.show();
+    }
+
+    // Form Submission with Toast
+    document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate required fields
+        const categoryName = document.getElementById('categoryName').value.trim();
+        const categoryImageFile = document.getElementById('categoryImageFile').files.length;
+
+        if (!categoryName || categoryImageFile === 0) {
+            showToast('error', 'Vui lòng điền đầy đủ các trường bắt buộc!');
+            e.stopImmediatePropagation();
+            return false;
+        }
+
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        try {
+            const response = await fetch(e.target.action, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast('success', 'Thêm danh mục thành công!');
+                setTimeout(() => window.location.href = '/admin/categories', 2000);
+            } else {
+                showToast('error', 'Thêm danh mục thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            showToast('error', 'Đã xảy ra lỗi khi thêm danh mục.');
+            console.error('Error:', error);
+        }
+    });
+</script>
+</body>
 </html>

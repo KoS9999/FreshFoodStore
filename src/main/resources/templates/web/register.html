@@ -1,16 +1,16 @@
 <!doctype html>
-<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<html class="no-js" lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Broccoli - Organic Food HTML Template</title>
-    <meta name="robots" content="noindex, follow" />
+    <title>Broccoli - Mẫu HTML Thực Phẩm Hữu Cơ</title>
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <!-- Plugins css -->
@@ -23,7 +23,9 @@
 
 <body>
 <!--[if lte IE 9]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<p class="browserupgrade" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+    Bạn đang sử dụng một trình duyệt <strong>cũ</strong>. Vui lòng <a href="https://browsehappy.com/">nâng cấp trình duyệt</a> để cải thiện trải nghiệm và bảo mật.
+</p>
 <![endif]-->
 
 <!-- Body main wrapper start -->
@@ -35,8 +37,12 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area text-center">
-                        <h1 class="section-title">Register <br>Your Account</h1>
-                        <p>Đăng kí ngay để có thể trải nghiệm sản phẩm và tính năng tuyệt vời</p>
+                        <h1 class="section-title" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            ĐĂNG KÝ <br>TÀI KHOẢN CỦA BẠN
+                        </h1>
+                        <p style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                            Đăng ký ngay để có thể trải nghiệm sản phẩm và tính năng tuyệt vời
+                        </p>
                     </div>
                 </div>
             </div>
@@ -45,25 +51,40 @@
                     <div class="account-login-inner">
 
                         <div th:if="${error}" class="alert alert-danger">
-                            <p th:text="${error}"></p>
+                            <p th:text="${error}" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></p>
                         </div>
                         <div th:if="${message}" class="alert alert-success">
-                            <p th:text="${message}"></p>
+                            <p th:text="${message}" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></p>
                         </div>
 
                         <form th:action="@{/register}" method="post" class="ltn__form-box contact-form-box">
-                            <input type="text" name="name" placeholder="Full Name" required>
-                            <input type="email" name="email" placeholder="Email*" required>
-                            <input type="password" name="password" placeholder="Password*" required>
-                            <input type="password" name="confirmpassword" placeholder="Confirm Password*" required>
-                            <button class="theme-btn-1 btn reverse-color btn-block" type="submit">CREATE ACCOUNT</button>
+                            <input type="text" name="name" placeholder="Họ và Tên" required
+                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"/>
+                            <input type="email" name="email" placeholder="Email*" required
+                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"/>
+                            <input type="password" name="password" placeholder="Mật Khẩu*" required
+                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"/>
+                            <input type="password" name="confirmpassword" placeholder="Xác Nhận Mật Khẩu*" required
+                                   style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"/>
+                            <button class="theme-btn-1 btn reverse-color btn-block" type="submit"
+                                    style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                TẠO TÀI KHOẢN
+                            </button>
                         </form>
 
                         <div class="by-agree text-center">
-                            <p>By creating an account, you agree to our:</p>
-                            <p><a href="#">TERMS OF CONDITIONS  &nbsp; &nbsp; | &nbsp; &nbsp;  PRIVACY POLICY</a></p>
+                            <p style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                Bằng cách tạo tài khoản, bạn đồng ý với:
+                            </p>
+                            <p>
+                                <a href="#" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    ĐIỀU KHOẢN DỊCH VỤ  |  CHÍNH SÁCH BẢO MẬT
+                                </a>
+                            </p>
                             <div class="go-to-btn mt-50">
-                                <a href="login.html">ALREADY HAVE AN ACCOUNT ?</a>
+                                <a th:href="@{/login}" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    ĐÃ CÓ TÀI KHOẢN?
+                                </a>
                             </div>
                         </div>
                     </div>

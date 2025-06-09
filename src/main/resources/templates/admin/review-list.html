@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Review List</title>
+    <title>Quản trị - Danh sách đánh giá</title>
 
 
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
@@ -138,11 +138,13 @@
                 padding: 8px;
             }
         }
+
         #successAlert {
             font-size: 15px;
             font-weight: 500;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         }
+
         .btn-success, .btn-secondary {
             font-size: 13px;
             padding: 4px 10px;
@@ -168,10 +170,10 @@
         <div class="container-fluid">
             <div class="cr-page-title cr-page-title-2">
                 <div class="cr-breadcrumb">
-                    <h5>Review List</h5>
+                    <h5>Danh sách đánh giá</h5>
                     <ul>
                         <li><a th:href="@{/admin/dashboard}">Carrot</a></li>
-                        <li>Review List</li>
+                        <li>Danh sách đánh giá</li>
                     </ul>
                 </div>
             </div>
@@ -179,9 +181,10 @@
                 <div class="col-md-12">
                     <div class="cr-card" id="reviewtbl">
                         <div class="cr-card-header">
-                            <h4 class="cr-card-title">User Reviews</h4>
+                            <h4 class="cr-card-title">Đánh giá khách hàng</h4>
                             <div class="header-tools">
-                                <a href="javascript:void(0)" class="m-r-10 cr-full-card"><i class="ri-fullscreen-line"></i></a>
+                                <a href="javascript:void(0)" class="m-r-10 cr-full-card"><i
+                                        class="ri-fullscreen-line"></i></a>
                                 <div class="cr-date-range dots">
                                     <span></span>
                                 </div>
@@ -193,15 +196,15 @@
                                     <table id="review_list" class="table table-striped table-hover">
                                         <thead>
                                         <tr>
-                                            <th>User</th>
-                                            <th>Product</th>
-                                            <th>Rating</th>
-                                            <th>Review</th>
-                                            <th>Image 1</th>
-                                            <th>Image 2</th>
-                                            <th>Date</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Điểm</th>
+                                            <th>Đánh giá</th>
+                                            <th>Ảnh 1</th>
+                                            <th>Ảnh 2</th>
+                                            <th>Ngày</th>
                                             <th>Hiển thị</th>
-                                            <th>Response</th>
+                                            <th>Phản hồi</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -213,15 +216,18 @@
                                             </td>
                                             <td th:text="${review.reviewText}"></td>
                                             <td>
-                                                <img th:if="${review.imageUrl1}" th:src="${review.imageUrl1}" class="img-thumbnail" width="80" height="80">
+                                                <img th:if="${review.imageUrl1}" th:src="${review.imageUrl1}"
+                                                     class="img-thumbnail" width="80" height="80">
                                             </td>
                                             <td>
-                                                <img th:if="${review.imageUrl2}" th:src="${review.imageUrl2}" class="img-thumbnail" width="80" height="80">
+                                                <img th:if="${review.imageUrl2}" th:src="${review.imageUrl2}"
+                                                     class="img-thumbnail" width="80" height="80">
                                             </td>
                                             <td th:text="${#dates.format(review.reviewDate, 'dd/MM/yyyy HH:mm')}"></td>
                                             <td>
-                                                <form th:action="@{'/admin/reviews/toggle-visibility/' + ${review.reviewId}}" method="post" class="toggle-visibility-form">
-                                                    <input type="hidden" name="visible" th:value="${!review.visible}" />
+                                                <form th:action="@{'/admin/reviews/toggle-visibility/' + ${review.reviewId}}"
+                                                      method="post" class="toggle-visibility-form">
+                                                    <input type="hidden" name="visible" th:value="${!review.visible}"/>
                                                     <button type="submit"
                                                             class="btn btn-sm toggle-btn"
                                                             th:classappend="${review.visible} ? 'btn-success' : 'btn-secondary'"
@@ -230,9 +236,13 @@
                                                 </form>
                                             </td>
                                             <td>
-                                                <form th:action="@{'/admin/reviews/reply/' + ${review.reviewId}}" method="post" class="reply-form d-flex flex-column align-items-start">
-                                                    <input type="text" name="responseText" class="form-control mb-2" th:value="${review.responseText}" placeholder="Enter response...">
-                                                    <button type="submit" class="btn btn-primary">Reply</button>
+                                                <form th:action="@{'/admin/reviews/reply/' + ${review.reviewId}}"
+                                                      method="post"
+                                                      class="reply-form d-flex flex-column align-items-start">
+                                                    <input type="text" name="responseText" class="form-control mb-2"
+                                                           th:value="${review.responseText}"
+                                                           placeholder="Enter response...">
+                                                    <button type="submit" class="btn btn-primary">Phản hồi</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -247,27 +257,32 @@
         </div>
     </div>
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                     Phản hồi đã được lưu thành công!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
-        <div id="visibilityToast" class="toast align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="visibilityToast" class="toast align-items-center text-white bg-info border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body" id="visibilityToastText">
                     Trạng thái đã được cập nhật!
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
     </div>
 
     <!-- Modal -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; max-width: 90%;">
+        <div class="modal-dialog modal-dialog-centered"
+             style="display: flex; justify-content: center; align-items: center; min-height: 100vh; max-width: 90%;">
             <div class="modal-content" style="width: 100%; height: auto;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="imageModalLabel">Image View</h5>
@@ -320,7 +335,7 @@
             let url = form.attr("action");
             let responseText = form.find("input[name='responseText']").val();
 
-            $.post(url, { responseText: responseText }, function (data) {
+            $.post(url, {responseText: responseText}, function (data) {
                 if (data.responseText) {
                     form.find("input[name='responseText']").val(data.responseText);
                     const toastEl = new bootstrap.Toast(document.getElementById('successToast'));
@@ -337,7 +352,7 @@
             let url = form.attr("action");
             let visibleValue = form.find("input[name='visible']").val();
 
-            $.post(url, { visible: visibleValue }, function (data) {
+            $.post(url, {visible: visibleValue}, function (data) {
                 let button = form.find(".toggle-btn");
                 let newVisible = data.visible;
 
@@ -361,7 +376,7 @@
             responsive: true,
             autoWidth: false,
             columnDefs: [
-                { targets: 7, orderable: false }
+                {targets: 7, orderable: false}
             ]
         });
 

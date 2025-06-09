@@ -1,82 +1,217 @@
-<!doctype html>
+<!DOCTYPE html>
 <html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>FreshFood - Organic Food</title>
-    <meta name="robots" content="noindex, follow" />
+    <title th:text="${currentCategory} ? ${currentCategory} + ' - FreshFood' : 'Tin tức - FreshFood'">Tin tức - FreshFood</title>
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
-    <!-- Font Icons css -->
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
-    <!-- plugins css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" th:href="@{/web/css/plugins.css}">
-    <!-- Main Stylesheet -->
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
-    <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <style>
+        /* Apply Roboto font to text-containing elements, excluding icons */
+        *:not(i), p, h1, h2, h3, h4, h5, h6, a, span, div, li, ul, button, input, textarea, label {
+            font-family: 'Roboto', Arial, sans-serif !important;
+        }
+
+        .ltn__blog-filter .ltn__menu-widget {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .ltn__blog-filter .ltn__widget-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .ltn__blog-filter .ltn__menu-widget ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ltn__blog-filter .ltn__menu-widget ul li {
+            margin-bottom: 10px;
+        }
+
+        .ltn__blog-filter .ltn__menu-widget ul li a {
+            display: block;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .ltn__blog-filter .ltn__menu-widget ul li a:hover,
+        .ltn__blog-filter .ltn__menu-widget ul li a.active {
+            background: #8BB436;
+            color: #fff;
+        }
+
+        .ltn__blog-item {
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ltn__blog-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .ltn__blog-img img {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            object-fit: cover;
+            height: 220px;
+        }
+
+        .btn-outline-success {
+            color: #8BB436;
+            border-color: #8BB436;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #8BB436;
+            color: #fff;
+            border-color: #8BB436;
+        }
+
+        @media (max-width: 992px) {
+            .col-lg-3, .col-lg-4 {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-
 <div class="body-wrapper">
-
-    <!-- HEADER AREA START -->
     <div th:replace="~{web/header :: header}"></div>
 
-    <!-- BLOG AREA START -->
     <div class="ltn__blog-area ltn__blog-item-3-normal mb-120" style="padding-top: 60px;">
         <div class="container">
             <div class="row">
-                <!-- Loop qua danh sách bài viết -->
-                <div class="col-lg-4 col-sm-6 col-12" th:each="blog : ${blogs}">
-                    <div class="ltn__blog-item ltn__blog-item-3">
-                        <div class="ltn__blog-img">
-                            <a th:href="@{'/news/' + ${blog.slug}}">
-                                <img th:src="${blog.imageUrl}" alt="Blog Image">
-                            </a>
-                        </div>
-                        <div class="ltn__blog-brief">
-                            <div class="ltn__blog-meta">
-                                <ul>
-                                    <li class="ltn__blog-author">
-                                        <i class="far fa-user"></i> by: <span th:text="${blog.author}"></span>
-                                    </li>
-                                    <li class="ltn__blog-date">
-                                        <i class="far fa-calendar-alt"></i> <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}"></span>
-                                    </li>
-                                </ul>
+                <!-- Category Column -->
+                <div class="col-lg-3">
+                    <div class="widget ltn__menu-widget ltn__blog-filter mb-4">
+                        <h4 class="ltn__widget-title"></h4>
+                        <ul>
+                            <li>
+                                <a th:href="@{/news}"
+                                   th:class="${param.category == null} ? 'active' : ''">Tất cả danh mục</a>
+                            </li>
+                            <li th:each="category : ${categories}">
+                                <a th:href="@{/news(category=${category.name()})}"
+                                   th:class="${category.name() == param.category} ? 'active' : ''"
+                                   th:text="${category.displayName}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- First Blog Column -->
+                <div class="col-lg-4">
+                    <h2 class="mb-4" th:text="${currentCategory != null ? currentCategory : 'Tất cả tin tức'}"></h2>
+                    <div class="row" th:each="blog, iterStat : ${blogs}" th:if="${iterStat.index % 2 == 0}">
+                        <div class="col-12 mb-4">
+                            <div class="ltn__blog-item shadow-sm rounded h-100">
+                                <div class="ltn__blog-img">
+                                    <a th:href="@{'/news/' + ${blog.slug}}">
+                                        <img th:src="@{${blog.imageUrl}}" alt="Blog Image" width="410" height="380">
+                                    </a>
+                                </div>
+                                <div class="ltn__blog-brief p-3 bg-white">
+                                    <div class="ltn__blog-meta mb-2 text-muted small">
+                                        <i class="far fa-user me-1"></i> <span th:text="${blog.author}"></span>
+                                        <i class="far fa-calendar-alt me-1"></i> <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}"></span>
+                                    </div>
+                                    <h5 class="ltn__blog-title fw-semibold" style="
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2;
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        min-height: 3.6em;">
+                                        <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}"></a>
+                                    </h5>
+                                    <div class="mt-2">
+                                        <a th:href="@{'/news/' + ${blog.slug}}" class="btn btn-sm btn-outline-success">Đọc thêm</a>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="ltn__blog-title" style="
-                                    display: -webkit-box;
-                                    -webkit-line-clamp: 2;
-                                    -webkit-box-orient: vertical;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                    min-height: 3.6em;
-                                ">
-                                <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}">Blog Title</a>
-                            </h3>
-                            <div class="ltn__blog-btn">
-                                <a th:href="@{'/news/' + ${blog.slug}}">Read more</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Second Blog Column-->
+                <div class="col-lg-4">
+                    <h2 class="mb-4" style="visibility: hidden;" th:text="${currentCategory != null ? currentCategory : 'Tất cả tin tức'}"></h2>
+                    <div class="row" th:each="blog, iterStat : ${blogs}" th:if="${iterStat.index % 2 == 1}">
+                        <div class="col-12 mb-4">
+                            <div class="ltn__blog-item shadow-sm rounded h-100">
+                                <div class="ltn__blog-img">
+                                    <a th:href="@{'/news/' + ${blog.slug}}">
+                                        <img th:src="@{${blog.imageUrl}}" alt="Blog Image" width="410" height="380">
+                                    </a>
+                                </div>
+                                <div class="ltn__blog-brief p-3 bg-white">
+                                    <div class="ltn__blog-meta mb-2 text-muted small">
+                                        <i class="far fa-user me-1"></i> <span th:text="${blog.author}"></span>
+                                        <i class="far fa-calendar-alt me-1"></i> <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}"></span>
+                                    </div>
+                                    <h5 class="ltn__blog-title fw-semibold" style="
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2;
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        min-height: 3.6em;">
+                                        <a th:href="@{'/news/' + ${blog.slug}}" th:text="${blog.title}"></a>
+                                    </h5>
+                                    <div class="mt-2">
+                                        <a th:href="@{'/news/' + ${blog.slug}}" class="btn btn-sm btn-outline-success">Đọc thêm</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Pagination -->
-            <div class="row">
+            <div class="row" th:if="${page.totalPages > 1}">
                 <div class="col-lg-12">
                     <div class="ltn__pagination-area text-center">
                         <div class="ltn__pagination">
                             <ul>
-                                <li><a href="#"><i class="fas fa-angle-double-left"></i></a></li>
-                                <li class="active"><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#"><i class="fas fa-angle-double-right"></i></a></li>
+                                <li th:class="${page.hasPrevious()} ? '' : 'disabled'">
+                                    <a th:href="@{/news(page=${page.number}, category=${param.category})}" th:if="${page.hasPrevious()}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                    <span th:unless="${page.hasPrevious()}"><i class="fas fa-angle-double-left"></i></span>
+                                </li>
+                                <li th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                                    th:class="${i == page.number} ? 'active' : ''">
+                                    <a th:href="@{/news(page=${i}, category=${param.category})}" th:text="${i + 1}"></a>
+                                </li>
+                                <li th:class="${page.hasNext()} ? '' : 'disabled'">
+                                    <a th:href="@{/news(page=${page.number + 2}, category=${param.category})}" th:if="${page.hasNext()}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                    <span th:unless="${page.hasNext()}"><i class="fas fa-angle-double-right"></i></span>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -84,15 +219,11 @@
             </div>
         </div>
     </div>
-    <!-- BLOG AREA END -->
-
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
 
-<!-- Scripts -->
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
-
 </body>
 </html>

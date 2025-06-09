@@ -1,156 +1,256 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
-
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Voucher Management</title>
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Danh sách Voucher</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-    <!-- Vendor CSS -->
+    <!-- CSS -->
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
     <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+
+    <!-- Custom CSS for Modern Design -->
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .cr-main-content {
+            padding: 20px;
+        }
+
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Table Styling */
         .table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
             background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .table th {
-            background-color: #f2f9f2;
-            color: #3c763d;
-            font-weight: bold;
+        .table thead th {
+            background-color: #f9fff7;
+            color: #2e7d32;
+            font-weight: 600;
             padding: 12px;
+            border-bottom: 2px solid #e0e0e0;
             text-align: center;
-            border: 1px solid #e0e0e0;
         }
 
-        .table td {
-            padding: 10px;
+        .table tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
             text-align: center;
-            border: 1px solid #e0e0e0;
         }
 
-        .table tr:hover {
-            background-color: #f1f8f1;
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e8f5e9;
         }
 
         .table-danger {
             background-color: #f8d7da;
-            color: #721c24;
         }
 
+        /* Button Styling */
         .btn {
-            border-radius: 5px;
-            padding: 8px 15px;
-            text-transform: uppercase;
-            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
         }
 
         .btn-warning {
-            background-color: #ffc107;
-            color: white;
-            border: none;
+            background-color: #ffb300;
+            border-color: #ffb300;
+            color: #ffffff;
         }
 
         .btn-warning:hover {
-            opacity: 0.8;
+            background-color: #e0a800;
+            border-color: #e0a800;
         }
 
         .btn-danger {
-            background-color: #dc3545;
-            color: white;
-            border: none;
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+            color: #ffffff;
         }
 
         .btn-danger:hover {
-            opacity: 0.8;
-        }
-
-        .btn:hover {
-            opacity: 0.8;
+            background-color: #b71c1c;
+            border-color: #b71c1c;
         }
 
         .btn.disabled, .btn:disabled {
             background-color: #e0e0e0;
+            border-color: #e0e0e0;
             cursor: not-allowed;
         }
 
-        .table td a {
-            text-decoration: none;
-            font-weight: bold;
+        /* Action Buttons Container */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .table td a:hover {
-            text-decoration: underline;
+        /* Toast Styling */
+        .toast-container {
+            z-index: 9999;
+        }
+
+        .toast {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast-success {
+            background-color: #28a745 !important;
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cr-card {
+                padding: 20px;
+            }
+
+            .cr-page-title h5 {
+                font-size: 1.5rem;
+            }
+
+            .table thead th, .table tbody td {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
         }
     </style>
-
-
 </head>
-
 <body>
 <main class="wrapper sb-default">
-    <div th:replace="~{admin/header :: header}"></div>
-    <div th:replace="~{admin/sidebar :: sidebar}"></div>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
+    <!-- Main Content -->
     <div class="cr-main-content">
         <div class="container-fluid">
-            <div class="cr-page-title">
+            <div class="cr-page-title cr-page-title-2">
                 <div class="cr-breadcrumb">
-                    <h5>Voucher Management</h5>
+                    <h5>Danh Sách Voucher</h5>
                     <ul>
-                        <li><a th:href="@{/admin}">Admin</a></li>
-                        <li>Voucher List</li>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Danh Sách Voucher</li>
                     </ul>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="cr-card card-default product-list">
+                    <div class="cr-card card-default">
                         <div class="cr-card-content">
                             <div class="d-flex justify-content-end mb-3">
-                                <a class="cr-btn default-btn color-success" th:href="@{/admin/vouchers/add}">Thêm Voucher</a>
+                                <a class="btn btn-success" th:href="@{/admin/vouchers/add}">Thêm Voucher</a>
                             </div>
 
                             <div class="table-responsive">
-                                <table id="voucher_list" class="table" style="width:100%">
+                                <table id="voucher_list" class="table">
                                     <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Mã Code</th>
                                         <th>Tên Voucher</th>
                                         <th>Phần Trăm Giảm</th>
-                                        <th>Trạng thái</th>
+                                        <th>Trạng Thái</th>
                                         <th>Ngày Bắt Đầu</th>
                                         <th>Ngày Kết Thúc</th>
                                         <th>Hành Động</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="voucher : ${vouchers}" th:classappend="${voucher.endDate.isBefore(#temporals.createNow())} ? 'table-danger' : ''">
+                                    <tr th:each="voucher : ${vouchers}"
+                                        th:classappend="${voucher.endDate.isBefore(#temporals.createNow())} ? 'table-danger' : ''">
                                         <td th:text="${voucher.voucherid}"></td>
                                         <td th:text="${voucher.code}"></td>
                                         <td th:text="${voucher.name}"></td>
-                                        <td th:text="${voucher.discountPercent} + '%' "></td>
+                                        <td th:text="${voucher.discountPercent} + '%'"></td>
                                         <td th:text="${voucher.status ? 'Hoạt động' : 'Tạm ngừng'}"
                                             th:classappend="${voucher.status ? 'text-success' : 'text-danger'}"></td>
                                         <td th:text="${voucher.startDate}"></td>
                                         <td th:text="${voucher.endDate}"></td>
                                         <td>
-                                            <div class="d-flex justify-content-center">
-                                                <a th:href="@{/admin/vouchers/edit/{id}(id=${voucher.voucherid})}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
+                                            <div class="action-buttons">
+                                                <a th:href="@{/admin/vouchers/edit/{id}(id=${voucher.voucherid})}"
+                                                   class="btn btn-warning">Sửa</a>
                                                 <a th:href="@{/admin/vouchers/delete/{id}(id=${voucher.voucherid})}"
-                                                   class="btn btn-danger btn-sm"
-                                                   onclick="return confirm('Bạn có chắc muốn xóa voucher này không?')">Delete</a>
+                                                   class="btn btn-danger delete-voucher"
+                                                   data-id="${voucher.voucherid}">Xóa</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -162,18 +262,93 @@
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
         <footer>
             <div class="container-fluid">
                 <div class="copyright">
-                    <p><span id="copyright_year"></span> © Admin, All rights Reserved.</p>
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
                 </div>
             </div>
         </footer>
     </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6 toast-error" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6 toast-success" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 </main>
 
+<!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Custom JavaScript for Delete Confirmation and Toast -->
+<script>
+    // Toast Function
+    function showToast(type, message) {
+        const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        toast.show();
+    }
+
+    // Delete Confirmation with AJAX
+    document.querySelectorAll('.delete-voucher').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const voucherId = button.dataset.id;
+            const url = button.getAttribute('href');
+
+            if (!confirm('Bạn có chắc muốn xóa voucher này không?')) {
+                return;
+            }
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        [csrfHeader]: csrfToken
+                    }
+                });
+
+                if (response.ok) {
+                    showToast('success', 'Xóa voucher thành công!');
+                    setTimeout(() => window.location.reload(), 2000);
+                } else {
+                    showToast('error', 'Xóa voucher thất bại. Vui lòng thử lại.');
+                }
+            } catch (error) {
+                showToast('error', 'Đã xảy ra lỗi khi xóa voucher.');
+                console.error('Error:', error);
+            }
+        });
+    });
+</script>
 </body>
 </html>

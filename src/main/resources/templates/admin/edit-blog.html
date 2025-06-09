@@ -1,76 +1,224 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Edit Blog</title>
+    <meta name="keywords" content="quản trị, blog, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Blog Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản Trị - Chỉnh Sửa Blog</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
-    <!-- Vendor CSS -->
+    <!-- CSS -->
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+
+    <!-- Custom CSS for Modern Design -->
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .cr-main-content {
+            padding: 20px;
+        }
+
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Textarea */
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Drag-and-Drop Area */
+        .image-upload-container {
+            border: 2px dashed #4caf50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9fff7;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .image-upload-container.dragover {
+            background-color: #e8f5e9;
+        }
+
+        .image-upload-container label {
+            font-size: 1.1rem;
+            color: #388e3c;
+            cursor: pointer;
+        }
+
+        .image-upload-container input[type="file"] {
+            display: none;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+        }
+
+        .image-preview img, .current-image img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Related Products Checkboxes */
+        .product-checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background-color: #f9fff7;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
         .product-checkbox {
             display: flex;
             align-items: center;
             padding: 10px;
-            background: #f8f9fa;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 6px;
-            transition: all 0.3s ease-in-out;
             cursor: pointer;
-            min-width: 150px;
-            text-align: left;
-            border: 1px solid #ddd;
-            margin-right: 10px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .product-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+            accent-color: #4caf50;
         }
 
         .product-checkbox:hover {
-            background: #e9ecef;
+            background-color: #e8f5e9;
+            border-color: #4caf50;
         }
 
-        .product-checkbox input {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
+        .product-checkbox input[type="checkbox"]:checked + span {
+            color: #2e7d32;
+            font-weight: 600;
         }
 
-        .product-checkbox label {
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        .product-checkbox input:checked + label {
-            background-color: #007bff;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 6px;
+        .form-actions .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
         }
 
+        .form-actions .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
+        }
+
+        .form-actions .btn-danger {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .form-actions .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+        }
     </style>
 </head>
 <body>
 <main class="wrapper sb-default">
-    <div id="cr-overlay">
-        <div class="loader"></div>
-    </div>
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
-    <div th:replace="~{admin/header :: header}"></div>
-    <div th:replace="~{admin/sidebar :: sidebar}"></div>
-
+    <!-- Main Content -->
     <div class="cr-main-content">
         <div class="container-fluid">
             <div class="cr-page-title cr-page-title-2">
                 <div class="cr-breadcrumb">
-                    <h5>Edit Blog</h5>
+                    <h5>Chỉnh Sửa Blog</h5>
                     <ul>
-                        <li><a th:href="@{/admin}">Dashboard</a></li>
-                        <li>Edit Blog</li>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Chỉnh Sửa Blog</li>
                     </ul>
                 </div>
             </div>
@@ -78,72 +226,92 @@
                 <div class="col-md-12">
                     <div class="cr-card card-default">
                         <div class="cr-card-content">
-                            <form th:action="@{'/admin/blogs/update/' + ${blog.id}}"
-                                  method="post"
-                                  enctype="multipart/form-data"
-                                  th:object="${blog}">
+                            <form th:action="@{'/admin/blogs/update/' + ${blog.id}}" th:object="${blog}" method="POST"
+                                  enctype="multipart/form-data" id="blogForm">
                                 <input type="hidden" th:field="*{id}">
 
                                 <div class="form-group">
-                                    <label for="title">Tiêu đề</label>
-                                    <input type="text" id="title" class="form-control" th:field="*{title}" required>
+                                    <label for="title">Tiêu Đề</label>
+                                    <input type="text" id="title" th:field="*{title}" class="form-control"
+                                           placeholder="Nhập tiêu đề blog" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="slug">Slug</label>
-                                    <input type="text" id="slug" class="form-control" th:field="*{slug}" required>
+                                    <input type="text" id="slug" th:field="*{slug}" class="form-control"
+                                           placeholder="Nhập slug (VD: ten-blog)" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="author">Tác giả</label>
-                                    <input type="text" id="author" class="form-control" th:field="*{author}" required>
+                                    <label for="author">Tác Giả</label>
+                                    <input type="text" id="author" th:field="*{author}" class="form-control"
+                                           placeholder="Nhập tên tác giả" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="status">Trạng thái</label>
-                                    <select id="status" class="form-control" th:field="*{status}">
+                                    <label for="status">Trạng Thái</label>
+                                    <select id="status" th:field="*{status}" class="form-select">
                                         <option value="DRAFT">Nháp</option>
-                                        <option value="PUBLISHED">Đã xuất bản</option>
+                                        <option value="PUBLISHED">Đã Xuất Bản</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="markdownContent">Nội dung Markdown</label>
-                                    <textarea id="markdownContent" class="form-control" rows="10" th:field="*{markdownContent}" required></textarea>
+                                    <label for="category">Thể Loại Blog</label>
+                                    <select id="category" th:field="*{category}" class="form-select" required>
+                                        <option value="" disabled selected>Chọn thể loại</option>
+                                        <option value="RECIPES_VEGETARIAN">Công thức món chay</option>
+                                        <option value="RECIPES_SAVORY">Công thức món mặn</option>
+                                        <option value="PRODUCT_REVIEWS">Đánh giá sản phẩm</option>
+                                        <option value="NUTRITION_AND_HEALTH">Kiến thức dinh dưỡng</option>
+                                        <option value="LIFESTYLE">Phong cách sống</option>
+                                        <option value="PERSONAL_STORIES">Câu chuyện cá nhân</option>
+                                        <option value="NEWS_AND_TRENDS">Tin tức & Xu hướng</option>
+                                        <option value="SPECIAL_TOPICS">Chuyên đề cho đối tượng</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Ảnh đại diện blog hiện tại</label>
-                                    <div th:if="${blog.imageUrl != null}">
-                                        <img th:src="${blog.imageUrl}" alt="Blog Image" class="img-thumbnail mb-2" style="max-width: 250px;">
-                                    </div>
-                                    <label for="imageFile">Thay ảnh mới (nếu muốn)</label>
-                                    <input type="file" id="imageFile" name="imageFile" class="form-control-file" accept="image/*">
+                                    <label for="markdownContent">Nội Dung Markdown</label>
+                                    <textarea id="markdownContent" th:field="*{markdownContent}" class="form-control"
+                                              placeholder="Nhập nội dung markdown" rows="10" required></textarea>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="font-weight-bold">Sản phẩm liên quan</label>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="d-flex flex-wrap">
-                                                <div class="form-check product-checkbox m-2" th:each="product : ${products}">
-                                                    <input class="form-check-input" type="checkbox"
-                                                           th:id="'product-' + ${product.productId}"
-                                                           th:name="relatedProducts"
-                                                           th:value="${product.productId}"
-                                                           th:checked="${#lists.contains(blog.relatedProducts, product)}">
-                                                    <label class="form-check-label" th:for="'product-' + ${product.productId}">
-                                                        <span th:text="${product.productName}"></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <label>Ảnh Đại Diện Blog Hiện Tại</label>
+                                    <div class="current-image" th:if="${blog.imageUrl != null}">
+                                        <img th:src="${blog.imageUrl}" alt="Blog Image">
+                                    </div>
+                                    <label for="imageFile">Thay Ảnh Mới (Nếu Muốn)</label>
+                                    <div class="image-upload-container" id="dropArea">
+                                        <label for="imageFile">
+                                            <i class="ri-upload-cloud-2-line" style="font-size: 2rem; color: #4caf50;"></i><br>
+                                            Kéo và thả ảnh tại đây hoặc nhấp để chọn
+                                        </label>
+                                        <input type="file" id="imageFile" name="imageFile" accept="image/*">
+                                    </div>
+                                    <div class="image-preview" id="imagePreview"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="mb-2">Sản Phẩm Liên Quan</label>
+                                    <div class="product-checkbox-container">
+                                        <th:block th:each="product : ${products}">
+                                            <label class="product-checkbox">
+                                                <input type="checkbox" name="relatedProducts"
+                                                       th:id="'product-' + ${product.productId}"
+                                                       th:value="${product.productId}"
+                                                       th:checked="${#lists.contains(blog.relatedProducts, product)}">
+                                                <span th:text="${product.productName}"></span>
+                                            </label>
+                                        </th:block>
                                     </div>
                                 </div>
 
-                                <div class="form-group text-right">
-                                    <button type="submit" class="cr-btn default-btn color-success">Cập nhật bài viết</button>
-                                    <a th:href="@{/admin/blogs}" class="cr-btn default-btn">Hủy</a>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Cập Nhật Bài Viết</button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="window.location.href='/admin/blogs'">Hủy</button>
                                 </div>
                             </form>
                         </div>
@@ -151,11 +319,140 @@
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 9999;">
+        <!-- Error Toast -->
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6" role="alert"
+             aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #dc3545 !important;">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold">
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+        <!-- Success Toast -->
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6" role="alert"
+             aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #28a745 !important;">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold">
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
     </div>
 </main>
 
+<!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Custom JavaScript for Drag-and-Drop and Toast -->
+<script>
+    // Drag-and-Drop Functionality
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('imageFile');
+    const imagePreview = document.getElementById('imagePreview');
+
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('dragover');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('dragover');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+            previewImage(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            previewImage(fileInput.files[0]);
+        }
+    });
+
+    function previewImage(file) {
+        imagePreview.innerHTML = '';
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            imagePreview.appendChild(img);
+        }
+    }
+
+    // Toast Function
+    function showToast(type, message) {
+        const toastElement = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 2000
+        });
+        toast.show();
+    }
+
+    // Form Submission with Toast
+    document.getElementById('blogForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate required fields
+        const title = document.getElementById('title').value.trim();
+        const slug = document.getElementById('slug').value.trim();
+        const author = document.getElementById('author').value.trim();
+        const category = document.getElementById('category').value;
+        const markdownContent = document.getElementById('markdownContent').value.trim();
+
+        if (!title || !slug || !author || !category || !markdownContent) {
+            showToast('error', 'Vui lòng điền đầy đủ các trường bắt buộc!');
+            return false;
+        }
+
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        try {
+            const response = await fetch(e.target.action, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast('success', 'Cập nhật bài viết thành công!');
+                setTimeout(() => window.location.href = '/admin/blogs', 1000);
+            } else {
+                showToast('error', 'Cập nhật bài viết thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            showToast('error', 'Đã xảy ra lỗi khi cập nhật bài viết.');
+            console.error('Error:', error);
+        }
+    });
+</script>
 </body>
 </html>

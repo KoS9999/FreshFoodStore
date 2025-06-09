@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Place favicon.png in the root directory -->
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
 
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
@@ -33,6 +33,7 @@
         .text-danger {
             color: #dc3545 !important;
         }
+
         .pagination .page-item a.page-link {
             color: #555;
             background-color: #f8f9fa;
@@ -56,6 +57,7 @@
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
+
         .checkin-progress .step-container {
             display: flex;
             justify-content: center;
@@ -99,8 +101,47 @@
             background-color: #7ed957;
             color: white;
         }
-    </style>
 
+        .checkin-history-slider {
+            max-height: 120px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .checkin-history-slider::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .checkin-history-slider::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+
+        .checkin-history-slider::-webkit-scrollbar-thumb {
+            background: #8BB436;
+            border-radius: 5px;
+        }
+
+        .checkin-history-slider::-webkit-scrollbar-thumb:hover {
+            background: #7ed957;
+        }
+
+        .checkin-history-slider .list-group-item {
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: transparent;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .checkin-history-slider .list-group-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -116,12 +157,14 @@
                 <div class="col-lg-12">
                     <div class="ltn__breadcrumb-inner ltn__breadcrumb-inner-2 justify-content-between">
                         <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">// Welcome to our store</h6>
-                            <h1 class="section-title white-color">My Account</h1>
+                            <h6 class="section-subtitle ltn__secondary-color"
+                                style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                // Chào mừng đến với cửa hàng chúng tôi</h6>
+                            <h1 class="section-title white-color">Tài khoản</h1>
                         </div>
                         <div class="ltn__breadcrumb-list">
                             <ul>
-                                <li><a th:href="@{/index}">Home</a></li>
+                                <li><a th:href="@{/index}">Trang chủ</a></li>
                                 <li>Welcome, <span th:text="${user.name}">User</span>!</li>
                             </ul>
                         </div>
@@ -140,14 +183,16 @@
                 <div class="col-lg-4">
                     <div class="ltn__tab-menu-list mb-50">
                         <div class="nav">
-                            <a class="active show" data-bs-toggle="tab" href="#account-details">Account Details <i class="fas fa-user"></i></a>
-                            <a data-bs-toggle="tab" href="#orders">My Orders <i class="fas fa-file-alt"></i></a>
-                            <a data-bs-toggle="tab" href="#daily-checkin">Daily Check-in <i class="fas fa-calendar-check"></i></a>
+                            <a class="active show" data-bs-toggle="tab" href="#account-details">Thông tin cá nhân <i
+                                    class="fas fa-user"></i></a>
+                            <a data-bs-toggle="tab" href="#orders">Đơn hàng của tôi <i class="fas fa-file-alt"></i></a>
+                            <a data-bs-toggle="tab" href="#daily-checkin">Điểm danh mỗi ngày <i
+                                    class="fas fa-calendar-check"></i></a>
                             <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">
-                                Logout <i class="fas fa-sign-out-alt"></i>
+                                Đăng xuất tài khoản <i class="fas fa-sign-out-alt"></i>
                             </a>
                             <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
                             </form>
 
                         </div>
@@ -160,36 +205,55 @@
                         <!-- Account Details -->
                         <div class="tab-pane fade active show" id="account-details">
                             <div class="ltn__myaccount-tab-content-inner">
-                                <h2>Account Details</h2>
+                                <h2 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    Thông tin tài khoản</h2>
                                 <form id="update-account-form" action="#" method="post">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label>Name:</label>
+                                            <label>Tên:</label>
                                             <input type="text" name="name" th:value="${user.name}" class="form-control">
                                         </div>
                                         <div class="col-md-6">
                                             <label>Email:</label>
-                                            <input type="email" name="email" th:value="${user.email}" class="form-control" readonly>
+                                            <input type="email" name="email" th:value="${user.email}"
+                                                   class="form-control" readonly>
                                         </div>
                                         <div class="col-md-6">
-                                            <label>Points</label>
-                                            <input type="text" name="points" th:value="${user.points}" class="form-control" readonly>
+                                            <label>Điểm tích lũy</label>
+                                            <input type="text" name="points" th:value="${user.points}"
+                                                   class="form-control" readonly>
                                         </div>
                                         <div class="col-md-6">
-                                            <label>Phone:</label>
-                                            <input type="text" name="phone" th:value="${user.phone}" class="form-control"
-                                                   pattern="^0\d{9}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                                   required title="Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)">
+                                            <label>Số điện thoại:</label>
+                                            <input type="text" name="phone" th:value="${user.phone}"
+                                                   class="form-control"
+                                                   pattern="^0\d{9}$" maxlength="10" minlength="10"
+                                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                   readonly
+                                                   title="Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0 và có 10 chữ số)">
                                         </div>
                                         <div class="col-md-6">
-                                            <label>Address:</label>
-                                            <input type="text" id="address" name="address" th:value="${user.address}" class="form-control" placeholder="Nhập địa chỉ hoặc chọn từ bản đồ" required>
+                                            <label>Địa chỉ nhận hàng:</label>
+                                            <input type="text" id="address" name="address"
+                                                   th:value="${user.address != null ? user.address : ''}"
+                                                   class="form-control" placeholder="Nhập địa chỉ hoặc chọn từ bản đồ"
+                                                   required>
                                         </div>
                                         <div id="map" style="height: 400px; width: 1000px; margin-top: 15px;"></div>
 
                                         <div class="col-md-12 mt-3 d-flex align-items-center">
-                                            <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">Lưu thay đổi</button>
-                                            <div id="success-message" class="text-success ms-3" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></div>
+                                            <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                                                    style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                                Lưu thay đổi
+                                            </button>
+                                            <button type="button" id="update-phone-btn"
+                                                    class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                                                    style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"
+                                                    data-bs-toggle="modal" data-bs-target="#updatePhoneModal">
+                                                Cập nhật số điện thoại
+                                            </button>
+                                            <div id="success-message" class="text-success ms-3"
+                                                 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"></div>
                                         </div>
                                     </div>
                                 </form>
@@ -199,17 +263,19 @@
                         <!-- Orders -->
                         <div class="tab-pane fade" id="orders">
                             <div class="ltn__myaccount-tab-content-inner">
-                                <h2>Your Orders</h2>
+                                <h2 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    Danh sách các đơn hàng</h2>
                                 <div class="table-responsive">
                                     <table class="table" id="orderTable">
                                         <thead>
                                         <tr>
-                                            <th>Order ID</th>
-                                            <th>Shipping Address</th>
-                                            <th>Total Price</th>
-                                            <th>Payment Status</th>
-                                            <th>Order Status</th>
-                                            <th>Details</th>
+                                            <th>Mã đơn hàng</th>
+                                            <th>Địa chỉ giao hàng</th>
+                                            <th>Tổng giá</th>
+                                            <th>Trạng thái thanh toán</th>
+                                            <th>Trạng thái đơn hàng</th>
+                                            <th>Chi tiết</th>
+                                            <th>Hành động</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -228,11 +294,31 @@
                                             <td>
                                                 <button type="button"
                                                         class="btn theme-btn-1 btn-effect-1 text-uppercase"
+                                                        style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                                                           font-weight: 600;
+                                                           padding: 6px 16px;
+                                                           font-size: 14px;
+                                                           margin-right: 6px;"
                                                         data-bs-toggle="modal"
                                                         th:attr="data-bs-target='#orderModal-' + ${order.orderId}">
-                                                    View Details
+                                                    Chi tiết
                                                 </button>
                                             </td>
+                                            <td>
+                                                <button th:if="${order.orderStatus.name() == 'PENDING' and order.status == 0}"
+                                                        type="button"
+                                                        class="btn btn-danger btn-effect-1 text-uppercase cancel-order-btn"
+                                                        style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                                                           font-weight: 600;
+                                                           padding: 6px 16px;
+                                                           font-size: 14px;"
+                                                        th:attr="data-order-id=${order.orderId}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#cancelOrderModal">
+                                                    Hủy đơn
+                                                </button>
+                                            </td>
+
                                         </tr>
                                         </tbody>
                                     </table>
@@ -243,11 +329,11 @@
                                 </nav>
                             </div>
                         </div>
-
                         <!-- Daily Check-in -->
                         <div class="tab-pane fade" id="daily-checkin">
                             <div class="ltn__myaccount-tab-content-inner">
-                                <h2>Điểm danh hàng ngày</h2>
+                                <h2 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                    Điểm danh mỗi ngày</h2>
                                 <div class="d-flex align-items-center gap-3 mb-3">
                                     <button id="checkInBtn" class="btn theme-btn-1 btn-effect-1"
                                             style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
@@ -257,11 +343,12 @@
                                     <div id="checkin-message" class="m-0 p-0"></div>
                                 </div>
                                 <div class="checkin-progress my-4">
-                                    <div class="step-wrapper" th:with="progress=${totalCheckIn % 7 == 0 and totalCheckIn > 0 ? 7 : totalCheckIn % 7}">
+                                    <div class="step-wrapper"
+                                         th:with="progress=${totalCheckIn % 7 == 0 and totalCheckIn > 0 ? 7 : totalCheckIn % 7}">
                                         <div class="step-container">
                                             <div th:each="i : ${#numbers.sequence(1,7)}" class="step-item">
-                                                <div th:if="${i > 1}" class="step-line" th:classappend="${i <= progress + 1} ? ' active' : ''"></div>
-
+                                                <div th:if="${i > 1}" class="step-line"
+                                                     th:classappend="${i <= progress + 1} ? ' active' : ''"></div>
                                                 <div class="step-circle"
                                                      th:classappend="${i <= progress} ? ' active' : ''"
                                                      th:text="${i}"
@@ -270,24 +357,24 @@
                                                      data-bs-placement="top"></div>
                                             </div>
                                         </div>
-
-                                        <div th:if="${totalCheckIn > 0 and totalCheckIn % 7 == 0}" class="text-success mt-2">
+                                        <div th:if="${totalCheckIn > 0 and totalCheckIn % 7 == 0}"
+                                             class="text-success mt-2">
                                             🎉 Bạn vừa hoàn thành chu kỳ 7 ngày và nhận được 1000 điểm thưởng!
                                         </div>
                                     </div>
                                 </div>
-
                                 <h4 class="mt-4">Lịch sử điểm danh gần đây</h4>
-                                <ul class="list-group">
-                                    <li class="list-group-item" th:each="item : ${recentAttendances}">
-                                        <i class="fas fa-check-circle text-success"></i>
-                                        <span th:text="${#temporals.format(item.date, 'dd/MM/yyyy')}"></span>
-                                        - +<span th:text="${item.earnedPoints}"></span> điểm
-                                    </li>
-                                </ul>
+                                <div class="checkin-history-slider">
+                                    <ul class="list-group">
+                                        <li class="list-group-item" th:each="item : ${recentAttendances}">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                            <span th:text="${#temporals.format(item.date, 'dd/MM/yyyy')}"></span>
+                                            - +<span th:text="${item.earnedPoints}"></span> điểm
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -295,7 +382,8 @@
     </div>
     <!-- ACCOUNT AREA END -->
     <!-- Modal chi tiết đơn hàng -->
-    <div th:each="order : ${orders}" class="modal fade" th:attr="id='orderModal-' + ${order.orderId}" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div th:each="order : ${orders}" class="modal fade" th:attr="id='orderModal-' + ${order.orderId}" tabindex="-1"
+         aria-labelledby="orderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -318,7 +406,8 @@
                         <tr th:each="detail : ${orderDetailsMap[order.orderId]}">
                             <td th:text="${detail.product.productName}"></td>
                             <td>
-                                <img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image" class="modal-product-img" width="100px" height="100px">
+                                <img th:src="@{'/uploads/main/' + ${detail.product.productImage}}" alt="Product Image"
+                                     class="modal-product-img" width="100px" height="100px">
                             </td>
                             <td th:text="${detail.quantity}"></td>
                             <td class="js-format-vnd"
@@ -337,15 +426,23 @@
                                 </a>
 
                                 <!-- Nếu đã có đánh giá cho lần mua này -->
-                                <div th:if="${reviewMap.containsKey(detail.orderDetailId)}">
-                                    <h5>Đánh giá của bạn:</h5>
-                                    <ul>
-                                        <li th:each="review : ${reviewMap[detail.orderDetailId]}">
-                                            <span th:text="'⭐ ' + ${review.rating} + ' - ' + ${review.reviewText}"></span>
-                                            <a th:href="@{/reviews/edit(reviewId=${review.reviewId})}" class="btn btn-warning">Sửa đánh giá</a>
+                                <div th:if="${reviewMap.containsKey(detail.orderDetailId)}"
+                                     style="margin-bottom: 20px;">
+                                    <h5 style="margin-bottom: 10px;">Đánh giá của bạn:</h5>
+                                    <ul style="list-style: none; padding-left: 0; margin: 0;">
+                                        <li th:each="review : ${reviewMap[detail.orderDetailId]}"
+                                            style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+
+                                                <span th:text="'⭐ ' + ${review.rating} + ' - ' + ${review.reviewText}"
+                                                      style="font-size: 16px; display: flex; align-items: center;"></span>
+
+                                            <a th:href="@{/reviews/edit(reviewId=${review.reviewId})}"
+                                               class="btn btn-warning"
+                                               style="min-width: 140px; text-align: center;">Sửa đánh giá</a>
                                         </li>
                                     </ul>
                                 </div>
+
                             </td>
                         </tr>
                         </tbody>
@@ -357,22 +454,107 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal xác nhận hủy đơn hàng -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 500px; margin: auto;">
+            <div class="modal-content" style="border-radius: 10px;">
+                <div class="modal-header" style="padding: 20px 24px 10px 24px;">
+                    <h5 class="modal-title" id="cancelOrderModalLabel" style="font-weight: bold;">Xác nhận hủy đơn hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="margin-right: 4px;"></button>
+                </div>
+                <div class="modal-body" style="padding: 0 24px 10px 24px;">
+                    <p>Bạn có chắc chắn muốn hủy đơn hàng <span id="cancelOrderId"></span> không?</p>
+                </div>
+                <div class="modal-footer" style="padding: 10px 24px 20px 24px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="min-width: 100px;">Đóng</button>
+                    <button type="button" id="confirmCancelBtn" class="btn" style="background-color: #dc3545; color: white; min-width: 100px;">Hủy đơn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal để cập nhật số điện thoại -->
+    <div class="modal fade" id="updatePhoneModal" tabindex="-1" aria-labelledby="updatePhoneModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 500px; margin: auto;">
+            <div class="modal-content" style="border-radius: 10px;">
+                <div class="modal-header" style="padding: 20px 24px 10px 24px;">
+                    <h5 class="modal-title" id="updatePhoneModalLabel" style="font-weight: bold;">Cập nhật số điện
+                        thoại</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            style="margin-right: 4px;"></button>
+                </div>
+                <div class="modal-body" style="padding: 0 24px 10px 24px;">
+                    <div class="mb-3">
+                        <label for="newPhoneInput" class="form-label">Số điện thoại mới:</label>
+                        <div class="input-group">
+                        <span class="input-group-text d-flex align-items-center justify-content-center"
+                              style="min-width: 45px; height: 45px; background-color: #f8f9fa; border-right: 1px solid #ced4da;">
+                            <i class="fas fa-phone" style="font-size: 16px;"></i>
+                        </span>
+                            <input type="text" class="form-control" id="newPhoneInput"
+                                   placeholder="Nhập số điện thoại mới (bắt đầu bằng 0, 10 chữ số)"
+                                   pattern="^0\d{9}$" maxlength="10" minlength="10"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                   style="height: 45px;">
+                        </div>
+                    </div>
+                    <div class="mb-3" id="otpInputContainer" style="display: none;">
+                        <label for="otpInput" class="form-label">Mã xác thực OTP:</label>
+                        <div class="input-group">
+                        <span class="input-group-text d-flex align-items-center justify-content-center"
+                              style="min-width: 45px; height: 45px; background-color: #f8f9fa; border-right: 1px solid #ced4da;">
+                            <i class="fas fa-key" style="font-size: 16px;"></i>
+                        </span>
+                            <input type="text" class="form-control" id="otpInput"
+                                   placeholder="Nhập mã OTP"
+                                   style="height: 45px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 10px 24px 20px 24px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="min-width: 100px;">
+                        Đóng
+                    </button>
+                    <button type="button" id="submitPhoneBtn" class="btn"
+                            style="background-color: #8BB436; color: white; min-width: 100px;">Gửi mã OTP
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER AREA START -->
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
 <!-- Đặt các toast này ở cuối file HTML, ngay trước khi đóng </body> -->
 <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 9999;">
-    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #ffdb99 !important;">
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 shadow-lg fs-6" role="alert"
+         aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #ffdb99 !important;">
         <div class="d-flex">
             <div class="toast-body fw-semibold">
                 ❌ Cập nhật thất bại. Vui lòng thử lại!
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0 shadow-lg fs-6" role="alert"
+         aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #28a745 !important;">
+        <div class="d-flex">
+            <div class="toast-body fw-semibold">
+                ✅ Hủy đơn hàng thành công
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
         </div>
     </div>
 
     <div id="addressToast" class="toast align-items-center text-dark bg-warning border-0 shadow-lg fs-6"
-         role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; background-color: #ffdb99 !important;">
+         role="alert" aria-live="assertive" aria-atomic="true"
+         style="min-width: 300px; background-color: #ffebd2 !important;">
         <div class="d-flex">
             <div class="toast-body fw-semibold">
                 ❌ Vui lòng chọn một địa chỉ hợp lệ từ gợi ý hoặc bản đồ!

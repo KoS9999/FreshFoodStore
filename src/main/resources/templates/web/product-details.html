@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Broccoli - Organic Food HTML Template</title>
-    <meta name="robots" content="noindex, follow" />
+    <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon" />
+    <link rel="shortcut icon" th:href="@{/web/img/favicon.png}" type="image/x-icon"/>
     <!-- Font Icons css -->
     <link rel="stylesheet" th:href="@{/web/css/font-icons.css}">
     <!-- plugins css -->
@@ -29,19 +29,22 @@
     <div class="ltn__utilize-overlay"></div>
 
     <!-- Breadcrumb -->
-    <div class="ltn__breadcrumb-area  ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image" data-bg="img/bg/9.jpg">
+    <div class="ltn__breadcrumb-area  ltn__breadcrumb-color-white bg-overlay-theme-black-90 bg-image"
+         data-bg="img/bg/9.jpg">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ltn__breadcrumb-inner ltn__breadcrumb-inner-2 justify-content-between">
                         <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">// Welcome to our store</h6>
-                            <h1 class="section-title white-color">Product Details</h1>
+                            <h6 class="section-subtitle ltn__secondary-color"
+                                style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                // Chào mừng đến với cửa hàng chúng tôi</h6>
+                            <h1 class="section-title white-color">Chi tiết sản phẩm</h1>
                         </div>
                         <div class="ltn__breadcrumb-list">
                             <ul>
-                                <li><a th:href="@{/index}">Home</a></li>
-                                <li>Product Details</li>
+                                <li><a th:href="@{/index}">Trang chủ</a></li>
+                                <li>Chi tiết sản phẩm</li>
                             </ul>
                         </div>
                     </div>
@@ -60,13 +63,15 @@
                         <!-- Large Image (Main Image) -->
                         <div class="ltn__shop-details-large-img">
                             <div class="single-large-img">
-                                <a th:href="@{'/uploads/main/' + ${product.productImage}}" data-rel="lightcase:myCollection">
+                                <a th:href="@{'/uploads/main/' + ${product.productImage}}"
+                                   data-rel="lightcase:myCollection">
                                     <img th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Main Image">
                                 </a>
                             </div>
                             <!-- Loop for Additional Images -->
                             <div th:each="image : ${productImages}" class="single-large-img">
-                                <a th:href="@{'/uploads/additional/' + ${image.imageUrl}}" data-rel="lightcase:myCollection">
+                                <a th:href="@{'/uploads/additional/' + ${image.imageUrl}}"
+                                   data-rel="lightcase:myCollection">
                                     <img th:src="@{'/uploads/additional/' + ${image.imageUrl}}" alt="Additional Image">
                                 </a>
                             </div>
@@ -101,10 +106,14 @@
                         <!-- Name & Price -->
                         <h3 th:text="${product.productName}">Product Name</h3>
                         <div class="product-price">
-                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'"></span>
-
-                            <del th:if="${product.discount > 0}"
-                                 th:text="${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
+                                        <span class="js-price"
+                                              th:attr="data-price=${product.price}">
+                                              [[${product.price}]]
+                                        </span>
+                            <del class="js-original-price"
+                                 th:if="${product.discount > 0}"
+                                 th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                [[${product.price + (product.price * product.discount / 100)}]]
                             </del>
                         </div>
                         <!-- Description -->
@@ -126,7 +135,8 @@
                         <div class="ltn__product-details-menu-2">
                             <ul>
                                 <li th:if="${product.status == true}">
-                                    <a href="#" class="theme-btn-1 btn btn-effect-1 product-add1" th:data-product-id="${product.productId}" title="Thêm vào giỏ">
+                                    <a href="#" class="theme-btn-1 btn btn-effect-1 product-add1"
+                                       th:data-product-id="${product.productId}" title="Thêm vào giỏ">
                                         <i class="fas fa-shopping-cart"></i>
                                         Add to Cart
                                     </a>
@@ -210,10 +220,12 @@
                                                         </ul>
                                                     </div>
                                                     <p th:text="${review.reviewText}"></p>
-                                                    <span class="ltn__comment-reply-btn" th:text="${#dates.format(review.reviewDate, 'MMMM dd, yyyy')}"></span>
+                                                    <span class="ltn__comment-reply-btn"
+                                                          th:text="${#dates.format(review.reviewDate, 'MMMM dd, yyyy')}"></span>
                                                 </div>
                                             </div>
-                                            <div class="ltn__comment-item clearfix admin-reply" th:if="${review.responseText}">
+                                            <div class="ltn__comment-item clearfix admin-reply"
+                                                 th:if="${review.responseText}">
                                                 <div class="ltn__commenter-img">
                                                     <img th:src="@{/web/img/operator.png}" alt="Admin Image">
                                                 </div>
@@ -257,16 +269,19 @@
                                             <li th:if="${product.status == false}" style="background-color: #ff8585;">
                                                 <span>Out of Stock</span>
                                             </li>
-                                            <li th:if="${product.status == true && product.discount > 0}" class="sale-badge">
+                                            <li th:if="${product.status == true && product.discount > 0}"
+                                                class="sale-badge">
                                                 <span>Discount: <span th:text="${product.discount} + '%'"></span></span>
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="product-hover-action">
                                         <ul>
-                                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a></li>
+                                            <li><a href="#" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i
+                                                    class="far fa-eye"></i></a></li>
                                             <li th:if="${product.status == true}">
-                                                <a href="javascript:void(0);" title="Thêm vào giỏ" class="product-add1" th:data-product-id="${product.productId}">
+                                                <a href="javascript:void(0);" title="Thêm vào giỏ" class="product-add1"
+                                                   th:data-product-id="${product.productId}">
                                                     <i class="fas fa-shopping-cart"></i>
                                                 </a>
                                             </li>
@@ -301,11 +316,14 @@
                                            th:text="${product.productName}">Product Name</a>
                                     </h2>
                                     <div class="product-price">
-                                    <span th:attr="data-order=${product.price}"
-                                          th:text="(${#numbers.formatDecimal(product.price, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
-                                    </span>
-                                        <del th:if="${product.discount > 0}"
-                                             th:text="(${#numbers.formatDecimal(product.price + (product.price * product.discount / 100), 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ')">
+                                        <span class="js-price"
+                                              th:attr="data-price=${product.price}">
+                                              [[${product.price}]]
+                                        </span>
+                                        <del class="js-original-price"
+                                             th:if="${product.discount > 0}"
+                                             th:attr="data-price=${product.price + (product.price * product.discount / 100)}">
+                                            [[${product.price + (product.price * product.discount / 100)}]]
                                         </del>
                                     </div>
                                 </div>
@@ -317,7 +335,82 @@
         </div>
     </div>
     <!-- RECOMMENDED PRODUCTS AREA END -->
-
+    <!-- RECENTLY VIEWED PRODUCTS AREA START -->
+    <div class="ltn__product-tab-area ltn__product-gutter pt-115 pb-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title-area ltn__section-title-2 text-center">
+                        <h1 class="section-title">Sản phẩm đã xem gần đây</h1>
+                    </div>
+                </div>
+            </div>
+            <div id="recently-viewed-products" class="recently-viewed-products">
+                <th:block th:if="${not #lists.isEmpty(recentlyViewedProducts)}">
+                    <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
+                        <th:block th:each="product : ${recentlyViewedProducts}">
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                                <div class="ltn__product-item ltn__product-item-3 text-center">
+                                    <div class="product-img">
+                                        <a th:href="@{/product-details/{id}(id=${product.productId})}">
+                                            <img th:src="@{'/uploads/main/' + ${product.productImage}}" alt="Product Image">
+                                        </a>
+                                        <div class="product-badge">
+                                            <ul>
+                                                <li th:if="${product.status == false}" style="background-color: #ff8585;">
+                                                    <span>Out of Stock</span>
+                                                </li>
+                                                <li th:if="${product.status == true && product.discount > 0}" class="sale-badge">
+                                                    <span>Discount: <span th:text="${product.discount} + '%'"></span></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="product-hover-action">
+                                            <ul>
+                                                <li><a href="#" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a></li>
+                                                <li th:if="${product.status == true}">
+                                                    <a href="javascript:void(0);" title="Thêm vào giỏ" class="product-add1" th:data-product-id="${product.productId}">
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                    </a>
+                                                </li>
+                                                <li th:if="${product.status == true}">
+                                                    <a href="javascript:void(0);" class="add-to-wishlist1" th:data-product-id="${product.productId}" th:data-product-name="${product.productName}" th:src="@{'/Uploads/main/' + ${product.productImage}}" title="Add to Wishlist">
+                                                        <i class="far fa-heart"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="product-info">
+                                        <div class="product-ratting">
+                                            <ul>
+                                                <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                    <a href="#">
+                                                        <i th:class="${#maps.containsKey(recentlyViewedAverageRatings, product.productId) ?
+                                                        (i <= T(java.lang.Math).floor(recentlyViewedAverageRatings[product.productId]) ? 'fas fa-star' :
+                                                        (i - 0.5 <= recentlyViewedAverageRatings[product.productId] && recentlyViewedAverageRatings[product.productId] < i ? 'fas fa-star-half-alt' : 'far fa-star'))
+                                                        : 'far fa-star'}"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <h2 class="product-title">
+                                            <a th:href="@{/product-details/{id}(id=${product.productId})}" th:text="${product.productName}">Product Name</a>
+                                        </h2>
+                                        <div class="product-price">
+                                            <span class="js-price" th:attr="data-price=${product.price}" th:text="${product.price}"></span>
+                                            <del class="js-original-price" th:if="${product.discount > 0}" th:attr="data-price=${product.price + (product.price * product.discount / 100)}" th:text="${product.price + (product.price * product.discount / 100)}"></del>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <!-- RECENTLY VIEWED PRODUCTS AREA END -->
 
 
     <div class="ltn__modal-area ltn__add-to-cart-modal-area">
@@ -344,7 +437,8 @@
                                                 Successfully added to your Wishlist
                                             </p>
                                             <div class="btn-wrapper">
-                                                <a th:href="@{/wishlist}" class="theme-btn-1 btn btn-effect-1">View Wishlist</a>
+                                                <a th:href="@{/wishlist}" class="theme-btn-1 btn btn-effect-1">View
+                                                    Wishlist</a>
                                             </div>
                                         </div>
                                     </div>
@@ -356,25 +450,225 @@
             </div>
         </div>
     </div>
-
     <!-- Footer -->
     <div th:replace="~{web/footer :: footer}"></div>
 </div>
-
 <script th:src="@{/web/js/plugins.js}"></script>
 <script th:src="@{/web/js/main.js}"></script>
 <script th:src="@{/web/js/newmain.js}"></script>
 <script th:src="@{/web/js/favorite.js}"></script>
-<link rel="stylesheet" th:href="@{/web/css/lightcase.css}" />
+<link rel="stylesheet" th:href="@{/web/css/lightcase.css}"/>
 <script th:src="@{/web/js/lightcase.js}"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('a[data-rel^=lightcase]').lightcase();
     });
 </script>
+<script th:inline="javascript">
+    var isLoggedIn = /*[[${isLoggedIn}]]*/ false;
+    console.log("isLoggedIn:", isLoggedIn);
 
+    document.addEventListener('DOMContentLoaded', function () {
+        // Biến isLoggedIn được truyền từ server qua Thymeleaf
 
+        // Hàm tạo điểm đánh giá ngẫu nhiên (thay thế bằng dữ liệu thực tế nếu cần)
+        function getAverageRating(productId) {
+            return (Math.random() * 5).toFixed(1);
+        }
 
+        // Hàm lưu sản phẩm đã xem vào sessionStorage (chỉ áp dụng khi chưa đăng nhập)
+        function saveViewedProduct(productId, productName, productImage, price, discount, status) {
+            if (isLoggedIn) {
+                console.log("Đã đăng nhập, không lưu vào sessionStorage.");
+                return;
+            }
+            console.log("Lưu sản phẩm vào sessionStorage:", { productId, productName, productImage, price, discount, status }); // Log khi lưu sản phẩm
+
+            let recentlyViewed = JSON.parse(sessionStorage.getItem('recentlyViewedProducts')) || [];
+            const existingIndex = recentlyViewed.findIndex(item => item.productId === productId);
+            if (existingIndex !== -1) {
+                recentlyViewed.splice(existingIndex, 1);
+            }
+
+            recentlyViewed.unshift({
+                productId: productId,
+                productName: productName,
+                productImage: productImage,
+                price: price,
+                discount: discount || 0,
+                status: status
+            });
+
+            recentlyViewed = recentlyViewed.slice(0, 10);
+            sessionStorage.setItem('recentlyViewedProducts', JSON.stringify(recentlyViewed));
+            console.log("Danh sách sau khi lưu:", recentlyViewed); // Log danh sách sau khi lưu
+        }
+
+        // Hàm render danh sách sản phẩm đã xem từ sessionStorage
+        function renderRecentlyViewedProducts() {
+            if (isLoggedIn) {
+                console.log("Đã đăng nhập, không render từ sessionStorage.");
+                return;
+            }
+
+            const container = document.querySelector('#recently-viewed-products');
+            if (!container) {
+                console.log("Không tìm thấy container #recently-viewed-products"); // Log nếu không tìm thấy container
+                return;
+            }
+
+            const recentlyViewed = JSON.parse(sessionStorage.getItem('recentlyViewedProducts')) || [];
+            console.log("Danh sách sản phẩm từ sessionStorage:", recentlyViewed); // Log danh sách từ sessionStorage
+
+            if (recentlyViewed.length === 0) {
+                console.log("Không có sản phẩm nào trong sessionStorage."); // Log nếu không có sản phẩm
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `
+            <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
+        `;
+
+            recentlyViewed.forEach(product => {
+                const averageRating = getAverageRating(product.productId);
+                const originalPrice = product.discount > 0 ? (product.price + (product.price * product.discount / 100)).toFixed(2) : null;
+
+                html += `
+                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                    <div class="ltn__product-item ltn__product-item-3 text-center">
+                        <div class="product-img">
+                            <a href="/product-details/${product.productId}">
+                                <img src="/uploads/main/${product.productImage}" alt="Product Image">
+                            </a>
+                            <div class="product-badge">
+                                <ul>
+                                    ${product.status === false ? '<li style="background-color: #ff8585;"><span>Out of Stock</span></li>' : ''}
+                                    ${product.discount > 0 && product.status ? `<li class="sale-badge"><span>Discount: ${product.discount}%</span></li>` : ''}
+                                </ul>
+                            </div>
+                            <div class="product-hover-action">
+                                <ul>
+                                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#quick_view_modal"><i class="far fa-eye"></i></a></li>
+                                    ${product.status ? `
+                                    <li>
+                                        <a href="javascript:void(0);" title="Thêm vào giỏ" class="product-add1" data-product-id="${product.productId}">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" class="add-to-wishlist1"
+                                           data-product-id="${product.productId}"
+                                           data-product-name="${product.productName}"
+                                           src="/uploads/main/${product.productImage}"
+                                           title="Add to Wishlist">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                    </li>
+                                    ` : ''}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <div class="product-ratting">
+                                <ul>
+                                    ${[1, 2, 3, 4, 5].map(i => `
+                                        <li>
+                                            <a href="#">
+                                                <i class="${i <= Math.floor(averageRating) ? 'fas fa-star' :
+                    (i - 0.5 <= averageRating && averageRating < i ? 'fas fa-star-half-alt' : 'far fa-star')}"></i>
+                                            </a>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <h2 class="product-title">
+                                <a href="/product-details/${product.productId}">${product.productName}</a>
+                            </h2>
+                            <div class="product-price">
+                                <span class="js-price" data-price="${product.price}">${product.price}</span>
+                                ${originalPrice ? `<del class="js-original-price" data-price="${originalPrice}">${originalPrice}</del>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            });
+
+            html += `
+            </div>
+        `;
+
+            container.innerHTML = html;
+            console.log("Đã render HTML từ sessionStorage."); // Log sau khi render HTML
+
+            // Khởi tạo slider nếu cần
+            if (jQuery().slick) {
+                $('.ltn__tab-product-slider-one-active').slick('unslick');
+                $('.ltn__tab-product-slider-one-active').slick({
+                    arrows: true,
+                    dots: false,
+                    infinite: true,
+                    speed: 300,
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    prevArrow: '<a class="slick-prev"><i class="fas fa-arrow-left" alt="Arrow Icon"></i></a>',
+                    nextArrow: '<a class="slick-next"><i class="fas fa-arrow-right" alt="Arrow Icon"></i></a>',
+                    responsive: [
+                        { breakpoint: 992, settings: { slidesToShow: 3 } },
+                        { breakpoint: 768, settings: { slidesToShow: 2 } },
+                        { breakpoint: 580, settings: { slidesToShow: 1 } }
+                    ]
+                });
+                console.log("Đã khởi tạo slider."); // Log khi khởi tạo slider
+            } else {
+                console.log("jQuery Slick không được tải."); // Log nếu không có Slick
+            }
+        }
+
+        // Lưu thông tin sản phẩm hiện tại khi trang tải
+        const productElement = document.querySelector('.modal-product-info');
+        if (productElement) {
+            const productId = productElement.querySelector('.product-add1')?.dataset.productId;
+            const productName = productElement.querySelector('h3')?.textContent;
+            const productImage = document.querySelector('.ltn__shop-details-large-img img')?.src.split('/').pop();
+            const price = parseFloat(productElement.querySelector('.js-price')?.dataset.price);
+            const discount = parseFloat(productElement.querySelector('.js-original-price')?.dataset.price)
+                ? (parseFloat(productElement.querySelector('.js-original-price').dataset.price) - price) / price * 100
+                : 0;
+            const status = productElement.querySelector('.product-add1') ? true : false;
+
+            console.log("Thông tin sản phẩm:", { productId, productName, productImage, price, discount, status }); // Log thông tin sản phẩm
+            if (productId && productName && productImage && price) {
+                saveViewedProduct(productId, productName, productImage, price, discount, status);
+            } else {
+                console.log("Thiếu thông tin sản phẩm:", { productId, productName, productImage, price }); // Log nếu thiếu thông tin
+            }
+        } else {
+            console.log("Không tìm thấy phần tử .modal-product-info"); // Log nếu không tìm thấy productElement
+        }
+
+        // Chỉ gọi render khi chưa đăng nhập
+        if (!isLoggedIn) {
+            console.log("Chưa đăng nhập, gọi render từ sessionStorage.");
+            renderRecentlyViewedProducts();
+        } else {
+            console.log("Đã đăng nhập, sử dụng Thymeleaf render từ ViewLog.");
+        }
+
+        // Không gọi lại render khi người dùng tương tác nếu đã đăng nhập
+        document.querySelectorAll('.product-add1, .add-to-wishlist1').forEach(button => {
+            button.addEventListener('click', function () {
+                if (!isLoggedIn) {
+                    console.log("Người dùng chưa đăng nhập, gọi lại render khi tương tác.");
+                    setTimeout(renderRecentlyViewedProducts, 100);
+                } else {
+                    console.log("Người dùng đã đăng nhập, không render lại khi tương tác.");
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
 

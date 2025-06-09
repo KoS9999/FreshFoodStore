@@ -7,8 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
-        .primary-color { color: #2a7f40; }
-        .divider { border-top: 2px dashed #e0e0e0; margin: 1.5rem 0; }
+
+        .primary-color {
+            color: #2a7f40;
+        }
+
+        .divider {
+            border-top: 2px dashed #e0e0e0;
+            margin: 1.5rem 0;
+        }
     </style>
 </head>
 
@@ -23,8 +30,8 @@
 
     <!-- Content -->
     <main style="padding: 32px;">
-        <h1 style="font-family: 'Open Sans', sans-serif; font-size: 28px; color: #2a7f40; margin: 0 0 24px 0;">
-            🎉 Đặt hàng thành công! Cảm ơn bạn đã chọn Fresh Food
+        <h1 style="font-family: 'Open Sans', sans-serif; font-size: 28px; color: #2a7f40; margin: 0 0 24px 0; text-align: center;">
+            🎉 Đặt hàng thành công!<br>Cảm ơn bạn đã chọn Fresh Food
         </h1>
 
         <!-- Order Summary -->
@@ -35,19 +42,19 @@
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
                 <div>
                     <p style="margin: 4px 0; font-size: 15px;">
-                        <strong>Ngày đặt:</strong>
+                        <strong>📅 Ngày đặt:</strong>
                         <span th:text="${#dates.format(order.orderDate, 'HH:mm dd/MM/yyyy')}"></span>
                     </p>
                     <p style="margin: 4px 0; font-size: 15px;">
-                        <strong>Trạng thái thanh toán:</strong>
+                        <strong>💳 Trạng thái thanh toán:</strong>
                         <span th:if="${order.status} == 1" style="color: #2a7f40;">Đã thanh toán</span>
                         <span th:if="${order.status} == 0" style="color: #d9534f;">Chưa thanh toán</span>
                     </p>
                     <p style="margin: 4px 0; font-size: 15px;">
-                        <strong>Thời gian giao:</strong> <span th:text="${order.durationText}"></span>
+                        <strong>🚚 Thời gian giao:</strong> <span th:text="${order.durationText}"></span>
                     </p>
                     <p style="margin: 4px 0; font-size: 15px;">
-                        <strong>Khoảng cách:</strong> <span th:text="${order.distanceKm}"></span> km
+                        <strong>📍 Khoảng cách:</strong> <span th:text="${order.distanceKm}"></span> km
                     </p>
                 </div>
             </div>
@@ -86,8 +93,10 @@
                 <tr th:each="item, stat : ${items}">
                     <td style="padding: 12px; border-bottom: 1px solid #eee;" th:text="${stat.index + 1}"></td>
                     <td style="padding: 12px; border-bottom: 1px solid #eee;" th:text="${item.name}"></td>
-                    <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;" class="js-format-vnd" th:text="${item.quantity}"></td>
-                    <td style="padding: 12px; text-align: right; border-bottom: 1px solid #eee;" class="js-format-vnd" th:text="${item.price}"></td>
+                    <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;" class="js-format-vnd"
+                        th:text="${item.quantity}"></td>
+                    <td style="padding: 12px; text-align: right; border-bottom: 1px solid #eee;" class="js-format-vnd"
+                        th:text="${item.price}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -99,23 +108,30 @@
                 <div style="margin-bottom: 16px;">
                     <div style="display: flex; justify-content: space-between; margin: 8px 0;">
                         <span style="font-size: 15px;">Phí vận chuyển: </span>
-                        <span style="font-size: 15px; margin-left: auto; padding-left: 16px;" class="js-format-vnd" th:attr="data-price=${order.shippingCost}" th:text="${order.shippingCost}"></span>
+                        <span style="font-size: 15px; margin-left: auto; padding-left: 16px;" class="js-format-vnd"
+                              th:attr="data-price=${order.shippingCost}" th:text="${order.shippingCost}"></span>
                     </div>
-                    <div th:if="${order.voucherCode}" style="display: flex; justify-content: space-between; margin: 8px 0;">
-                        <span style="font-size: 15px;">Mã khuyến mãi (<span th:text="${order.voucherCode}"></span>): </span>
-                        <span style="font-size: 15px; color: #2a7f40; margin-left: auto; padding-left: 16px;" th:text="'-' + ${order.voucherDiscount}"></span>
+                    <div th:if="${order.voucherCode}"
+                         style="display: flex; justify-content: space-between; margin: 8px 0;">
+                        <span style="font-size: 15px;">Mã khuyến mãi (<span
+                                th:text="${order.voucherCode}"></span>): </span>
+                        <span style="font-size: 15px; color: #2a7f40; margin-left: auto; padding-left: 16px;"
+                              th:text="'-' + ${order.voucherDiscount}"></span>
                     </div>
 
-                    <div th:if="${order.usedPoints} > 0" style="display: flex; justify-content: space-between; margin: 8px 0;">
-                        <span style="font-size: 15px;">Điểm quy đổi (<span th:text="${order.usedPoints}"></span>): </span>
-                        <span style="font-size: 15px; color: #2a7f40; margin-left: auto; padding-left: 16px;" th:text="'-' + ${order.redeemAmount}"></span>
+                    <div th:if="${order.usedPoints} > 0"
+                         style="display: flex; justify-content: space-between; margin: 8px 0;">
+                        <span style="font-size: 15px;">Điểm quy đổi (<span
+                                th:text="${order.usedPoints}"></span>): </span>
+                        <span style="font-size: 15px; color: #2a7f40; margin-left: auto; padding-left: 16px;"
+                              th:text="'-' + ${order.redeemAmount}"></span>
                     </div>
                 </div>
             </div>
             <div class="divider"></div>
             <p style="font-size: 18px; font-weight: 700; margin: 16px 0 0 0;">
                 Tổng thanh toán:
-                <span style="float: right; color: #2a7f40;"  th:text="${totalPrice}"></span>
+                <span style="float: right; color: #2a7f40;" th:text="${totalPrice}"></span>
             </p>
         </section>
     </main>

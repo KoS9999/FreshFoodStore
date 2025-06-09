@@ -1,178 +1,600 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Thống Kê</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Thống Kê Doanh Thu</title>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-  <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-  <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
-  <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Vendor CSS -->
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
 
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
+    <!-- Main CSS -->
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 
-    .wrapper {
-      display: flex;
-    }
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
-    .main-content {
-      flex: 1;
-      margin-left: 250px;
-      padding: 20px;
-      background-color: #f8f9fa;
-    }
+    <!-- Custom CSS for Modern Design -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-    .chart-container {
-      margin-bottom: 20px;
-      padding: 15px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    .chart-title {
-      text-align: center;
-      font-size: 18px;
-      font-weight: 500;
-      margin-bottom: 10px;
-      color: #2c3e50;
-    }
+        .cr-main-content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 100px); /* Adjust based on header/footer height */
+        }
 
-    .chart-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
 
-    .chart-row {
-      display: flex;
-      gap: 20px;
-      justify-content: space-between;
-    }
+        .cr-card:hover {
+            transform: translateY(-5px);
+        }
 
-    /* Kích thước biểu đồ */
-    .small-chart canvas {
-      width: 100%;
-      height: 200px;
-    }
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
 
-    .large-chart canvas {
-      width: 100%;
-      height: 350px;
-    }
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
 
-    :root {
-      --primary-color: #36a2eb;
-      --secondary-color: #ff6384;
-      --success-color: #4bc0c0;
-      --warning-color: #ffce56;
-    }
-  </style>
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chart Styling */
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+            max-height: 200px; /* Prevent stretching */
+        }
+
+        /* Fullscreen Chart Modal */
+        .fullscreen-chart {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .fullscreen-chart-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh; /* Limit height */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fullscreen-chart canvas {
+            width: 100% !important;
+            height: 500px !important;
+            max-height: 500px; /* Prevent overflow */
+        }
+
+        .close-fullscreen {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* Filter Styling */
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .filter-container select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            font-size: 1rem;
+            color: #333;
+            background-color: #ffffff;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-container select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Grid Layout */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Toast Styling */
+        .toast-success-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1055;
+        }
+
+        .toast-success {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-error {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-body {
+            color: white;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-<main class="wrapper">
-  <div th:replace="~{admin/sidebar :: sidebar}"></div>
-  <div class="main-content">
-    <h1 style="text-align: center; margin-bottom: 20px;">Thống Kê Doanh Thu</h1>
-    <div class="chart-container small-chart">
-      <h2 class="chart-title">Doanh Thu Theo Sản Phẩm</h2>
-      <canvas id="productChart"></canvas>
+<main class="wrapper sb-default">
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
+
+    <!-- Main Content -->
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Thống Kê Doanh Thu</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Thống Kê Doanh Thu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="filter-container">
+                <select id="timeFilter" onchange="updateCharts()">
+                    <option value="all">Tất cả</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+
+            <!-- Chart Grid Layout -->
+            <div class="chart-grid">
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Sản Phẩm</h2>
+                    <canvas id="productChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Thể Loại</h2>
+                    <canvas id="categoryChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Năm</h2>
+                    <canvas id="yearChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Tỷ Lệ Trạng Thái Đơn Hàng</h2>
+                    <canvas id="orderStatusChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Hiệu Quả Voucher</h2>
+                    <canvas id="voucherChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Sản Phẩm Theo Mùa</h2>
+                    <canvas id="seasonalChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Khu Vực</h2>
+                    <canvas id="regionChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
     </div>
-    <div class="chart-row">
-      <div class="chart-container large-chart">
-        <h2 class="chart-title">Doanh Thu Theo Thể Loại</h2>
-        <canvas id="categoryChart"></canvas>
-      </div>
-      <div class="chart-container large-chart">
-        <h2 class="chart-title">Doanh Thu Theo Năm</h2>
-        <canvas id="yearChart"></canvas>
-      </div>
+
+    <!-- Fullscreen Chart Modal -->
+    <div class="fullscreen-chart" id="fullscreenChart">
+        <div class="fullscreen-chart-content">
+            <span class="close-fullscreen" onclick="closeFullscreen()">×</span>
+            <h2 class="chart-title" id="fullscreenChartTitle"></h2>
+            <canvas id="fullscreenChartCanvas"></canvas>
+        </div>
     </div>
-  </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-success-container">
+        <div class="toast" id="notificationToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
 </main>
 
+<!-- Vendor Scripts -->
+<script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Chart.js Script -->
 <script th:inline="javascript">
-  const productData = JSON.parse(/*[[${productDataJson}]]*/ '[]');
-  const categoryData = JSON.parse(/*[[${categoryDataJson}]]*/ '[]');
-  const yearData = JSON.parse(/*[[${yearDataJson}]]*/ '[]');
+    Chart.register(ChartDataLabels);
 
-  const productLabels = productData.map(item => item[0]);
-  const productValues = productData.map(item => item[2]);
-  new Chart(document.getElementById('productChart'), {
-    type: 'bar',
-    data: {
-      labels: productLabels,
-      datasets: [{
-        label: 'Doanh thu (VNĐ)',
-        data: productValues,
-        backgroundColor: ['#36a2eb', '#4bc0c0', '#ff6384', '#ffce56', '#2ecc71']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: true },
-        tooltip: { enabled: true }
-      }
+    // Data parsing with error handling
+    let productData, categoryData, yearData, orderStatusData, voucherData, seasonalData, regionData;
+    try {
+        productData = JSON.parse(/*[[${productDataJson}]]*/ '[]') || [];
+        categoryData = JSON.parse(/*[[${categoryDataJson}]]*/ '[]') || [];
+        yearData = JSON.parse(/*[[${yearDataJson}]]*/ '[]') || [];
+        orderStatusData = JSON.parse(/*[[${orderStatusDataJson}]]*/ '[]') || [];
+        voucherData = JSON.parse(/*[[${voucherDataJson}]]*/ '[]') || [];
+        seasonalData = JSON.parse(/*[[${seasonalDataJson}]]*/ '[]') || [];
+        regionData = JSON.parse(/*[[${regionDataJson}]]*/ '[]') || [];
+    } catch (error) {
+        console.error('Error parsing JSON data:', error);
+        showToast('Lỗi khi tải dữ liệu biểu đồ.', 'toast-error');
     }
-  });
 
-  const categoryLabels = categoryData.map(item => item[0]);
-  const categoryValues = categoryData.map(item => item[2]);
-  new Chart(document.getElementById('categoryChart'), {
-    type: 'doughnut',
-    data: {
-      labels: categoryLabels,
-      datasets: [{
-        data: categoryValues,
-        backgroundColor: ['#36a2eb', '#4bc0c0', '#ff6384', '#ffce56']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        tooltip: { enabled: true }
-      }
+    // Expanded color palette for visual distinction
+    const colors = [
+        '#4CAF50', '#D32F2F', '#FBC02D', '#7B1FA2', '#0288D1',
+        '#FF5722', '#388E3C', '#C2185B', '#F9A825', '#0097A7',
+        '#E64A19', '#512DA8', '#81C784', '#B71C1C', '#00BCD4',
+        '#FFD600', '#6A1B9A', '#EF5350', '#26A69A', '#FFCA28'
+    ];
+
+    let chartInstances = {};
+
+    function filterDataByYear(data, year, keyIndex) {
+        if (year === 'all') return data;
+        return data.filter(item => item[keyIndex].toString() === year);
     }
-  });
 
-  const yearLabels = [2023, 2024, 2025];
-  const yearMap = new Map(yearData.map(item => [item[0], item[2]]));
-  const yearValues = yearLabels.map(year => yearMap.get(year) || 0);
-
-  new Chart(document.getElementById('yearChart'), {
-    type: 'line',
-    data: {
-      labels: yearLabels,
-      datasets: [{
-        label: 'Doanh thu (VNĐ)',
-        data: yearValues,
-        borderColor: '#36a2eb',
-        backgroundColor: 'rgba(54,162,235,0.2)',
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: true },
-        tooltip: { enabled: true }
-      }
+    function createChartConfig(chartId, config) {
+        return {
+            ...config,
+            options: {
+                ...config.options,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...config.options.plugins,
+                    datalabels: {
+                        ...config.options.plugins.datalabels,
+                        font: { size: chartId === 'fullscreenChartCanvas' ? 14 : 10 }
+                    }
+                }
+            }
+        };
     }
-  });
+
+    function showFullscreenChart(chartId, title, config) {
+        const fullscreenChart = document.getElementById('fullscreenChart');
+        const fullscreenCanvas = document.getElementById('fullscreenChartCanvas');
+        const fullscreenTitle = document.getElementById('fullscreenChartTitle');
+
+        fullscreenTitle.textContent = title;
+        fullscreenChart.style.display = 'flex';
+
+        if (chartInstances['fullscreenChartCanvas']) {
+            chartInstances['fullscreenChartCanvas'].destroy();
+        }
+
+        chartInstances['fullscreenChartCanvas'] = new Chart(fullscreenCanvas, createChartConfig('fullscreenChartCanvas', config));
+    }
+
+    function closeFullscreen() {
+        const fullscreenChart = document.getElementById('fullscreenChart');
+        fullscreenChart.style.display = 'none';
+        if (chartInstances['fullscreenChartCanvas']) {
+            chartInstances['fullscreenChartCanvas'].destroy();
+        }
+    }
+
+    function updateCharts() {
+        const selectedYear = document.getElementById('timeFilter').value;
+
+        // Destroy existing charts
+        Object.values(chartInstances).forEach(chart => chart.destroy());
+        chartInstances = {};
+
+        // Product Chart (Bar)
+        try {
+            const productLabels = productData.map(item => item[0] || 'Không xác định').slice(0, 10);
+            const productValues = productData.map(item => item[2] || 0).slice(0, 10);
+            const productConfig = {
+                type: 'bar',
+                data: {
+                    labels: productLabels,
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: productValues,
+                        backgroundColor: colors.slice(0, productLabels.length),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: true },
+                        datalabels: { color: '#fff', font: { weight: 'bold' } }
+                    },
+                    scales: { y: { beginAtZero: true } }
+                }
+            };
+            chartInstances['productChart'] = new Chart(document.getElementById('productChart'), createChartConfig('productChart', productConfig));
+            document.getElementById('productChart').parentElement.onclick = () => showFullscreenChart('productChart', 'Doanh Thu Theo Sản Phẩm', productConfig);
+        } catch (error) {
+            console.error('Error rendering Product Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Sản Phẩm.', 'toast-error');
+        }
+
+        // Category Chart (Doughnut)
+        try {
+            const categoryLabels = categoryData.map(item => item[0] || 'Không xác định');
+            const categoryValues = categoryData.map(item => item[2] || 0);
+            const categoryConfig = {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: colors.slice(0, categoryLabels.length)
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => `${((value / categoryValues.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`
+                        }
+                    }
+                }
+            };
+            chartInstances['categoryChart'] = new Chart(document.getElementById('categoryChart'), createChartConfig('categoryChart', categoryConfig));
+            document.getElementById('categoryChart').parentElement.onclick = () => showFullscreenChart('categoryChart', 'Doanh Thu Theo Thể Loại', categoryConfig);
+        } catch (error) {
+            console.error('Error rendering Category Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Thể Loại.', 'toast-error');
+        }
+
+        // Year Chart (Line)
+        try {
+            const yearLabels = [2023, 2024, 2025];
+            const filteredYearData = selectedYear === 'all' ? yearData : filterDataByYear(yearData, selectedYear, 0);
+            const yearMap = new Map(filteredYearData.map(item => [item[0], item[2] || 0]));
+            const yearValues = yearLabels.map(year => yearMap.get(year) || 0);
+            const yearConfig = {
+                type: 'line',
+                data: {
+                    labels: yearLabels,
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: yearValues,
+                        borderColor: colors[0],
+                        backgroundColor: 'rgba(76,175,80,0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true }, datalabels: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            };
+            chartInstances['yearChart'] = new Chart(document.getElementById('yearChart'), createChartConfig('yearChart', yearConfig));
+            document.getElementById('yearChart').parentElement.onclick = () => showFullscreenChart('yearChart', 'Doanh Thu Theo Năm', yearConfig);
+        } catch (error) {
+            console.error('Error rendering Year Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Năm.', 'toast-error');
+        }
+
+        // Order Status Chart (Pie)
+        try {
+            const statusLabels = orderStatusData.map(item => item[0] || 'Không xác định');
+            const statusValues = orderStatusData.map(item => item[1] || 0);
+            const statusConfig = {
+                type: 'pie',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: colors.slice(0, statusLabels.length)
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => `${((value / statusValues.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`
+                        }
+                    }
+                }
+            };
+            chartInstances['orderStatusChart'] = new Chart(document.getElementById('orderStatusChart'), createChartConfig('orderStatusChart', statusConfig));
+            document.getElementById('orderStatusChart').parentElement.onclick = () => showFullscreenChart('orderStatusChart', 'Tỷ Lệ Trạng Thái Đơn Hàng', statusConfig);
+        } catch (error) {
+            console.error('Error rendering Order Status Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Tỷ Lệ Trạng Thái Đơn Hàng.', 'toast-error');
+        }
+
+        // Voucher Chart (Bar)
+        try {
+            const voucherLabels = voucherData.map(item => item[0] || 'Không xác định');
+            const voucherValues = voucherData.map(item => item[2] || 0);
+            const voucherConfig = {
+                type: 'bar',
+                data: {
+                    labels: voucherLabels,
+                    datasets: [{
+                        label: 'Tổng giảm giá (VNĐ)',
+                        data: voucherValues,
+                        backgroundColor: colors.slice(0, voucherLabels.length),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true }, datalabels: { color: '#fff' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            };
+            chartInstances['voucherChart'] = new Chart(document.getElementById('voucherChart'), createChartConfig('voucherChart', voucherConfig));
+            document.getElementById('voucherChart').parentElement.onclick = () => showFullscreenChart('voucherChart', 'Hiệu Quả Voucher', voucherConfig);
+        } catch (error) {
+            console.error('Error rendering Voucher Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Hiệu Quả Voucher.', 'toast-error');
+        }
+
+        // Seasonal Products Chart (Radar)
+        try {
+            const seasonalLabels = seasonalData.map(item => item[0] || 'Không xác định');
+            const seasonalValues = seasonalData.map(item => item[2] || 0);
+            const seasonalConfig = {
+                type: 'radar',
+                data: {
+                    labels: seasonalLabels.slice(0, 5),
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: seasonalValues.slice(0, 5),
+                        backgroundColor: 'rgba(76,175,80,0.2)',
+                        borderColor: colors[3],
+                        pointBackgroundColor: colors[3]
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true }, datalabels: { display: false } }
+                }
+            };
+            chartInstances['seasonalChart'] = new Chart(document.getElementById('seasonalChart'), createChartConfig('seasonalChart', seasonalConfig));
+            document.getElementById('seasonalChart').parentElement.onclick = () => showFullscreenChart('seasonalChart', 'Sản Phẩm Theo Mùa', seasonalConfig);
+        } catch (error) {
+            console.error('Error rendering Seasonal Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Sản Phẩm Theo Mùa.', 'toast-error');
+        }
+
+        // Region Chart (Polar Area)
+        try {
+            const regionLabels = regionData.map(item => item[0] || 'Không xác định');
+            const regionValues = regionData.map(item => item[1] || 0);
+            const regionConfig = {
+                type: 'polarArea',
+                data: {
+                    labels: regionLabels,
+                    datasets: [{
+                        data: regionValues,
+                        backgroundColor: colors.slice(0, regionLabels.length)
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => `${((value / regionValues.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`
+                        }
+                    }
+                }
+            };
+            chartInstances['regionChart'] = new Chart(document.getElementById('regionChart'), createChartConfig('regionChart', regionConfig));
+            document.getElementById('regionChart').parentElement.onclick = () => showFullscreenChart('regionChart', 'Doanh Thu Theo Khu Vực', regionConfig);
+        } catch (error) {
+            console.error('Error rendering Region Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Khu Vực.', 'toast-error');
+        }
+    }
+
+    // Show Toast Function
+    function showToast(message, toastClass) {
+        const toast = document.getElementById('notificationToast');
+        toast.className = `toast ${toastClass}`;
+        document.getElementById('toastMessage').textContent = message;
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            updateCharts();
+        } catch (error) {
+            showToast('Đã xảy ra lỗi khi tải biểu đồ.', 'toast-error');
+            console.error('Error initializing charts:', error);
+        }
+    });
 </script>
 </body>
 </html>

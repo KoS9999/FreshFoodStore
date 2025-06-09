@@ -1,10 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản trị - Danh sách chi nhánh</title>
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
+    <!-- Icon CSS -->
+    <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
+
+    <!-- Vendor CSS -->
+    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <style>
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
+
+        .table th {
+            background-color: #f2f9f2;
+            color: #3c763d;
+            font-weight: bold;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .table tr:hover {
+            background-color: #f1f8f1;
+        }
+
+        .btn {
+            border-radius: 5px;
+            padding: 8px 15px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn.disabled, .btn:disabled {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+
+        .table td a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .table td a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: white;
+            border: none;
+        }
+
+        .btn-warning:hover {
+            opacity: 0.8;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.8;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-container label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .filter-container select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+            min-width: 200px;
+        }
+    </style>
 </head>
+
 <body>
-$END$
+<main class="wrapper sb-default">
+    <div id="cr-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <div th:replace="~{admin/header :: header}"></div>
+    <div th:replace="~{admin/sidebar :: sidebar}"></div>
+
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Danh sách chi nhánh</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Trang chủ</a></li>
+                        <li>Quản lý chi nhánh</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default branch-list">
+                        <div class="cr-card-content">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="filter-container">
+                                    <label for="statusFilter">Trạng thái:</label>
+                                    <select id="statusFilter" class="form-select">
+                                        <option value="">Tất cả</option>
+                                        <option th:each="status : ${statuses}"
+                                                th:value="${status}"
+                                                th:text="${status}">Status
+                                        </option>
+                                    </select>
+                                </div>
+                                <a class="cr-btn default-btn color-success" th:href="@{/admin/branches/create}">Thêm chi
+                                    nhánh</a>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table id="branch_list" class="table" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Tên chi nhánh</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Số điện thoại</th>
+                                        <th>Giờ mở cửa</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="branch : ${branches}">
+                                        <td th:text="${branch.name}">Branch Name</td>
+                                        <td th:text="${branch.address}">Address</td>
+                                        <td th:text="${branch.phone}">Phone</td>
+                                        <td th:text="${branch.openingHours}">Opening Hours</td>
+                                        <td th:text="${branch.status}">Status</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <a th:href="@{'/admin/branches/edit/' + ${branch.id}}"
+                                                   class="btn btn-warning btn-sm" style="margin-right: 10px;">
+                                                    Sửa
+                                                </a>
+                                                <a th:href="@{'/admin/branches/delete/' + ${branch.id}}"
+                                                   class="btn btn-danger btn-sm"
+                                                   onclick="return confirm('Bạn có chắc muốn xóa chi nhánh này?');">
+                                                    Xóa
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container-fluid">
+            <div class="copyright"></div>
+        </div>
+    </footer>
+</main>
+
+<!-- Vendor Scripts -->
+<script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/admin/js/vendor/simplebar.min.js}"></script>
+<script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin/js/vendor/jquery.datatables.min.js}"></script>
+<script th:src="@{/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
+<script th:src="@{/admin/js/vendor/datatables.responsive.min.js}"></script>
+<script th:src="@{/admin/js/main.js}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        const table = $('#branch_list').DataTable({
+            responsive: true,
+            language: {
+                "sZeroRecords": "Không tìm thấy bản ghi phù hợp",
+                "sEmptyTable": "Không có dữ liệu để hiển thị",
+                "sInfoEmpty": "Không có mục nào để hiển thị",
+            }
+        });
+        $('#statusFilter').on('change', function () {
+            const selectedValue = $(this).val();
+            if (selectedValue === '') {
+                table.column(6).search('').draw();
+            } else {
+                table.column(6).search(selectedValue).draw();
+            }
+        });
+    });
+</script>
 </body>
 </html>

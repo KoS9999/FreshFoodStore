@@ -1,10 +1,351 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Thêm Chi Nhánh</title>
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+
+    <!-- Vendor CSS -->
+    <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+
+    <!-- Custom CSS for Modern Design -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .cr-main-content {
+            padding: 20px;
+        }
+
+        .cr-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 30px;
+        }
+
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-actions .btn-success {
+            background-color: #4caf50;
+            border-color: #4caf50;
+        }
+
+        .form-actions .btn-success:hover {
+            background-color: #388e3c;
+            border-color: #388e3c;
+        }
+
+        .form-actions .btn-danger {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .form-actions .btn-danger:hover {
+            background-color: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        /* Toast Styling */
+        .toast-success-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1055;
+        }
+
+        .toast-success {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-error {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-body {
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cr-card {
+                padding: 20px;
+            }
+
+            .cr-page-title h5 {
+                font-size: 1.5rem;
+            }
+
+            .form-control, .form-select {
+                font-size: 0.9rem;
+            }
+
+            .form-actions .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-$END$
+<main class="wrapper sb-default">
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
+
+    <!-- Main Content -->
+    <div class="cr-main-content">
+        <div class="container-fluid">
+            <!-- Page Title & Breadcrumb -->
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Thêm Chi Nhánh</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li><a th:href="@{/admin/branches}">Danh Sách Chi Nhánh</a></li>
+                        <li>Thêm Chi Nhánh</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="cr-card card-default">
+                        <div class="cr-card-content">
+                            <form th:action="@{/admin/branches/save}" th:object="${branch}" method="post" id="branchForm">
+                                <!-- Branch Name -->
+                                <div class="form-group">
+                                    <label for="name">Tên Chi Nhánh</label>
+                                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Nhập tên chi nhánh" required>
+                                </div>
+
+                                <!-- Branch Address -->
+                                <div class="form-group">
+                                    <label for="address">Địa Chỉ</label>
+                                    <input type="text" id="address" th:field="*{address}" class="form-control" placeholder="Nhập địa chỉ chi nhánh" required>
+                                </div>
+
+                                <!-- Branch Latitude -->
+                                <div class="form-group">
+                                    <label for="latitude">Vĩ Độ</label>
+                                    <input type="number" step="any" id="latitude" th:field="*{latitude}" class="form-control" placeholder="Nhập vĩ độ" required>
+                                </div>
+
+                                <!-- Branch Longitude -->
+                                <div class="form-group">
+                                    <label for="longitude">Kinh Độ</label>
+                                    <input type="number" step="any" id="longitude" th:field="*{longitude}" class="form-control" placeholder="Nhập kinh độ" required>
+                                </div>
+
+                                <!-- Branch Phone -->
+                                <div class="form-group">
+                                    <label for="phone">Số Điện Thoại</label>
+                                    <input type="text" id="phone" th:field="*{phone}" class="form-control" placeholder="Nhập số điện thoại" required>
+                                </div>
+
+                                <!-- Branch Opening Hours -->
+                                <div class="form-group">
+                                    <label for="openingHours">Giờ Mở Cửa</label>
+                                    <input type="text" id="openingHours" th:field="*{openingHours}" class="form-control" placeholder="Nhập giờ mở cửa (VD: 8:00 - 20:00)" required>
+                                </div>
+
+                                <!-- Branch Status -->
+                                <div class="form-group">
+                                    <label for="status">Trạng Thái</label>
+                                    <select id="status" th:field="*{status}" class="form-select" required>
+                                        <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option>
+                                    </select>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success">Lưu Chi Nhánh</button>
+                                    <button type="button" class="btn btn-danger" onclick="window.location.href='/admin/branches'">Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Containers -->
+    <div class="toast-success-container">
+        <div class="toast" id="notificationToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
+</main>
+
+<!-- Vendor Scripts -->
+<script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
+<script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/admin/js/main.js}"></script>
+
+<!-- Custom JavaScript for Form Submission and Toast -->
+<script>
+    // Form Submission with Toast
+    document.getElementById('branchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate required fields
+        const name = document.getElementById('name').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const latitude = document.getElementById('latitude').value;
+        const longitude = document.getElementById('longitude').value;
+        const phone = document.getElementById('phone').value.trim();
+        const openingHours = document.getElementById('openingHours').value.trim();
+        const status = document.getElementById('status').value;
+
+        if (!name || !address || !latitude || !longitude || !phone || !openingHours || !status) {
+            showToast('Vui lòng điền đầy đủ các trường bắt buộc!', 'toast-error');
+            return;
+        }
+
+        // Validate latitude and longitude
+        if (latitude < -90 || latitude > 90) {
+            showToast('Vĩ độ phải nằm trong khoảng từ -90 đến 90!', 'toast-error');
+            return;
+        }
+        if (longitude < -180 || longitude > 180) {
+            showToast('Kinh độ phải nằm trong khoảng từ -180 đến 180!', 'toast-error');
+            return;
+        }
+
+        // Validate phone number format (basic check for digits and length)
+        const phoneRegex = /^\d{10,11}$/;
+        if (!phoneRegex.test(phone)) {
+            showToast('Số điện thoại phải là 10 hoặc 11 chữ số!', 'toast-error');
+            return;
+        }
+
+        const formData = new FormData(e.target);
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        try {
+            const response = await fetch(e.target.action, {
+                method: 'POST',
+                headers: {
+                    [csrfHeader]: csrfToken
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                showToast('Thêm chi nhánh thành công!', 'toast-success');
+                setTimeout(() => window.location.href = '/admin/branches', 3000);
+            } else {
+                showToast('Thêm chi nhánh thất bại. Vui lòng thử lại.', 'toast-error');
+            }
+        } catch (error) {
+            showToast('Đã xảy ra lỗi khi thêm chi nhánh.', 'toast-error');
+            console.error('Error:', error);
+        }
+    });
+
+    // Show Toast Function
+    function showToast(message, toastClass) {
+        const toast = document.getElementById('notificationToast');
+        toast.className = `toast ${toastClass}`;
+        document.getElementById('toastMessage').textContent = message;
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+    }
+</script>
 </body>
 </html>
