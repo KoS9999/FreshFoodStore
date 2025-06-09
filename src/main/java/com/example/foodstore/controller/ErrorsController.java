@@ -8,25 +8,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ErrorsController implements ErrorController {
+
     @GetMapping("/error")
     public String handleError(HttpServletRequest request, Model model) {
         Object status = request.getAttribute("javax.servlet.error.status_code");
         Object message = request.getAttribute("javax.servlet.error.message");
 
-        // Mã trạng thái lỗi
         int statusCode = status != null ? Integer.parseInt(status.toString()) : 500;
-        // Thông báo lỗi
+
         String errorMessage = getErrorMessage(statusCode, message != null ? message.toString() : "");
 
-        // Truyền dữ liệu vào model
         model.addAttribute("statusCode", statusCode);
         model.addAttribute("errorMessage", errorMessage);
 
-        // Luôn trả về trang web/404 cho mọi lỗi
         return "web/404";
     }
 
-    // Hàm tạo thông báo lỗi tùy theo mã trạng thái
     private String getErrorMessage(int statusCode, String defaultMessage) {
         return switch (statusCode) {
             case 400 -> "Yêu cầu không hợp lệ.";
