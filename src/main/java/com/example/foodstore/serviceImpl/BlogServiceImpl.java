@@ -1,12 +1,15 @@
 package com.example.foodstore.serviceImpl;
 
 import com.example.foodstore.entity.Blog;
+import com.example.foodstore.entity.BlogCategory;
 import com.example.foodstore.repository.BlogRepository;
 import com.example.foodstore.service.BlogService;
 import com.example.foodstore.service.FirebaseStorageService;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,22 +28,22 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Blog createBlog(Blog blog, MultipartFile imageFile) {
+    public void createBlog(Blog blog, MultipartFile imageFile) {
         blog.setCreatedAt(LocalDateTime.now());
         blog.setUpdatedAt(LocalDateTime.now());
         blog.setHtmlContent(convertMarkdownToHtml(blog.getMarkdownContent()));
+        blog.setCategory(blog.getCategory());
 
-        // 👉 Upload ảnh nếu có
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = firebaseService.uploadFileBlogs(imageFile);
             blog.setImageUrl(imageUrl);
         }
 
-        return blogRepository.save(blog);
+        blogRepository.save(blog);
     }
 
     @Override
-    public Blog updateBlog(Long id, Blog blog, MultipartFile imageFile) {
+    public void updateBlog(Long id, Blog blog, MultipartFile imageFile) {
         Optional<Blog> existingBlogOpt = blogRepository.findById(id);
         if (existingBlogOpt.isPresent()) {
             Blog existingBlog = existingBlogOpt.get();
@@ -51,6 +54,7 @@ public class BlogServiceImpl implements BlogService {
             existingBlog.setMarkdownContent(blog.getMarkdownContent());
             existingBlog.setHtmlContent(convertMarkdownToHtml(blog.getMarkdownContent()));
             existingBlog.setStatus(blog.getStatus());
+            existingBlog.setCategory(blog.getCategory());
             existingBlog.setUpdatedAt(LocalDateTime.now());
 
             if (blog.getRelatedProducts() != null) {
@@ -58,13 +62,23 @@ public class BlogServiceImpl implements BlogService {
             }
 
             if (imageFile != null && !imageFile.isEmpty()) {
+                if (existingBlog.getImageUrl() != null && !existingBlog.getImageUrl().isEmpty()) {
+                    boolean deleted = firebaseService.deleteFile(existingBlog.getImageUrl());
+                    if (deleted) {
+                        System.out.println("Đã xóa ảnh cũ thành công: " + existingBlog.getImageUrl());
+                    } else {
+                        System.err.println("Không thể xóa ảnh cũ: " + existingBlog.getImageUrl());
+                    }
+                }
                 String imageUrl = firebaseService.uploadFileBlogs(imageFile);
-                existingBlog.setImageUrl(imageUrl);
+                if (imageUrl != null) {
+                    existingBlog.setImageUrl(imageUrl);
+                } else {
+                    System.err.println("Lỗi khi tải ảnh mới lên Firebase.");
+                }
             }
-
-            return blogRepository.save(existingBlog);
+            blogRepository.save(existingBlog);
         }
-        return null;
     }
 
 
@@ -86,6 +100,25 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<Blog> getAllBlogs() {
         return blogRepository.findAll();
+    }
+
+    @Override
+    public List<Blog> getLatestBlogs() {
+        return blogRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    public List<Blog> findByCategory(BlogCategory category) {
+        return blogRepository.findByCategory(category);
+    }
+
+    @Override
+    public Page<Blog> getAllBlogsPage(Pageable pageable) {
+        return blogRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Blog> findByCategoryPage(BlogCategory category, Pageable pageable) {
+        return blogRepository.findByCategory(category, pageable);
     }
 
     private String convertMarkdownToHtml(String markdown) {
