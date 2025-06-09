@@ -45,6 +45,10 @@ public class Blog {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private BlogCategory category;
+
     @ManyToMany
     @JoinTable(
             name = "blog_product",
