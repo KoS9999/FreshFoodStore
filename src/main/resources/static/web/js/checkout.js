@@ -71,12 +71,12 @@ document.getElementById("codForm").addEventListener("submit", async (event) => {
             }, 2000);
         } else {
             showErrorToast(data.message || "Có lỗi xảy ra, vui lòng thử lại.");
-            submitButton.disabled = false; // Re-enable on failure
+            submitButton.disabled = false;
         }
     } catch (error) {
         console.error("Lỗi khi kết nối đến máy chủ:", error);
         showErrorToast("Lỗi kết nối đến máy chủ, vui lòng thử lại.");
-        submitButton.disabled = false; // Re-enable on error
+        submitButton.disabled = false;
     }
 });
 
@@ -155,16 +155,16 @@ document.getElementById("zalopayForm").addEventListener("submit", async (event) 
                 }, 2000);
             } else {
                 showErrorToast("Không nhận được URL thanh toán từ ZaloPay.");
-                submitButton.disabled = false; // Re-enable on failure
+                submitButton.disabled = false;
             }
         } else {
             showErrorToast(data.message || "Có lỗi xảy ra khi tạo giao dịch thanh toán.");
-            submitButton.disabled = false; // Re-enable on failure
+            submitButton.disabled = false;
         }
     } catch (error) {
         console.error("Lỗi khi kết nối đến máy chủ:", error);
         showErrorToast("Lỗi kết nối đến máy chủ, vui lòng thử lại.");
-        submitButton.disabled = false; // Re-enable on error
+        submitButton.disabled = false;
     }
 });
 
@@ -242,16 +242,16 @@ document.getElementById("vnpayForm").addEventListener("submit", async (event) =>
                 }, 2000);
             } else {
                 showErrorToast("Không nhận được URL thanh toán từ VNPay.");
-                submitButton.disabled = false; // Re-enable on failure
+                submitButton.disabled = false;
             }
         } else {
             showErrorToast(data.message || "Có lỗi xảy ra khi tạo giao dịch thanh toán.");
-            submitButton.disabled = false; // Re-enable on failure
+            submitButton.disabled = false;
         }
     } catch (error) {
         console.error("Lỗi khi kết nối đến máy chủ:", error);
         showErrorToast("Lỗi kết nối đến máy chủ, vui lòng thử lại.");
-        submitButton.disabled = false; // Re-enable on error
+        submitButton.disabled = false;
     }
 });
 
@@ -320,14 +320,12 @@ function applyVoucher() {
         return;
     }
 
-    // Kiểm tra mã trùng và đã áp dụng
     if (voucherApplied && code === lastVoucherCode) {
         voucherMessage.innerText = "Mã voucher này đã được áp dụng!";
         voucherMessage.style.color = "red";
         return;
     }
 
-    // Tính tổng tiền gốc (đã trừ điểm nếu có)
     const totalPrice = originalTotal - shippingcost;
 
 
@@ -342,15 +340,12 @@ function applyVoucher() {
                 lastVoucherCode = code;
                 voucherDiscount = data.discountAmount;
 
-                // Hiển thị thông tin
                 document.getElementById("discountRow").style.display = "table-row";
                 document.getElementById("discountAmount").textContent = `-${formatVND(data.discountAmount)}`;
 
-                // Cập nhật hiển thị tổng tiền (chỉ giao diện)
                 const newTotal = originalTotal - voucherDiscount - pointsDiscount;
                 document.getElementById('orderTotal').textContent = formatVND(newTotal);
 
-                // Chỉ cập nhật thông tin mã voucher đã sử dụng
                 document.getElementById("voucherCodeInput").value = code;
                 document.getElementById("voucherCodeInputZaloPay").value = code;
                 document.getElementById("voucherCodeInputVNPay").value = code;
@@ -362,7 +357,6 @@ function applyVoucher() {
                 voucherMessage.innerText = "Áp dụng voucher thành công!";
                 voucherMessage.style.color = "green";
 
-                // Cập nhật embed data nếu cần
                 const embed = {
                     address: document.getElementById("address").value,
                     phone: document.getElementById("phone").value,
@@ -390,13 +384,11 @@ function applyPoints() {
     const email = document.querySelector('input[name="app_user"]').value;
     const pointsMessage = document.getElementById('pointsMessage');
 
-    // Kiểm tra đầu vào
     if (isNaN(points) || points <= 0) {
         pointsMessage.innerText = "Vui lòng nhập số điểm hợp lệ.";
         return;
     }
 
-    // Ngăn chặn áp dụng trùng lặp
     if (pointsApplied && points === parseInt(document.getElementById('usedPointsHiddenInput').value)) {
         pointsMessage.innerText = "Điểm này đã được áp dụng trước đó.";
         return;
@@ -412,20 +404,16 @@ function applyPoints() {
                 return;
             }
 
-            // Cập nhật trạng thái hiển thị
             pointsApplied = true;
             pointsDiscount = data.redeemAmountVND;
 
-            // Hiển thị thông tin giảm giá
             document.getElementById('pointsDiscountRow').style.display = 'table-row';
             document.getElementById('pointsDiscountAmount').textContent = `-${formatVND(data.redeemAmountVND)}`;
 
-            // Cập nhật hiển thị tổng tiền (chỉ giao diện)
             const newTotal = originalTotal - voucherDiscount - pointsDiscount;
             document.getElementById('orderTotal').textContent = formatVND(newTotal);
 
 
-            // Chỉ cập nhật thông tin điểm đã sử dụng
             document.getElementById('usedPointsHiddenInput').value = data.usedPoints;
             document.getElementById('usedPointsHiddenInputZaloPay').value = data.usedPoints;
             document.getElementById('usedPointsHiddenInputVNPay').value = data.usedPoints; // VNPay
@@ -433,7 +421,6 @@ function applyPoints() {
             pointsMessage.innerText = `Đã dùng ${data.usedPoints} điểm (Giảm ${formatVND(data.redeemAmountVND)})`;
             pointsMessage.style.color = "green";
 
-            // Cập nhật embed data nếu cần
             const embed = {
                 address: document.getElementById("address").value,
                 phone: document.getElementById("phone").value,
@@ -535,7 +522,6 @@ function showErrorToast(message) {
     });
     toast.show();
 
-    // Xóa toast khỏi DOM sau khi ẩn
     toastElement.addEventListener('hidden.bs.toast', () => {
         toastElement.remove();
     });
