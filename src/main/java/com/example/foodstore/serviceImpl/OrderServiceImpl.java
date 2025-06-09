@@ -57,6 +57,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void cancelOrder(Long orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            if (order.getOrderStatus() == OrderStatus.PENDING && order.getStatus() == 0) {
+                order.setOrderStatus(OrderStatus.CANCELED);
+                orderRepository.save(order);
+            } else {
+                throw new IllegalStateException("Đơn hàng không thể hủy vì không ở trạng thái PENDING hoặc đã thanh toán");
+            }
+        } else {
+            throw new IllegalArgumentException("Không tìm thấy đơn hàng với ID: " + orderId);
+        }
+    }
+
+    @Override
     public List<Order> findOrdersByUser(User user) {
         return orderRepository.findByUser(user);
     }
