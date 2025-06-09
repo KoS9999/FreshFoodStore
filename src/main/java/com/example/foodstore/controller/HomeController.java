@@ -64,7 +64,7 @@ public class HomeController {
         Map<Long, Double> seasonalRatings = calculateAverageRatings(seasonalProducts);
         allAverageRatings.putAll(seasonalRatings);
 
-        List<Blog> blogs = blogService.getAllBlogs();
+        List<Blog> blogs = blogService.getLatestBlogs();
         model.addAttribute("blogs", blogs);
 
         Integer totalCartItems = (Integer) session.getAttribute("totalCartItems");
