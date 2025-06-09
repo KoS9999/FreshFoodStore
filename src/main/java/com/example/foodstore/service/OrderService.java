@@ -18,6 +18,8 @@ public interface OrderService {
 
     void updateOrderStatus(Long orderId, String orderStatus);
 
+    void cancelOrder(Long orderId);
+
     List<Order> findOrdersByUser(User user);
 
 }
