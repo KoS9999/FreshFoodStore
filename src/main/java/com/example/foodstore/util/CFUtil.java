@@ -15,7 +15,7 @@ public class CFUtil {
                                                                List<Review> allReviews,
                                                                List<OrderDetail> allOrders,
                                                                int topN) {
-        System.out.println(" [CF] Current User: " + currentUser.getName());
+        System.out.println(" [CF] Người dùng hiện tại: " + currentUser.getName());
 
         // Xây dựng ma trận người dùng - sản phẩm
         Map<Long, Map<Long, Double>> userProductMatrix = new HashMap<>();
@@ -24,7 +24,7 @@ public class CFUtil {
             Long uid = od.getOrder().getUser().getUserId();
             Long pid = od.getProduct().getProductId();
             userProductMatrix.computeIfAbsent(uid, k -> new HashMap<>()).put(pid, 3.0);
-            System.out.println(" [CF] Order - User " + uid + " bought Product " + pid + ", default rating 3.0");
+            System.out.println(" [CF] Người dùng " + uid + " đã mua sản phẩm " + pid + ", điểm mặc định 3.0");
         }
 
         for (Review r : allReviews) {
@@ -32,12 +32,12 @@ public class CFUtil {
             Long pid = r.getProduct().getProductId();
             double rating = r.getRating();
             userProductMatrix.computeIfAbsent(uid, k -> new HashMap<>()).put(pid, rating);
-            System.out.println(" [CF] Review - User " + uid + " rated Product " + pid + " with " + rating);
+            System.out.println(" [CF] Người dùng " + uid + " đã đánh giá sản phẩm " + pid + " với điểm " + rating);
         }
 
         Map<Long, Double> currentRatings = userProductMatrix.get(currentUser.getUserId());
         if (currentRatings == null || currentRatings.isEmpty()) {
-            System.out.println(" [CF] No ratings for current user");
+            System.out.println("⚠ [CF] Không có đánh giá nào từ người dùng hiện tại");
             return new HashMap<>();
         }
 
@@ -51,7 +51,7 @@ public class CFUtil {
             double similarity = cosineSimilarity(currentRatings, otherRatings);
             if (similarity > 0) {
                 similarityMap.put(other, similarity);
-                System.out.println(" [CF] Similarity to user " + other.getName() + ": " + similarity);
+                System.out.println(" [CF] Độ tương đồng với người dùng " + other.getName() + ": " + similarity);
             }
         }
 
@@ -78,12 +78,12 @@ public class CFUtil {
                     }
 
                     recommendations.merge(p, score, Double::sum);
-                    System.out.println(" [CF] Candidate Product " + productId + " score: " + score);
+                    System.out.println(" [CF] Sản phẩm đề xuất " + productId + " có điểm: " + score);
                 }
             }
         }
 
-        System.out.println(" [CF] Number of CF recommendations: " + recommendations.size());
+        System.out.println("[CF] Số sản phẩm được đề xuất: " + recommendations.size());
         return recommendations.entrySet().stream()
                 .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
                 .limit(topN)

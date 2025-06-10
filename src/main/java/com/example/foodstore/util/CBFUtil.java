@@ -8,11 +8,10 @@ import java.util.*;
 public class CBFUtil {
 
     public static Map<Product, Double> findSimilarProducts(Product target, List<Product> allProducts, int topN) {
-        System.out.println(" [CBF] Target Product: " + target.getProductName());
-        System.out.println(" [CBF] Target Product - Description: " + target.getDescription());
-        System.out.println(" [CBF] Target Product - Category: " + target.getCategory().getCategoryName());
+        System.out.println("🔍 [CBF] Sản phẩm mục tiêu: " + target.getProductName());
+        System.out.println("[CBF] Mô tả sản phẩm mục tiêu: " + target.getDescription());
+        System.out.println("[CBF] Danh mục sản phẩm mục tiêu: " + target.getCategory().getCategoryName());
 
-        // Tạo Map để nhóm sản phẩm theo category
         Map<String, List<Product>> categoryMap = new HashMap<>();
         for (Product product : allProducts) {
             categoryMap.computeIfAbsent(product.getCategory().getCategoryName(), k -> new ArrayList<>()).add(product);
@@ -22,7 +21,6 @@ public class CBFUtil {
         String targetProductName = target.getProductName();
         Map<Product, Double> result = new HashMap<>();
 
-        // Duyệt qua từng category và tính toán độ tương đồng
         for (String category : categoryMap.keySet()) {
             List<Product> categoryProducts = categoryMap.get(category);
             for (Product product : categoryProducts) {
@@ -37,12 +35,12 @@ public class CBFUtil {
                 double categorySimilarity = 0.0;
                 if (product.getCategory().getCategoryName().equals(target.getCategory().getCategoryName())) {
                     categorySimilarity = 0.6;
-                    System.out.println("🟢 [CBF] Same category - Increasing score");
+                    System.out.println("[CBF] Cùng danh mục với " + product.getProductName() + " - Tăng điểm tương đồng");
                 }
 
                 double totalScore = nameSimilarity + descriptionSimilarity + categorySimilarity;
 
-                System.out.println("[CBF] Similarity score to " + product.getProductName() + ": " + totalScore);
+                System.out.println("[CBF] Điểm tương đồng với " + product.getProductName() + ": " + totalScore);
 
                 if (totalScore > 0) {
                     result.put(product, totalScore);
@@ -55,12 +53,10 @@ public class CBFUtil {
                 .limit(topN)
                 .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), Map::putAll);
 
-        System.out.println("[CBF] Number of similar products recommended: " + sortedRecommendations.size());
+        System.out.println("[CBF] Số sản phẩm tương tự được đề xuất: " + sortedRecommendations.size());
 
         return sortedRecommendations;
     }
-
-
 
     private static double calculateCosineSimilarity(String targetDescription, String description) {
         CosineSimilarity cosineSimilarity = new CosineSimilarity();
@@ -70,7 +66,6 @@ public class CBFUtil {
 
         return cosineSimilarity.cosineSimilarity(targetMap, docMap);
     }
-
 
     private static Map<CharSequence, Integer> textToVector(String text) {
         Map<CharSequence, Integer> vector = new HashMap<>();
@@ -83,5 +78,4 @@ public class CBFUtil {
 
         return vector;
     }
-
 }
