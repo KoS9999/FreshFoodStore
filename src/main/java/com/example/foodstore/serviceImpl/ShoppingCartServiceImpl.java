@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -70,7 +71,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public Map<Long, CartItem> getCartItems() {
         Map<Long, CartItem> cartItems = (Map<Long, CartItem>) session.getAttribute(CART_SESSION_KEY);
         if (cartItems == null) {
-            cartItems = new HashMap<>();
+            cartItems = new ConcurrentHashMap<>();
             session.setAttribute(CART_SESSION_KEY, cartItems);
         }
         return cartItems;
