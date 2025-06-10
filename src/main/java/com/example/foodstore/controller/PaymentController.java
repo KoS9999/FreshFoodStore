@@ -63,7 +63,7 @@ public class PaymentController {
     private final String key1 = "sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn"; //PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL
     private static final String key2 = "trMrHtvjo6myautxDUiAcYsVtaeQ8nhf"; //kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz
     private final String endpoint = "https://sb-openapi.zalopay.vn/v2/create";
-    private final String callback_url = "https://52fc-14-238-107-186.ngrok-free.app/api/payment/callback";
+    private final String callback_url = "https://3f73-171-252-154-167.ngrok-free.app/api/payment/callback";
 
     //VNPAY
     private final String vnp_TmnCode = "F0AEHL04";

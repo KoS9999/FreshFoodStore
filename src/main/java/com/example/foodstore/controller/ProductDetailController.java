@@ -112,7 +112,7 @@ public class ProductDetailController {
             System.out.println("Sản phẩm gợi ý:");
             for (Product p : recommended) {
                 double score = hybridScores.getOrDefault(p, 0.0);
-                System.out.println(" - " + p.getProductName() + " (ID: " + p.getProductId() + ") | Score: " + score);
+                System.out.println(" -  (ID: " + p.getProductId() + ") | Score: " + score);
             }
         } else {
             // Người dùng chưa đăng nhập, chỉ sử dụng CBF để gợi ý
