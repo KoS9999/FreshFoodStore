@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Broccoli - Organic Food HTML Template</title>
+    <title>FreshFood - Thực phẩm sạch</title>
     <meta name="robots" content="noindex, follow"/>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -122,11 +122,11 @@
                         <div class="modal-product-meta ltn__product-details-menu-1">
                             <ul>
                                 <li>
-                                    <strong>Category:</strong>
+                                    <strong>Danh mục:</strong>
                                     <span th:text="${product.category.categoryName}"></span>
                                 </li>
                                 <li>
-                                    <strong>Status:</strong>
+                                    <strong>Trạng thái:</strong>
                                     <span th:text="${product.status ? 'Còn hàng' : 'Hết hàng'}"></span>
                                 </li>
                             </ul>
@@ -135,21 +135,22 @@
                         <div class="ltn__product-details-menu-2">
                             <ul>
                                 <li th:if="${product.status == true}">
-                                    <a href="#" class="theme-btn-1 btn btn-effect-1 product-add1"
+                                    <a href="#" class="theme-btn-1 btn btn-effect-1 product-add1" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"
                                        th:data-product-id="${product.productId}" title="Thêm vào giỏ">
                                         <i class="fas fa-shopping-cart"></i>
-                                        Add to Cart
+
+                                        Thêm giỏ hàng
                                     </a>
                                 </li>
                                 <li th:if="${product.status == true}">
                                     <a href="javascript:void(0);"
-                                       class="theme-btn-1 btn btn-effect-1 add-to-wishlist1"
+                                       class="theme-btn-1 btn btn-effect-1 add-to-wishlist1" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;"
                                        th:data-product-id="${product.productId}"
                                        th:data-product-name="${product.productName}"
                                        th:src="@{/uploads/main/{filename}(filename=${product.productImage})}"
                                        title="Add to Wishlist">
                                         <i class="far fa-heart"></i>
-                                        Add to Wishlist
+                                        Thêm yêu thích
                                     </a>
                                 </li>
                             </ul>
@@ -157,7 +158,7 @@
                         <!-- Social Share -->
                         <div class="ltn__social-media mt-3">
                             <ul>
-                                <li>Share:</li>
+                                <li>Chia sẻ:</li>
                                 <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
                                 <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                                 <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
@@ -172,19 +173,20 @@
             <div class="ltn__shop-details-tab-inner ltn__shop-details-tab-inner-2">
                 <div class="ltn__shop-details-tab-menu">
                     <div class="nav">
-                        <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Description</a>
-                        <a data-bs-toggle="tab" href="#liton_tab_details_1_2" class="">Reviews</a>
+                        <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Mô tả sản phẩm</a>
+                        <a data-bs-toggle="tab" href="#liton_tab_details_1_2" class="">Đánh giá sản phẩm</a>
                     </div>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="liton_tab_details_1_1">
                         <div class="ltn__shop-details-tab-content-inner">
-                            <p th:text="${product.description}">Product Description</p>
+                            <p th:text="${product.description}">Mô tả sản phẩm</p>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="liton_tab_details_1_2">
                         <div class="ltn__shop-details-tab-content-inner">
-                            <h4 class="title-2">Customer Reviews</h4>
+                            <h4 class="title-2" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                Đánh giá của khách hàng</h4>
                             <div class="product-ratting">
                                 <ul>
                                     <li th:each="i : ${#numbers.sequence(1, 5)}">
@@ -193,7 +195,7 @@
                                         </a>
                                     </li>
                                     <li class="review-total">
-                                        <a href="#"> ( <span th:text="${#lists.size(reviews)}"></span> Reviews )</a>
+                                        <a href="#"> ( <span th:text="${#lists.size(reviews)}"></span> Đánh giá )</a>
                                     </li>
                                 </ul>
                             </div>
@@ -412,7 +414,6 @@
     </div>
     <!-- RECENTLY VIEWED PRODUCTS AREA END -->
 
-
     <div class="ltn__modal-area ltn__add-to-cart-modal-area">
         <div class="modal fade" id="liton_wishlist_modal" tabindex="-1">
             <div class="modal-dialog modal-md" role="document">
@@ -469,14 +470,11 @@
     console.log("isLoggedIn:", isLoggedIn);
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Biến isLoggedIn được truyền từ server qua Thymeleaf
 
-        // Hàm tạo điểm đánh giá ngẫu nhiên (thay thế bằng dữ liệu thực tế nếu cần)
         function getAverageRating(productId) {
             return (Math.random() * 5).toFixed(1);
         }
 
-        // Hàm lưu sản phẩm đã xem vào sessionStorage (chỉ áp dụng khi chưa đăng nhập)
         function saveViewedProduct(productId, productName, productImage, price, discount, status) {
             if (isLoggedIn) {
                 console.log("Đã đăng nhập, không lưu vào sessionStorage.");
@@ -501,10 +499,9 @@
 
             recentlyViewed = recentlyViewed.slice(0, 10);
             sessionStorage.setItem('recentlyViewedProducts', JSON.stringify(recentlyViewed));
-            console.log("Danh sách sau khi lưu:", recentlyViewed); // Log danh sách sau khi lưu
+            console.log("Danh sách sau khi lưu:", recentlyViewed);
         }
 
-        // Hàm render danh sách sản phẩm đã xem từ sessionStorage
         function renderRecentlyViewedProducts() {
             if (isLoggedIn) {
                 console.log("Đã đăng nhập, không render từ sessionStorage.");
@@ -513,15 +510,15 @@
 
             const container = document.querySelector('#recently-viewed-products');
             if (!container) {
-                console.log("Không tìm thấy container #recently-viewed-products"); // Log nếu không tìm thấy container
+                console.log("Không tìm thấy container #recently-viewed-products");
                 return;
             }
 
             const recentlyViewed = JSON.parse(sessionStorage.getItem('recentlyViewedProducts')) || [];
-            console.log("Danh sách sản phẩm từ sessionStorage:", recentlyViewed); // Log danh sách từ sessionStorage
+            console.log("Danh sách sản phẩm từ sessionStorage:", recentlyViewed);
 
             if (recentlyViewed.length === 0) {
-                console.log("Không có sản phẩm nào trong sessionStorage."); // Log nếu không có sản phẩm
+                console.log("Không có sản phẩm nào trong sessionStorage.");
                 container.innerHTML = '';
                 return;
             }
@@ -600,9 +597,8 @@
         `;
 
             container.innerHTML = html;
-            console.log("Đã render HTML từ sessionStorage."); // Log sau khi render HTML
+            console.log("Đã render HTML từ sessionStorage.");
 
-            // Khởi tạo slider nếu cần
             if (jQuery().slick) {
                 $('.ltn__tab-product-slider-one-active').slick('unslick');
                 $('.ltn__tab-product-slider-one-active').slick({
@@ -620,13 +616,12 @@
                         { breakpoint: 580, settings: { slidesToShow: 1 } }
                     ]
                 });
-                console.log("Đã khởi tạo slider."); // Log khi khởi tạo slider
+                console.log("Đã khởi tạo slider.");
             } else {
-                console.log("jQuery Slick không được tải."); // Log nếu không có Slick
+                console.log("jQuery Slick không được tải.");
             }
         }
 
-        // Lưu thông tin sản phẩm hiện tại khi trang tải
         const productElement = document.querySelector('.modal-product-info');
         if (productElement) {
             const productId = productElement.querySelector('.product-add1')?.dataset.productId;
@@ -638,17 +633,16 @@
                 : 0;
             const status = productElement.querySelector('.product-add1') ? true : false;
 
-            console.log("Thông tin sản phẩm:", { productId, productName, productImage, price, discount, status }); // Log thông tin sản phẩm
+            console.log("Thông tin sản phẩm:", { productId, productName, productImage, price, discount, status });
             if (productId && productName && productImage && price) {
                 saveViewedProduct(productId, productName, productImage, price, discount, status);
             } else {
-                console.log("Thiếu thông tin sản phẩm:", { productId, productName, productImage, price }); // Log nếu thiếu thông tin
+                console.log("Thiếu thông tin sản phẩm:", { productId, productName, productImage, price });
             }
         } else {
-            console.log("Không tìm thấy phần tử .modal-product-info"); // Log nếu không tìm thấy productElement
+            console.log("Không tìm thấy phần tử .modal-product-info");
         }
 
-        // Chỉ gọi render khi chưa đăng nhập
         if (!isLoggedIn) {
             console.log("Chưa đăng nhập, gọi render từ sessionStorage.");
             renderRecentlyViewedProducts();
@@ -656,7 +650,6 @@
             console.log("Đã đăng nhập, sử dụng Thymeleaf render từ ViewLog.");
         }
 
-        // Không gọi lại render khi người dùng tương tác nếu đã đăng nhập
         document.querySelectorAll('.product-add1, .add-to-wishlist1').forEach(button => {
             button.addEventListener('click', function () {
                 if (!isLoggedIn) {
