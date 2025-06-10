@@ -163,4 +163,41 @@ public class CartController {
         }
         return ResponseEntity.ok("OK");
     }
+    @PostMapping("/addMultiple")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> addMultipleToCart(@RequestBody Map<String, List<Long>> requestBody, HttpSession session) {
+        List<Long> productIds = requestBody.get("productIds");
+        Map<String, Object> response = new HashMap<>();
+
+        if (productIds == null || productIds.isEmpty()) {
+            response.put("status", "error");
+            response.put("message", "Không có sản phẩm nào để thêm");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        for (Long productId : productIds) {
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product != null) {
+                CartItem item = new CartItem();
+                item.setId(productId);
+                item.setProduct(product);
+                item.setName(product.getProductName());
+                item.setUnitPrice(product.getPrice());
+                item.setQuantity(1);
+                item.setTotalPrice(item.getUnitPrice() * item.getQuantity());
+                item.setProductImage(product.getProductImage());
+                shoppingCartService.add(item);
+            }
+        }
+
+        session.setAttribute("cartItems", shoppingCartService.getCartItems());
+        session.setAttribute("totalCartItems", shoppingCartService.getCount());
+
+        response.put("status", "success");
+        response.put("totalCartItems", shoppingCartService.getCount());
+        response.put("cartItems", new ArrayList<>(shoppingCartService.getCartItems().values()));
+        response.put("totalPrice", shoppingCartService.calculateTotal());
+
+        return ResponseEntity.ok(response);
+    }
 }
