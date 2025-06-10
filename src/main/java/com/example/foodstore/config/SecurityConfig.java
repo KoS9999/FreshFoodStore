@@ -29,9 +29,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/cart/update",
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/cart/update","/cart/addMultiple",
                         "/cart/remove","/api/payment/callback","/wishlist/**","/shop/**",
-                        "/admin/products/delete-image/**","/api/payment/check-voucher/**","/api/payment/redeem/**",
+                        "/admin/products/delete-image/**","/admin/vouchers/delete/**",
+                        "/api/payment/check-voucher/**","/api/payment/redeem/**",
                         "/reviews/**","/admin/reviews/**","/api/chatbot","/account/update", "/account/update-phone",
                         "/send-verification-code", "/webhook", "/account/cancel-order/**",
                         "/api/payment/createPayment","/api/payment/createCODOrder","/api/payment/createVNPayPayment"))
@@ -40,14 +41,14 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 "/", "/index", "/register", "/login", "/confirmOTPregister",
                                 "/forgotpassword", "/confirmOtpForgotPassword", "/newPassword",
                                 "/web/**", "/product/category/**", "/uploads/**", "/new-products/**","/top-selling-products/**",
-                                "/cart/add", "/cart/update", "/cart/remove", "/api/payment/callback",  "/news/**",
+                                "/cart/add", "/cart/addMultiple","/cart/update", "/cart/remove", "/api/payment/callback",  "/news/**",
                                 "/product-details/**","/shop/**","/about","/contact","/api/payment/check-voucher/**","/api/payment/redeem/**",
                                 "/reviews/**","/api/chatbot","/error"
                         ).permitAll()
                         .requestMatchers(
                                 "/account/**", "/wishlist/**", "cart/checkout"
                         ).hasRole("USER")
-                        .requestMatchers("/admin/products/delete-image/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/products/delete-image/**","/admin/vouchers/delete/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll() // Thay .authenticated()
                 )
