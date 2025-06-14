@@ -64,7 +64,8 @@
   - Sản phẩm theo mùa (Tháng 1-12)
   - Mới về, bán chạy, theo danh mục
 - Chi tiết sản phẩm:
-  - Mô tả, đánh giá, gợi ý dựa vào AI
+  - Mô tả, đánh giá, hình ảnh
+  - Hệ thống gợi ý sản phẩm (CF & CBF)
   - Sản phẩm đã xem gần đây
 - Tìm kiếm & lọc (tên, giá, loại)
 - Giỏ hàng & Yêu thích
