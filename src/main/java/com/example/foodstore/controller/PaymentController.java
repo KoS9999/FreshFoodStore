@@ -63,13 +63,13 @@ public class PaymentController {
     private final String key1 = "sdngKKJmqEMzvh5QQcdD2A9XBSKUNaYn"; //PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL
     private static final String key2 = "trMrHtvjo6myautxDUiAcYsVtaeQ8nhf"; //kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz
     private final String endpoint = "https://sb-openapi.zalopay.vn/v2/create";
-    private final String callback_url = "https://3f73-171-252-154-167.ngrok-free.app/api/payment/callback";
+    private final String callback_url = "https://freshfood-e3wg.onrender.com/api/payment/callback";
 
     //VNPAY
     private final String vnp_TmnCode = "F0AEHL04";
     private final String vnp_HashSecret = "85ADDC045705FGRWYNL973VABM0QK4N5";
     private final String vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    private final String vnp_ReturnUrl = "http://localhost:9090/api/payment/vnpay-ipn";
+    private final String vnp_ReturnUrl = "http://freshfood-e3wg.onrender.com/api/payment/vnpay-ipn";
 
     private static final ConcurrentHashMap<String, VNPayTransactionDTO> transactionStore = new ConcurrentHashMap<>();
 
