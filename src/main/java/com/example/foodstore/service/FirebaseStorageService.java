@@ -3,11 +3,11 @@ package com.example.foodstore.service;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -15,46 +15,34 @@ import java.util.UUID;
 public class FirebaseStorageService {
 
     private final Storage storage;
-    private final String bucketName = "foodstore-1cd36.firebasestorage.app";
 
-    public FirebaseStorageService() throws IOException {
-        InputStream serviceAccount = new FileInputStream("src/main/resources/foodstore-1cd36-firebase-adminsdk-fbsvc-02a0299bae.json");
-        Credentials credentials = GoogleCredentials.fromStream(serviceAccount);
-        storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+    @Value("${firebase.bucket.name}")
+    private String bucketName;
 
+    public FirebaseStorageService(@Value("${firebase.config.path}") String firebaseConfigPath) throws Exception {
+        try {
+            // Đọc file từ hệ thống tệp thay vì classpath
+            InputStream serviceAccount = new FileInputStream("/app/firebase/firebase-config.json");
+            Credentials credentials = GoogleCredentials.fromStream(serviceAccount);
+            storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+        } catch (Exception e) {
+            System.err.println("Lỗi khởi tạo Firebase: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Không thể khởi tạo FirebaseStorageService", e);
+        }
     }
 
     public String uploadFileReviews(MultipartFile file) {
-        System.out.println("🔍 Đang upload ảnh review lên Firebase: " + file.getOriginalFilename());
-
-        try {
-            String folder = "review/";
-
-            String fileName = folder + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-
-            Blob blob = storage.create(
-                    BlobInfo.newBuilder(bucketName, fileName)
-                            .setContentType(file.getContentType())
-                            .build(),
-                    file.getInputStream()
-            );
-
-            String fileUrl = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/"
-                    + fileName.replaceAll("/", "%2F") + "?alt=media";
-
-            System.out.println("Ảnh upload thành công: " + fileUrl);
-            return fileUrl;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi upload ảnh lên Firebase: " + e.getMessage());
-            return null;
-        }
+        return upload(file, "review/");
     }
+
     public String uploadFileBlogs(MultipartFile file) {
-        System.out.println("🔍 Đang upload ảnh blog lên Firebase: " + file.getOriginalFilename());
+        return upload(file, "blogs/");
+    }
 
+    private String upload(MultipartFile file, String folder) {
         try {
-            String folder = "blogs/";
-            String fileName = folder + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String fileName = folder + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
             Blob blob = storage.create(
                     BlobInfo.newBuilder(bucketName, fileName)
@@ -63,35 +51,25 @@ public class FirebaseStorageService {
                     file.getInputStream()
             );
 
-            String fileUrl = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/"
-                    + fileName.replaceAll("/", "%2F") + "?alt=media";
+            return "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/"
+                    + fileName.replace("/", "%2F") + "?alt=media";
 
-            System.out.println("Ảnh upload thành công: " + fileUrl);
-            return fileUrl;
         } catch (Exception e) {
-            System.err.println("Lỗi khi upload ảnh lên Firebase: " + e.getMessage());
+            System.err.println("Lỗi upload file: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
-
-
 
     public boolean deleteFile(String fileUrl) {
         try {
-            String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1).split("\\?")[0]; // Lấy tên file từ URL
+            String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1).split("\\?")[0];
             BlobId blobId = BlobId.of(bucketName, fileName);
-            boolean deleted = storage.delete(blobId);
-
-            if (deleted) {
-                System.out.println("Đã xóa ảnh: " + fileName);
-            } else {
-                System.out.println("Ảnh không tồn tại hoặc không xóa được: " + fileName);
-            }
-            return deleted;
+            return storage.delete(blobId);
         } catch (Exception e) {
-            System.err.println("Lỗi khi xóa ảnh: " + e.getMessage());
+            System.err.println("Lỗi xóa file: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
-
 }
