@@ -22,7 +22,8 @@ public class FirebaseStorageService {
     public FirebaseStorageService(@Value("${firebase.config.path}") String firebaseConfigPath) throws Exception {
         try {
             // Đọc file từ hệ thống tệp thay vì classpath
-            InputStream serviceAccount = new FileInputStream("/app/firebase/firebase-config.json");
+            //InputStream serviceAccount = new FileInputStream("/app/firebase/firebase-config.json");
+            InputStream serviceAccount = new FileInputStream("/etc/secrets/firebase-config.json");
             Credentials credentials = GoogleCredentials.fromStream(serviceAccount);
             storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         } catch (Exception e) {
