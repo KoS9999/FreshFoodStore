@@ -301,6 +301,12 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="videoUrl">Link video sản phẩm</label>
+                                    <textarea id="videoUrl" th:field="*{videoUrl}" class="form-control"
+                                              placeholder="Nhập link video sản phẩm" rows="4"></textarea>
+                                </div>
+
+                                <div class="form-group">
                                     <label class="mb-2">Mùa Vụ Sản Phẩm (Tháng):</label>
                                     <div class="season-checkbox-container">
                                         <th:block th:each="i : ${#numbers.sequence(1,12)}">

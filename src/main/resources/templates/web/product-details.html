@@ -18,6 +18,28 @@
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
     <!-- Responsive css -->
     <link rel="stylesheet" th:href="@{/web/css/responsive.css}">
+    <style>
+        .qr-code-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .qr-code-container img {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .download-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #8BB436;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+    </style>
 
 </head>
 
@@ -173,7 +195,7 @@
             <div class="ltn__shop-details-tab-inner ltn__shop-details-tab-inner-2">
                 <div class="ltn__shop-details-tab-menu">
                     <div class="nav">
-                        <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Mô tả sản phẩm</a>
+                        <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Thông tin sản phẩm</a>
                         <a data-bs-toggle="tab" href="#liton_tab_details_1_2" class="">Đánh giá sản phẩm</a>
                     </div>
                 </div>
@@ -181,6 +203,15 @@
                     <div class="tab-pane fade active show" id="liton_tab_details_1_1">
                         <div class="ltn__shop-details-tab-content-inner">
                             <p th:text="${product.description}">Mô tả sản phẩm</p>
+                        </div>
+                        <div class="qr-code-container">
+                            <h3 style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                Mã QR sản phẩm</h3>
+                            <img th:src="@{/generate-qr/{id}(id=${product.productId})}" alt="QR Code"/>
+                            <br>
+                            <a th:href="@{/generate-qr/{id}(id=${product.productId})}"
+                               download="qr-code.png"
+                               class="download-btn">Tải mã QR</a>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="liton_tab_details_1_2">
