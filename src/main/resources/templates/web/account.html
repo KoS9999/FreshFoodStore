@@ -290,7 +290,20 @@
                                                 <span th:if="${order.status == 1}" class="text-success">Đã thanh toán</span>
                                                 <span th:if="${order.status == 0}" class="text-danger">Chưa thanh toán</span>
                                             </td>
-                                            <td th:text="${order.orderStatus}"></td>
+                                            <td>
+                                                <span th:class="'status-label ' +
+                                                               (${order.orderStatus.name() == 'PENDING'} ? 'text-warning' :
+                                                               (${order.orderStatus.name() == 'CONFIRMED'} ? 'text-primary' :
+                                                               (${order.orderStatus.name() == 'SHIPPING'} ? 'text-info' :
+                                                               (${order.orderStatus.name() == 'DELIVERED'} ? 'text-success' :
+                                                               (${order.orderStatus.name() == 'CANCELED'} ? 'text-danger' : 'text-secondary')))))"
+                                                      th:text="${order.orderStatus.name() == 'PENDING'} ? 'Đang chờ xử lý' :
+                                                               (${order.orderStatus.name() == 'CONFIRMED'} ? 'Đã xác nhận' :
+                                                               (${order.orderStatus.name() == 'SHIPPING'} ? 'Đang giao' :
+                                                               (${order.orderStatus.name() == 'DELIVERED'} ? 'Đã giao hàng' :
+                                                               (${order.orderStatus.name() == 'CANCELED'} ? 'Đã hủy đơn' : 'Không xác định'))))">
+                                                </span>
+                                            </td>
                                             <td>
                                                 <button type="button"
                                                         class="btn theme-btn-1 btn-effect-1 text-uppercase"

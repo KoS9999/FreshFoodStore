@@ -88,13 +88,15 @@
                 <div class="col-lg-12">
                     <div class="ltn__breadcrumb-inner ltn__breadcrumb-inner-2 justify-content-between">
                         <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">// Blog Details</h6>
-                            <h1 class="section-title white-color" th:text="${blog.title}"></h1>
+                            <h6 class="section-subtitle ltn__secondary-color"
+                                style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
+                                // Chào mừng đến với cửa hàng chúng tôi</h6>
+                            <h1 class="section-title white-color">Chi tiết Blog</h1>
                         </div>
                         <div class="ltn__breadcrumb-list">
                             <ul>
-                                <li><a th:href="@{/index}">Home</a></li>
-                                <li>Blog Details</li>
+                                <li><a th:href="@{/index}">Trang chủ</a></li>
+                                <li>Chi tiết Blog</li>
                             </ul>
                         </div>
                     </div>
@@ -132,15 +134,15 @@
                     <aside class="sidebar-area blog-sidebar ltn__right-sidebar">
                         <!-- Search Widget -->
                         <div class="widget ltn__search-widget">
-                            <h4 class="ltn__widget-title ltn__widget-title-border">Search</h4>
+                            <h4 class="ltn__widget-title ltn__widget-title-border">Tìm kiếm</h4>
                             <form>
-                                <input type="text" name="keyword" placeholder="Search...">
+                                <input type="text" name="keyword" placeholder="Tìm kiếm...">
                                 <button type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
                         <!-- Related Products Tags -->
                         <div class="widget ltn__tagcloud-widget">
-                            <h4 class="ltn__widget-title ltn__widget-title-border">Sản phẩm liên quan:</h4>
+                            <h4 class="ltn__widget-title ltn__widget-title-border" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">Sản phẩm liên quan:</h4>
                             <div class="related-tags">
                                 <a th:each="product, iterStat : ${blog.relatedProducts}"
                                    th:text="${product.productName}"
@@ -152,10 +154,10 @@
                             </div>
                         </div>
                         <div class="widget ltn__tagcloud-widget">
-                            <h4 class="ltn__widget-title ltn__widget-title-border">Thêm tất cả sản phẩm vào giỏ </h4>
+                            <h4 class="ltn__widget-title ltn__widget-title-border" style="font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;" >Thêm tất cả sản phẩm vào giỏ </h4>
                             <button type="button" id="addAllToCartBtn"
                                     class="btn theme-btn-1 btn-effect-1"
-                                    style="background-color: #88c244; font-family: Arial, sans-serif;">
+                                    style="background-color: #88c244; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-weight: 500;">
                                 Thêm vào giỏ
                             </button>
                         </div>
