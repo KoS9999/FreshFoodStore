@@ -1,471 +1,601 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="admin, dashboard, ecommerce, panel"/>
-    <meta name="description" content="Carrot - Admin.">
-    <meta name="author" content="ashishmaraviya">
-
-    <title>Quản trị - Trang chủ</title>
+    <meta name="keywords" content="quản trị, bảng điều khiển, thương mại điện tử, thực phẩm hữu cơ"/>
+    <meta name="description" content="Carrot - Bảng Quản Trị Cửa Hàng Thực Phẩm Hữu Cơ">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Quản trị - Thống Kê Doanh Thu</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" th:href="@{/admin/img/favicon/favicon.ico}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-
-    <!-- Icon CSS -->
-    <link th:href="@{/admin/css/vendor/materialdesignicons.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/owl.carousel.min.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 
     <!-- Vendor CSS -->
-    <link th:href="@{/admin/css/vendor/datatables.bootstrap5.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/responsive.datatables.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/daterangepicker.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/simplebar.css}" rel="stylesheet">
     <link th:href="@{/admin/css/vendor/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/apexcharts.css}" rel="stylesheet">
-    <link th:href="@{/admin/css/vendor/jquery-jvectormap-1.2.2.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/vendor/remixicon.css}" rel="stylesheet">
 
     <!-- Main CSS -->
-    <link id="main-css" th:href="@{/admin/css/style.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+
+    <!-- Custom CSS for Modern Design -->
     <style>
-        .notification-box {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 500px;
-            max-height: 70vh;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .notification-box-header {
+        .wrapper {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .notification-box-header h4 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .notification-box-header .clear-all-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .notification-box-header .clear-all-btn:hover {
-            background: #c82333;
-        }
-
-        .notification-list {
+        .cr-main-content {
+            padding: 20px;
             flex: 1;
             overflow-y: auto;
-            padding-right: 10px;
+            max-height: calc(100vh - 100px); /* Adjust based on header/footer height */
         }
 
-        .notification-list::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .notification-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
-        }
-
-        .notification-list::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        .notification-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-            animation: fadeIn 0.5s ease-in;
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .notification-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-content strong {
-            font-size: 15px;
-            color: #333;
-        }
-
-        .notification-content small {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .notification-item .close-btn {
-            background: none;
+        .cr-card {
             border: none;
-            font-size: 18px;
-            color: #666;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            padding: 20px;
             cursor: pointer;
-            padding: 0 8px;
+            transition: transform 0.3s ease;
         }
 
-        .notification-item .close-btn:hover {
-            color: #dc3545;
+        .cr-card:hover {
+            transform: translateY(-5px);
         }
 
-        .empty-message {
+        .cr-page-title h5 {
+            font-size: 1.8rem;
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .cr-breadcrumb ul li {
+            color: #4caf50;
+        }
+
+        .cr-breadcrumb ul li a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+
+        .cr-breadcrumb ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chart Styling */
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2e7d32;
+            margin-bottom: 10px;
             text-align: center;
-            color: #666;
-            font-size: 14px;
-            padding: 20px 0;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+            max-height: 200px; /* Prevent stretching */
+        }
+
+        /* Fullscreen Chart Modal */
+        .fullscreen-chart {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .fullscreen-chart-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 80vh; /* Limit height */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fullscreen-chart canvas {
+            width: 100% !important;
+            height: 500px !important;
+            max-height: 500px; /* Prevent overflow */
+        }
+
+        .close-fullscreen {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* Filter Styling */
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .filter-container select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+            font-size: 1rem;
+            color: #333;
+            background-color: #ffffff;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-container select:focus {
+            border-color: #4caf50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+            outline: none;
+        }
+
+        /* Grid Layout */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Toast Styling */
+        .toast-success-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1055;
+        }
+
+        .toast-success {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-error {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            min-width: 300px;
+        }
+
+        .toast-body {
+            color: white;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-<main class="wrapper sb-default ecom">
-    <!-- Loader -->
-    <div id="cr-overlay">
-        <div class="loader"></div>
-    </div>
+<main class="wrapper sb-default">
+    <!-- Header -->
+    <header th:replace="~{admin/header :: header}"></header>
+    <!-- Sidebar -->
+    <aside th:replace="~{admin/sidebar :: sidebar}"></aside>
 
-    <!-- fragment header -->
-    <div th:replace="~{admin/header :: header}"></div>
-    <!-- fragment sidebar -->
-    <div th:replace="~{admin/sidebar :: sidebar}"></div>
-
-    <!-- Nội dung chính -->
+    <!-- Main Content -->
     <div class="cr-main-content">
         <div class="container-fluid">
-            <!-- Notification Box -->
-            <div id="notificationBox" class="notification-box">
-                <div class="notification-box-header">
-                    <h4>Thông báo</h4>
-                    <button class="clear-all-btn" onclick="clearAllNotifications()">Xóa tất cả</button>
-                </div>
-                <div id="notificationList" class="notification-list">
-                    <div class="empty-message" id="emptyMessage">Không có thông báo</div>
+            <div class="cr-page-title cr-page-title-2">
+                <div class="cr-breadcrumb">
+                    <h5>Thống Kê Doanh Thu</h5>
+                    <ul>
+                        <li><a th:href="@{/admin}">Carrot</a></li>
+                        <li>Thống Kê Doanh Thu</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Page title & breadcrumb -->
-            <div class="cr-page-title">
-                <div class="cr-breadcrumb">
-                    <h5>eCommerce</h5>
-                    <ul>
-                        <li><a th:href="@{/index.html}">Carrot</a></li>
-                        <li>eCommerce</li>
-                    </ul>
+            <div class="filter-container">
+                <select id="timeFilter" onchange="updateCharts()">
+                    <option value="all">Tất cả</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+
+            <!-- Chart Grid Layout -->
+            <div class="chart-grid">
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Sản Phẩm</h2>
+                    <canvas id="productChart" class="chart-canvas"></canvas>
                 </div>
-                <div class="cr-tools">
-                    <div id="pagedate">
-                        <div class="cr-date-range" title="Date">
-                            <span></span>
-                        </div>
-                    </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Thể Loại</h2>
+                    <canvas id="categoryChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Năm</h2>
+                    <canvas id="yearChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Tỷ Lệ Trạng Thái Đơn Hàng</h2>
+                    <canvas id="orderStatusChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Hiệu Quả Voucher</h2>
+                    <canvas id="voucherChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Sản Phẩm Theo Mùa</h2>
+                    <canvas id="seasonalChart" class="chart-canvas"></canvas>
+                </div>
+                <div class="cr-card">
+                    <h2 class="chart-title">Doanh Thu Theo Khu Vực</h2>
+                    <canvas id="regionChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6">
-                            <div class="cr-card">
-                                <div class="cr-card-content label-card">
-                                    <div class="title">
-                                        <span class="icon icon-1"><i class="ri-shield-user-line"></i></span>
-                                        <div class="growth-numbers">
-                                            <h4>Customers</h4>
-                                            <h5>857k</h5>
-                                        </div>
-                                    </div>
-                                    <p class="card-groth up">
-                                        <i class="ri-arrow-up-line"></i>
-                                        32%
-                                        <span>Last Month</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="cr-card">
-                                <div class="cr-card-content label-card">
-                                    <div class="title">
-                                        <span class="icon icon-2"><i class="ri-shopping-bag-3-line"></i></span>
-                                        <div class="growth-numbers">
-                                            <h4>Order</h4>
-                                            <h5>08.65k</h5>
-                                        </div>
-                                    </div>
-                                    <p class="card-groth down">
-                                        <i class="ri-arrow-down-line"></i>
-                                        1.7%
-                                        <span>Last Month</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="cr-card">
-                                <div class="cr-card-content label-card">
-                                    <div class="title">
-                                        <span class="icon icon-3"><i class="ri-money-dollar-circle-line"></i></span>
-                                        <div class="growth-numbers">
-                                            <h4>Revenue</h4>
-                                            <h5>$85746</h5>
-                                        </div>
-                                    </div>
-                                    <p class="card-groth down">
-                                        <i class="ri-arrow-down-line"></i>
-                                        3.8%
-                                        <span>Last Month</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="cr-card">
-                                <div class="cr-card-content label-card">
-                                    <div class="title">
-                                        <span class="icon icon-4"><i class="ri-exchange-dollar-line"></i></span>
-                                        <div class="growth-numbers">
-                                            <h4>Expenses</h4>
-                                            <h5>$75462</h5>
-                                        </div>
-                                    </div>
-                                    <p class="card-groth up">
-                                        <i class="ri-arrow-up-line"></i>
-                                        8%
-                                        <span>Last Month</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container-fluid">
+                <div class="copyright">
+                    © 2025 Carrot - Cửa Hàng Thực Phẩm Hữu Cơ
                 </div>
             </div>
+        </footer>
+    </div>
+
+    <!-- Fullscreen Chart Modal -->
+    <div class="fullscreen-chart" id="fullscreenChart">
+        <div class="fullscreen-chart-content">
+            <span class="close-fullscreen" onclick="closeFullscreen()">×</span>
+            <h2 class="chart-title" id="fullscreenChartTitle"></h2>
+            <canvas id="fullscreenChartCanvas"></canvas>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container-fluid">
-            <div class="copyright">
-                <p><span id="copyright_year"></span> © Carrot, All rights Reserved.</p>
-                <p>Design by MaraviyaInfotech.</p>
-            </div>
+    <!-- Toast Notifications -->
+    <div class="toast-success-container">
+        <div class="toast" id="notificationToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body" id="toastMessage"></div>
         </div>
-    </footer>
+    </div>
 </main>
 
+<!-- Vendor Scripts -->
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
-<script th:src="@{/admin/js/vendor/simplebar.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-
-<script type="text/javascript">
-    // Utility to escape HTML special characters
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    // Get DOM elements with null checks
-    const notificationBox = document.getElementById("notificationBox");
-    const notificationList = document.getElementById("notificationList");
-    const emptyMessage = document.getElementById("emptyMessage");
-
-    // Check for required DOM elements
-    if (!notificationBox || !notificationList || !emptyMessage) {
-        console.error("Notification elements not found in DOM");
-        // Skip further execution without return
-    } else {
-        function showBanner(message, time) {
-            try {
-                const notificationItem = document.createElement("div");
-                notificationItem.className = "notification-item";
-
-                const dateTime = time || new Date().toLocaleString();
-                const escapedMessage = escapeHtml(message);
-                const escapedDateTime = escapeHtml(dateTime);
-
-                notificationItem.innerHTML = `
-					<div class="notification-content">
-						<strong>${escapedMessage}</strong><br>
-						<small>${escapedDateTime}</small>
-					</div>
-					<button class="close-btn" onclick="hideBanner(this.parentElement, '${escapedMessage}', '${escapedDateTime}')">×</button>
-				`;
-
-                // Hide empty message if it exists
-                emptyMessage.style.display = 'none';
-
-                // Prepend (add to top) for newest first
-                notificationList.prepend(notificationItem);
-            } catch (e) {
-                console.error("Error showing notification:", e);
-            }
-        }
-
-        function hideBanner(banner, message, time) {
-            try {
-                banner.remove();
-
-                // Update localStorage
-                let notifications = [];
-                try {
-                    const stored = localStorage.getItem('notifications');
-                    if (stored) {
-                        notifications = JSON.parse(stored);
-                    }
-                } catch (e) {
-                    console.error("Error parsing notifications from localStorage:", e);
-                    localStorage.removeItem('notifications');
-                }
-
-                notifications = notifications.filter(n => n.message !== message || n.time !== time);
-                localStorage.setItem('notifications', JSON.stringify(notifications));
-
-                // Show empty message if no notifications remain
-                if (notificationList.children.length === 1) { // Only emptyMessage remains
-                    emptyMessage.style.display = 'block';
-                }
-            } catch (e) {
-                console.error("Error hiding notification:", e);
-            }
-        }
-
-        function clearAllNotifications() {
-            try {
-                notificationList.innerHTML = '<div class="empty-message" id="emptyMessage">Không có thông báo</div>';
-                localStorage.removeItem('notifications');
-                emptyMessage.style.display = 'block';
-            } catch (e) {
-                console.error("Error clearing notifications:", e);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                const stored = localStorage.getItem("notifications");
-                if (stored) {
-                    let notifications = [];
-                    try {
-                        notifications = JSON.parse(stored);
-                    } catch (e) {
-                        console.error("Error parsing notifications on load:", e);
-                        localStorage.removeItem('notifications');
-                        return;
-                    }
-                    if (notifications.length > 0) {
-                        emptyMessage.style.display = 'none';
-                        notifications.reverse().forEach(n => showBanner(n.message, n.time)); // Reverse to show newest first
-                    }
-                }
-            } catch (e) {
-                console.error("Error loading notifications:", e);
-            }
-        });
-
-        // WebSocket setup with error handling
-        try {
-            const socket = new SockJS('/websocket');
-            const stompClient = Stomp.over(socket);
-
-            stompClient.connect({}, function (frame) {
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/admin', function (messageOutput) {
-                    try {
-                        const msg = messageOutput.body;
-                        const time = new Date().toLocaleString();
-                        showBanner(msg, time);
-
-                        let notifications = [];
-                        try {
-                            const stored = localStorage.getItem('notifications');
-                            if (stored) {
-                                notifications = JSON.parse(stored);
-                            }
-                        } catch (e) {
-                            console.error("Error parsing notifications for new message:", e);
-                            localStorage.removeItem('notifications');
-                        }
-
-                        notifications.push({message: msg, time: time});
-                        localStorage.setItem('notifications', JSON.stringify(notifications));
-                    } catch (e) {
-                        console.error("Error processing WebSocket message:", e);
-                    }
-                });
-            }, function (error) {
-                console.error("WebSocket connection error:", error);
-            });
-        } catch (e) {
-            console.error("Error setting up WebSocket:", e);
-        }
-    }
-</script>
-
-<!-- Data Tables -->
-<script th:src="@{/admin/js/vendor/jquery.datatables.min.js}"></script>
-<script th:src="@{/admin/js/vendor/datatables.bootstrap5.min.js}"></script>
-<script th:src="@{/admin/js/vendor/datatables.responsive.min.js}"></script>
-
-<!-- Calendar -->
-<script th:src="@{/admin/js/vendor/jquery.simple-calendar.js}"></script>
-
-<!-- Date Range Picker -->
-<script th:src="@{/admin/js/vendor/moment.min.js}"></script>
-<script th:src="@{/admin/js/vendor/daterangepicker.js}"></script>
-<script th:src="@{/admin/js/vendor/date-range.js}"></script>
-
-<!-- Main Custom -->
 <script th:src="@{/admin/js/main.js}"></script>
-<script th:src="@{/admin/js/data/ecommerce-chart-data.js}"></script>
+
+<!-- Chart.js Script -->
+<script th:inline="javascript">
+    Chart.register(ChartDataLabels);
+
+    // Data parsing with error handling
+    let productData, categoryData, yearData, orderStatusData, voucherData, seasonalData, regionData;
+    try {
+        productData = JSON.parse(/*[[${productDataJson}]]*/ '[]') || [];
+        categoryData = JSON.parse(/*[[${categoryDataJson}]]*/ '[]') || [];
+        yearData = JSON.parse(/*[[${yearDataJson}]]*/ '[]') || [];
+        orderStatusData = JSON.parse(/*[[${orderStatusDataJson}]]*/ '[]') || [];
+        voucherData = JSON.parse(/*[[${voucherDataJson}]]*/ '[]') || [];
+        seasonalData = JSON.parse(/*[[${seasonalDataJson}]]*/ '[]') || [];
+        regionData = JSON.parse(/*[[${regionDataJson}]]*/ '[]') || [];
+    } catch (error) {
+        console.error('Error parsing JSON data:', error);
+        showToast('Lỗi khi tải dữ liệu biểu đồ.', 'toast-error');
+    }
+
+    // Expanded color palette for visual distinction
+    const colors = [
+        '#4CAF50', '#D32F2F', '#FBC02D', '#7B1FA2', '#0288D1',
+        '#FF5722', '#388E3C', '#C2185B', '#F9A825', '#0097A7',
+        '#E64A19', '#512DA8', '#81C784', '#B71C1C', '#00BCD4',
+        '#FFD600', '#6A1B9A', '#EF5350', '#26A69A', '#FFCA28'
+    ];
+
+    let chartInstances = {};
+
+    function filterDataByYear(data, year, keyIndex) {
+        if (year === 'all') return data;
+        return data.filter(item => item[keyIndex].toString() === year);
+    }
+
+    function createChartConfig(chartId, config) {
+        return {
+            ...config,
+            options: {
+                ...config.options,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...config.options.plugins,
+                    datalabels: {
+                        ...config.options.plugins.datalabels,
+                        font: { size: chartId === 'fullscreenChartCanvas' ? 14 : 10 }
+                    }
+                }
+            }
+        };
+    }
+
+    function showFullscreenChart(chartId, title, config) {
+        const fullscreenChart = document.getElementById('fullscreenChart');
+        const fullscreenCanvas = document.getElementById('fullscreenChartCanvas');
+        const fullscreenTitle = document.getElementById('fullscreenChartTitle');
+
+        fullscreenTitle.textContent = title;
+        fullscreenChart.style.display = 'flex';
+
+        if (chartInstances['fullscreenChartCanvas']) {
+            chartInstances['fullscreenChartCanvas'].destroy();
+        }
+
+        chartInstances['fullscreenChartCanvas'] = new Chart(fullscreenCanvas, createChartConfig('fullscreenChartCanvas', config));
+    }
+
+    function closeFullscreen() {
+        const fullscreenChart = document.getElementById('fullscreenChart');
+        fullscreenChart.style.display = 'none';
+        if (chartInstances['fullscreenChartCanvas']) {
+            chartInstances['fullscreenChartCanvas'].destroy();
+        }
+    }
+
+    function updateCharts() {
+        const selectedYear = document.getElementById('timeFilter').value;
+
+        // Destroy existing charts
+        Object.values(chartInstances).forEach(chart => chart.destroy());
+        chartInstances = {};
+
+        // Product Chart (Bar)
+        try {
+            const productLabels = productData.map(item => item[0] || 'Không xác định').slice(0, 10);
+            const productValues = productData.map(item => item[2] || 0).slice(0, 10);
+            const productConfig = {
+                type: 'bar',
+                data: {
+                    labels: productLabels,
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: productValues,
+                        backgroundColor: colors.slice(0, productLabels.length),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: true },
+                        datalabels: { color: '#fff', font: { weight: 'bold' } }
+                    },
+                    scales: { y: { beginAtZero: true } }
+                }
+            };
+            chartInstances['productChart'] = new Chart(document.getElementById('productChart'), createChartConfig('productChart', productConfig));
+            document.getElementById('productChart').parentElement.onclick = () => showFullscreenChart('productChart', 'Doanh Thu Theo Sản Phẩm', productConfig);
+        } catch (error) {
+            console.error('Error rendering Product Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Sản Phẩm.', 'toast-error');
+        }
+
+        // Category Chart (Doughnut)
+        try {
+            const categoryLabels = categoryData.map(item => item[0] || 'Không xác định');
+            const categoryValues = categoryData.map(item => item[2] || 0);
+            const categoryConfig = {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: colors.slice(0, categoryLabels.length)
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => `${((value / categoryValues.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`
+                        }
+                    }
+                }
+            };
+            chartInstances['categoryChart'] = new Chart(document.getElementById('categoryChart'), createChartConfig('categoryChart', categoryConfig));
+            document.getElementById('categoryChart').parentElement.onclick = () => showFullscreenChart('categoryChart', 'Doanh Thu Theo Thể Loại', categoryConfig);
+        } catch (error) {
+            console.error('Error rendering Category Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Thể Loại.', 'toast-error');
+        }
+
+        // Year Chart (Line)
+        try {
+            const yearLabels = [2023, 2024, 2025];
+            const filteredYearData = selectedYear === 'all' ? yearData : filterDataByYear(yearData, selectedYear, 0);
+            const yearMap = new Map(filteredYearData.map(item => [item[0], item[2] || 0]));
+            const yearValues = yearLabels.map(year => yearMap.get(year) || 0);
+            const yearConfig = {
+                type: 'line',
+                data: {
+                    labels: yearLabels,
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: yearValues,
+                        borderColor: colors[0],
+                        backgroundColor: 'rgba(76,175,80,0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true }, datalabels: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            };
+            chartInstances['yearChart'] = new Chart(document.getElementById('yearChart'), createChartConfig('yearChart', yearConfig));
+            document.getElementById('yearChart').parentElement.onclick = () => showFullscreenChart('yearChart', 'Doanh Thu Theo Năm', yearConfig);
+        } catch (error) {
+            console.error('Error rendering Year Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Năm.', 'toast-error');
+        }
+
+        // Order Status Chart (Pie)
+        try {
+            const statusLabels = orderStatusData.map(item => item[0] || 'Không xác định');
+            const statusValues = orderStatusData.map(item => item[1] || 0);
+            const statusConfig = {
+                type: 'pie',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusValues,
+                        backgroundColor: colors.slice(0, statusLabels.length)
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => `${((value / statusValues.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`
+                        }
+                    }
+                }
+            };
+            chartInstances['orderStatusChart'] = new Chart(document.getElementById('orderStatusChart'), createChartConfig('orderStatusChart', statusConfig));
+            document.getElementById('orderStatusChart').parentElement.onclick = () => showFullscreenChart('orderStatusChart', 'Tỷ Lệ Trạng Thái Đơn Hàng', statusConfig);
+        } catch (error) {
+            console.error('Error rendering Order Status Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Tỷ Lệ Trạng Thái Đơn Hàng.', 'toast-error');
+        }
+
+        // Voucher Chart (Bar)
+        try {
+            const voucherLabels = voucherData.map(item => item[0] || 'Không xác định');
+            const voucherValues = voucherData.map(item => item[2] || 0);
+            const voucherConfig = {
+                type: 'bar',
+                data: {
+                    labels: voucherLabels,
+                    datasets: [{
+                        label: 'Tổng giảm giá (VNĐ)',
+                        data: voucherValues,
+                        backgroundColor: colors.slice(0, voucherLabels.length),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true }, datalabels: { color: '#fff' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            };
+            chartInstances['voucherChart'] = new Chart(document.getElementById('voucherChart'), createChartConfig('voucherChart', voucherConfig));
+            document.getElementById('voucherChart').parentElement.onclick = () => showFullscreenChart('voucherChart', 'Hiệu Quả Voucher', voucherConfig);
+        } catch (error) {
+            console.error('Error rendering Voucher Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Hiệu Quả Voucher.', 'toast-error');
+        }
+
+        // Seasonal Products Chart (Radar)
+        try {
+            const seasonalLabels = seasonalData.map(item => item[0] || 'Không xác định');
+            const seasonalValues = seasonalData.map(item => item[2] || 0);
+            const seasonalConfig = {
+                type: 'radar',
+                data: {
+                    labels: seasonalLabels.slice(0, 5),
+                    datasets: [{
+                        label: 'Doanh thu (VNĐ)',
+                        data: seasonalValues.slice(0, 5),
+                        backgroundColor: 'rgba(76,175,80,0.2)',
+                        borderColor: colors[3],
+                        pointBackgroundColor: colors[3]
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true }, datalabels: { display: false } }
+                }
+            };
+            chartInstances['seasonalChart'] = new Chart(document.getElementById('seasonalChart'), createChartConfig('seasonalChart', seasonalConfig));
+            document.getElementById('seasonalChart').parentElement.onclick = () => showFullscreenChart('seasonalChart', 'Sản Phẩm Theo Mùa', seasonalConfig);
+        } catch (error) {
+            console.error('Error rendering Seasonal Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Sản Phẩm Theo Mùa.', 'toast-error');
+        }
+
+        // Region Chart (Polar Area)
+        try {
+            const regionLabels = regionData.map(item => item[0] || 'Không xác định');
+            const regionValues = regionData.map(item => item[1] || 0);
+            const regionConfig = {
+                type: 'polarArea',
+                data: {
+                    labels: regionLabels,
+                    datasets: [{
+                        data: regionValues,
+                        backgroundColor: colors.slice(0, regionLabels.length)
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'top' },
+                        datalabels: {
+                            color: '#fff',
+                            formatter: (value, ctx) => `${((value / regionValues.reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%`
+                        }
+                    }
+                }
+            };
+            chartInstances['regionChart'] = new Chart(document.getElementById('regionChart'), createChartConfig('regionChart', regionConfig));
+            document.getElementById('regionChart').parentElement.onclick = () => showFullscreenChart('regionChart', 'Doanh Thu Theo Khu Vực', regionConfig);
+        } catch (error) {
+            console.error('Error rendering Region Chart:', error);
+            showToast('Lỗi khi hiển thị biểu đồ Doanh Thu Theo Khu Vực.', 'toast-error');
+        }
+    }
+
+    // Show Toast Function
+    function showToast(message, toastClass) {
+        const toast = document.getElementById('notificationToast');
+        toast.className = `toast ${toastClass}`;
+        document.getElementById('toastMessage').textContent = message;
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        try {
+            updateCharts();
+        } catch (error) {
+            showToast('Đã xảy ra lỗi khi tải biểu đồ.', 'toast-error');
+            console.error('Error initializing charts:', error);
+        }
+    });
+</script>
+<div th:replace="~{admin/fragments :: webSocketScripts}"></div>
 </body>
 </html>

@@ -224,7 +224,7 @@
                                                      class="img-thumbnail" width="80" height="80">
                                             </td>
                                             <td th:text="${#dates.format(review.reviewDate, 'dd/MM/yyyy HH:mm')}"></td>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <form th:action="@{'/admin/reviews/toggle-visibility/' + ${review.reviewId}}"
                                                       method="post" class="toggle-visibility-form">
                                                     <input type="hidden" name="visible" th:value="${!review.visible}"/>
@@ -235,14 +235,14 @@
                                                     </button>
                                                 </form>
                                             </td>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <form th:action="@{'/admin/reviews/reply/' + ${review.reviewId}}"
                                                       method="post"
-                                                      class="reply-form d-flex flex-column align-items-start">
+                                                      class="reply-form d-flex flex-column">
                                                     <input type="text" name="responseText" class="form-control mb-2"
                                                            th:value="${review.responseText}"
-                                                           placeholder="Enter response...">
-                                                    <button type="submit" class="btn btn-primary">Phản hồi</button>
+                                                           placeholder="Gửi phản hồi...">
+                                                    <button type="submit" class="btn btn-primary btn-sm">Phản hồi</button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -330,11 +330,9 @@
 
         $(".reply-form").submit(function (event) {
             event.preventDefault();
-
             let form = $(this);
             let url = form.attr("action");
             let responseText = form.find("input[name='responseText']").val();
-
             $.post(url, {responseText: responseText}, function (data) {
                 if (data.responseText) {
                     form.find("input[name='responseText']").val(data.responseText);
@@ -345,25 +343,20 @@
                 alert("Có lỗi xảy ra, vui lòng thử lại.");
             });
         });
+
         $("form.toggle-visibility-form").submit(function (event) {
             event.preventDefault();
-
             let form = $(this);
             let url = form.attr("action");
             let visibleValue = form.find("input[name='visible']").val();
-
             $.post(url, {visible: visibleValue}, function (data) {
                 let button = form.find(".toggle-btn");
                 let newVisible = data.visible;
-
                 form.find("input[name='visible']").val(!newVisible);
                 button.text(newVisible ? "Hiển thị" : "Ẩn");
                 button.removeClass("btn-success btn-secondary")
                     .addClass(newVisible ? "btn-success" : "btn-secondary");
-
                 $("#visibilityToastText").text("Review đã được " + (newVisible ? "hiển thị" : "ẩn") + " thành công!");
-
-                // Hiển thị Toast khi trạng thái được thay đổi
                 const toastEl = new bootstrap.Toast(document.getElementById('visibilityToast'));
                 toastEl.show();
             }).fail(function () {
@@ -371,17 +364,17 @@
             });
         });
 
-
         $('#review_list').DataTable({
             responsive: true,
             autoWidth: false,
             columnDefs: [
-                {targets: 7, orderable: false}
-            ]
+                { targets: 7, orderable: false }
+            ],
+            ordering: false,
+            order: []
         });
-
     });
 </script>
-
+<div th:replace="~{admin/fragments :: webSocketScripts}"></div>
 </body>
 </html>

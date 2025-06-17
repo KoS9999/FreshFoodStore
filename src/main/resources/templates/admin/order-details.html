@@ -50,13 +50,19 @@
                                 <div><strong>Địa chỉ:</strong> <span th:text="${order.address}"></span></div>
                                 <div><strong>Số điện thoại: </strong> <span th:text="${order.phone}"></span></div>
                                 <div><strong>Tổng giá trị đơn hàng:</strong> <span th:text="${order.amount}"></span></div>
-                                <div><strong>Trạng thái đơn hàng:</strong>
+                                <div>
+                                    <strong>Trạng thái đơn hàng:</strong>
                                     <span th:class="'status-badge ' + ${order.orderStatus.name()}"
-                                          th:text="${order.orderStatus.name()}"></span>
+                                          th:text="${order.orderStatus.name() == 'PENDING'} ? 'Đang chờ xử lý' :
+                                                  (${order.orderStatus.name() == 'CONFIRMED'} ? 'Đã xác nhận' :
+                                                  (${order.orderStatus.name() == 'SHIPPING'} ? 'Đang giao' :
+                                                  (${order.orderStatus.name() == 'DELIVERED'} ? 'Đã giao hàng' :
+                                                  (${order.orderStatus.name() == 'CANCELED'} ? 'Đã hủy đơn' : 'Không xác định'))))">Status
+                                    </span>
                                 </div>
                                 <div><strong>Trạng thái thanh toán:</strong>
                                     <span th:class="'status-badge ' + (${order.status == 1 ? 'PAID' : 'UNPAID'})"
-                                          th:text="${order.status == 1 ? 'Paid' : 'Unpaid'}"></span>
+                                          th:text="${order.status == 1 ? 'Đã thanh toán' : 'Chưa thanh toán'}"></span>
                                 </div>
                             </div>
                         </div>
@@ -112,5 +118,6 @@
 <script th:src="@{/admin/js/vendor/jquery-3.6.4.min.js}"></script>
 <script th:src="@{/admin/js/vendor/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
+<div th:replace="~{admin/fragments :: webSocketScripts}"></div>
 </body>
 </html>

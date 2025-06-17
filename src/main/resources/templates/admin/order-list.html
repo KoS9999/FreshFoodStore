@@ -50,6 +50,7 @@
             display: block;
             color: #333;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .dropdown-item:hover {
@@ -70,32 +71,47 @@
             padding: 12px;
             text-align: center;
             border: 1px solid #e0e0e0;
+            white-space: nowrap;
         }
 
         .table td {
             padding: 10px;
             text-align: center;
             border: 1px solid #e0e0e0;
+            vertical-align: middle;
         }
 
         .table tr:hover {
             background-color: #f1f8f1;
         }
 
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border-radius: 4px;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            padding: 5px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
 <body>
 <main class="wrapper sb-default">
-    <!-- Loader -->
     <div id="cr-overlay">
         <div class="loader"></div>
     </div>
-    <!-- Gọi fragment header -->
     <div th:replace="~{admin/header :: header}"></div>
     <div th:replace="~{admin/sidebar :: sidebar}"></div>
 
-    <!-- main content -->
     <div class="cr-main-content">
         <div class="container-fluid">
             <div class="cr-page-title cr-page-title-2">
@@ -123,7 +139,7 @@
                         <div class="cr-card-content card-default">
                             <div class="order-table">
                                 <div class="table-responsive tbl-1200">
-                                    <table id="recent_order" class="table">
+                                    <table id="recent_order" class="table table-bordered table-hover">
                                         <thead>
                                         <tr>
                                             <th>Mã đơn hàng</th>
@@ -146,65 +162,85 @@
                                             <td th:text="${order.phone}"></td>
                                             <td th:text="${order.note}"></td>
                                             <td>
-                                                <!-- Nút chỉnh trạng thái thanh toán -->
                                                 <div class="dropdown d-inline-block">
-													<span class="status-label"
-                                                          th:classappend="' ' + (${order.status} == 1 ? 'text-bg-success' : 'text-bg-danger')">
-														<span th:text="${order.status == 1 ? 'PAID' : 'UNPAID'}">Status</span>
-													</span>
+                                                    <span class="status-label payment-status"
+                                                          th:classappend="' ' + (${order.status} == 1 ? 'text-bg-success' : 'text-bg-danger')"
+                                                          th:data-order-id="${order.orderId}">
+                                                        <span th:text="${order.status == 1 ? 'Đã thanh toán' : 'Chưa thanh toán'}">Status</span>
+                                                    </span>
                                                     <div class="dropdown-menu show-on-hover bg-white">
-                                                        <a class="dropdown-item text-success"
-                                                           th:if="${order.status != 1}"
-                                                           th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/1'}">Mark
-                                                            as Paid</a>
-
-                                                        <a class="dropdown-item text-danger"
-                                                           th:if="${order.status != 0}"
-                                                           th:href="@{'/admin/orders/update-status/' + ${order.orderId} + '/0'}">Mark
-                                                            as Unpaid</a>
+                                                        <button class="dropdown-item text-success update-payment-status"
+                                                                th:if="${order.status != 1}"
+                                                                th:data-status="1"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đánh dấu thanh toán
+                                                        </button>
+                                                        <button class="dropdown-item text-danger update-payment-status"
+                                                                th:if="${order.status != 0}"
+                                                                th:data-status="0"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đánh dấu chưa thanh toán
+                                                        </button>
                                                     </div>
                                                 </div>
-
                                             </td>
                                             <td th:text="${order.voucherCode}"></td>
                                             <td th:attr="data-order=${order.amount}"
                                                 th:text="${#numbers.formatDecimal(order.amount, 0, 'DEFAULT', 0, 'DEFAULT')} + ' đ'">
-
                                             </td>
                                             <td>
-                                                <!-- Nút chỉnh trạng thái đơn hàng -->
                                                 <div class="dropdown d-inline-block">
-													<span class="status-label"
+                                                    <span class="status-label order-status"
                                                           th:classappend=" ' ' +
-															(${order.orderStatus.name() == 'PENDING'} ? 'text-bg-warning' :
-															(${order.orderStatus.name() == 'CONFIRMED'} ? 'text-bg-primary' :
-															(${order.orderStatus.name() == 'SHIPPING'} ? 'text-bg-info' :
-															(${order.orderStatus.name() == 'DELIVERED'} ? 'text-bg-success' :
-															(${order.orderStatus.name() == 'CANCELED'} ? 'text-bg-danger' : 'text-bg-secondary')))))">
-														<span th:text="${order.orderStatus.name()}">Status</span>
-													</span>
+                                                            (${order.orderStatus.name() == 'PENDING'} ? 'text-bg-warning' :
+                                                            (${order.orderStatus.name() == 'CONFIRMED'} ? 'text-bg-primary' :
+                                                            (${order.orderStatus.name() == 'SHIPPING'} ? 'text-bg-info' :
+                                                            (${order.orderStatus.name() == 'DELIVERED'} ? 'text-bg-success' :
+                                                            (${order.orderStatus.name() == 'CANCELED'} ? 'text-bg-danger' : 'text-bg-secondary')))))"
+                                                          th:data-order-id="${order.orderId}">
+                                                        <span th:text="${order.orderStatus.name() == 'PENDING'} ? 'Đang chờ xử lý' :
+                                                                        (${order.orderStatus.name() == 'CONFIRMED'} ? 'Đã xác nhận' :
+                                                                        (${order.orderStatus.name() == 'SHIPPING'} ? 'Đang giao' :
+                                                                        (${order.orderStatus.name() == 'DELIVERED'} ? 'Đã giao hàng' :
+                                                                        (${order.orderStatus.name() == 'CANCELED'} ? 'Đã hủy đơn' : 'Không xác định'))))">Status</span>
+                                                    </span>
                                                     <div class="dropdown-menu show-on-hover bg-white">
-                                                        <a class="dropdown-item text-warning"
-                                                           th:if="${order.orderStatus.name() != 'PENDING'}"
-                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/PENDING'}">Pending</a>
-                                                        <a class="dropdown-item text-primary"
-                                                           th:if="${order.orderStatus.name() != 'CONFIRMED'}"
-                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CONFIRMED'}">Confirmed</a>
-                                                        <a class="dropdown-item text-info"
-                                                           th:if="${order.orderStatus.name() != 'SHIPPING'}"
-                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/SHIPPING'}">Shipping</a>
-                                                        <a class="dropdown-item text-success"
-                                                           th:if="${order.orderStatus.name() != 'DELIVERED'}"
-                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/DELIVERED'}">Delivered</a>
-                                                        <a class="dropdown-item text-danger"
-                                                           th:if="${order.orderStatus.name() != 'CANCELED'}"
-                                                           th:href="@{'/admin/orders/update-order-status/' + ${order.orderId} + '/CANCELED'}">Canceled</a>
+                                                        <button class="dropdown-item text-warning update-order-status"
+                                                                th:if="${order.orderStatus.name() != 'PENDING'}"
+                                                                th:data-status="'PENDING'"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đang chờ xử lý
+                                                        </button>
+                                                        <button class="dropdown-item text-primary update-order-status"
+                                                                th:if="${order.orderStatus.name() != 'CONFIRMED'}"
+                                                                th:data-status="'CONFIRMED'"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đã xác nhận
+                                                        </button>
+                                                        <button class="dropdown-item text-info update-order-status"
+                                                                th:if="${order.orderStatus.name() != 'SHIPPING'}"
+                                                                th:data-status="'SHIPPING'"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đang giao
+                                                        </button>
+                                                        <button class="dropdown-item text-success update-order-status"
+                                                                th:if="${order.orderStatus.name() != 'DELIVERED'}"
+                                                                th:data-status="'DELIVERED'"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đã giao hàng
+                                                        </button>
+                                                        <button class="dropdown-item text-danger update-order-status"
+                                                                th:if="${order.orderStatus.name() != 'CANCELED'}"
+                                                                th:data-status="'CANCELED'"
+                                                                th:data-order-id="${order.orderId}">
+                                                            Đã hủy đơn
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <a th:href="@{'/admin/orders/' + ${order.orderId}}"
-                                                   class="btn btn-info">Details</a>
+                                                   class="btn btn-info btn-sm">Chi tiết</a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -214,6 +250,29 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+        <div id="paymentStatusToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="paymentStatusToastText">
+                    Trạng thái thanh toán đã được cập nhật!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
+        </div>
+        <div id="orderStatusToast" class="toast align-items-center text-white bg-info border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="orderStatusToastText">
+                    Trạng thái đơn hàng đã được cập nhật!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -242,5 +301,111 @@
 <script th:src="@{/admin/js/vendor/date-range.js}"></script>
 <script th:src="@{/admin/js/main.js}"></script>
 <script th:src="@{/admin/js/data/ecommerce-chart-data.js}"></script>
+<script>
+    $(document).ready(function() {
+        // Khởi tạo DataTable
+        if ($.fn.DataTable.isDataTable('#recent_order')) {
+            $('#recent_order').DataTable().destroy();
+        }
+        $('#recent_order').DataTable({
+            responsive: true,
+            autoWidth: false,
+            columnDefs: [
+                { targets: [5, 8, 9], orderable: false }
+            ],
+            ordering: false,
+            order: [],
+            paging: true,
+            searching: true,
+            info: true,
+            lengthMenu: [10, 25, 50, 100],
+            pageLength: 10
+        });
+
+        // Hàm xử lý cập nhật trạng thái thanh toán
+        function updatePaymentStatus(button) {
+            let orderId = button.data('order-id');
+            let status = button.data('status');
+            $.post('/admin/orders/update-status/' + orderId + '/' + status, { status: status }, function(data) {
+                if (data.status !== undefined) {
+                    let statusLabel = button.closest('tr').find('.payment-status[data-order-id="' + orderId + '"]');
+                    statusLabel.find('span').text(data.status == 1 ? 'Đã thanh toán' : 'Chưa thanh toán');
+                    statusLabel.removeClass('text-bg-success text-bg-danger')
+                        .addClass(data.status == 1 ? 'text-bg-success' : 'text-bg-danger');
+                    // Cập nhật dropdown
+                    let dropdownMenu = button.closest('.dropdown-menu');
+                    dropdownMenu.find('.update-payment-status').remove();
+                    if (data.status == 1) {
+                        dropdownMenu.append('<button class="dropdown-item text-danger update-payment-status" data-status="0" data-order-id="' + orderId + '">Đánh dấu chưa thanh toán</button>');
+                    } else {
+                        dropdownMenu.append('<button class="dropdown-item text-success update-payment-status" data-status="1" data-order-id="' + orderId + '">Đánh dấu thanh toán</button>');
+                    }
+                    // Hiển thị toast
+                    $('#paymentStatusToastText').text('Trạng thái thanh toán đã được cập nhật thành ' + (data.status == 1 ? 'Đã thanh toán' : 'Chưa thanh toán') + '!');
+                    const toastEl = new bootstrap.Toast(document.getElementById('paymentStatusToast'));
+                    toastEl.show();
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error updating payment status:', textStatus, errorThrown);
+                alert('Không thể cập nhật trạng thái thanh toán! Vui lòng kiểm tra console để biết chi tiết.');
+            });
+        }
+
+        // Hàm xử lý cập nhật trạng thái đơn hàng
+        function updateOrderStatus(button) {
+            let orderId = button.data('order-id');
+            let status = button.data('status');
+            $.post('/admin/orders/update-order-status/' + orderId + '/' + status, { status: status }, function(data) {
+                if (data.orderStatus) {
+                    let statusLabel = button.closest('tr').find('.order-status[data-order-id="' + orderId + '"]');
+                    let statusText = {
+                        'PENDING': 'Đang chờ xử lý',
+                        'CONFIRMED': 'Đã xác nhận',
+                        'SHIPPING': 'Đang giao',
+                        'DELIVERED': 'Đã giao hàng',
+                        'CANCELED': 'Đã hủy đơn'
+                    }[data.orderStatus] || 'Không xác định';
+                    statusLabel.find('span').text(statusText);
+                    statusLabel.removeClass('text-bg-warning text-bg-primary text-bg-info text-bg-success text-bg-danger text-bg-secondary')
+                        .addClass({
+                            'PENDING': 'text-bg-warning',
+                            'CONFIRMED': 'text-bg-primary',
+                            'SHIPPING': 'text-bg-info',
+                            'DELIVERED': 'text-bg-success',
+                            'CANCELED': 'text-bg-danger'
+                        }[data.orderStatus] || 'text-bg-secondary');
+                    // Cập nhật dropdown
+                    let dropdownMenu = button.closest('.dropdown-menu');
+                    dropdownMenu.find('.update-order-status').remove();
+                    let statuses = ['PENDING', 'CONFIRMED', 'SHIPPING', 'DELIVERED', 'CANCELED'];
+                    let statusClasses = ['text-warning', 'text-primary', 'text-info', 'text-success', 'text-danger'];
+                    let statusLabels = ['Đang chờ xử lý', 'Đã xác nhận', 'Đang giao', 'Đã giao hàng', 'Đã hủy đơn'];
+                    for (let i = 0; i < statuses.length; i++) {
+                        if (statuses[i] !== data.orderStatus) {
+                            dropdownMenu.append('<button class="dropdown-item ' + statusClasses[i] + ' update-order-status" data-status="' + statuses[i] + '" data-order-id="' + orderId + '">' + statusLabels[i] + '</button>');
+                        }
+                    }
+                    // Hiển thị toast
+                    $('#orderStatusToastText').text('Trạng thái đơn hàng đã được cập nhật thành ' + statusText + '!');
+                    const toastEl = new bootstrap.Toast(document.getElementById('orderStatusToast'));
+                    toastEl.show();
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error updating order status:', textStatus, errorThrown);
+                alert('Không thể cập nhật trạng thái đơn hàng! Vui lòng kiểm tra console để biết chi tiết.');
+            });
+        }
+
+        // Sử dụng event delegation để xử lý sự kiện click
+        $(document).on('click', '.update-payment-status', function() {
+            updatePaymentStatus($(this));
+        });
+
+        $(document).on('click', '.update-order-status', function() {
+            updateOrderStatus($(this));
+        });
+    });
+</script>
+<div th:replace="~{admin/fragments :: webSocketScripts}"></div>
 </body>
 </html>

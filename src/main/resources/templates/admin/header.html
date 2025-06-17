@@ -4,9 +4,9 @@
             <div class="cr-header-items">
                 <div class="left-header">
                     <a href="javascript:void(0)" class="cr-toggle-sidebar">
-							<span class="outer-ring">
-								<span class="inner-ring"></span>
-							</span>
+                        <span class="outer-ring">
+                            <span class="inner-ring"></span>
+                        </span>
                     </a>
                     <div class="header-search-box">
                         <div class="header-search-drop">
@@ -53,7 +53,7 @@
                                     <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/2.png}"
                                                                           alt="app">Hindi</a></li>
                                     <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/3.png}"
-                                                                          alt="app"> Deutsch</a></li>
+                                                                          alt="app">Deutsch</a></li>
                                     <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/4.png}"
                                                                           alt="app">Italian</a></li>
                                     <li><a href="javascript:void(0)"><img class="app" th:src="@{/admin/img/apps/5.png}"
@@ -68,11 +68,19 @@
                         <a class="cr-screen full" href="javascript:void(0)"><i class="ri-fullscreen-line"></i></a>
                         <a class="cr-screen reset" href="javascript:void(0)"><i class="ri-fullscreen-exit-line"></i></a>
                     </div>
-                    <div class="cr-right-tool">
-                        <a class="cr-notify" href="javascript:void(0)">
-                            <i class="ri-notification-2-line"></i>
-                            <span class="label"></span>
-                        </a>
+                    <!-- Fragment cho hộp thông báo -->
+                    <div class="cr-right-tool cr-notify-drop">
+                        <div class="cr-hover-drop">
+                            <div class="cr-hover-tool">
+                                <a class="cr-notify" href="javascript:void(0)">
+                                    <i class="ri-notification-2-line"></i>
+                                    <span class="label" id="notificationCount"></span>
+                                </a>
+                            </div>
+                            <div class="cr-hover-drop-panel right notification-panel">
+                                <div th:replace="~{admin/fragments :: notificationBox}"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="cr-right-tool display-dark">
                         <a class="cr-mode dark" href="javascript:void(0)"><i class="ri-moon-clear-line"></i></a>
@@ -89,7 +97,7 @@
                                     <p></p>
                                 </div>
                                 <ul class="border-top">
-
+                                    <!-- Thêm các mục khác nếu cần -->
                                 </ul>
                                 <ul class="border-top">
                                     <li>
