@@ -26,7 +26,7 @@ public class QRCodeController {
 
         String qrUrl = product.getVideoUrl();
         if (qrUrl == null || qrUrl.isEmpty()) {
-            qrUrl = "http://localhost:9090/product-details/" + productId;
+            qrUrl = "https://freshfoodstoreute.onrender.com/product-details/" + productId;
         }
         ByteArrayOutputStream stream = QRCode
                 .from(qrUrl)
