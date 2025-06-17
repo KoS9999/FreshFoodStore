@@ -65,9 +65,15 @@ public class FirebaseStorageService {
 
     public boolean deleteFile(String fileUrl) {
         try {
-            String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1).split("\\?")[0];
+            String path = fileUrl.substring(fileUrl.indexOf("/o/") + 3, fileUrl.indexOf("?alt=media"));
+            String fileName = path.replace("%2F", "/");
+            System.out.println("Đang xóa file: " + fileName);
             BlobId blobId = BlobId.of(bucketName, fileName);
-            return storage.delete(blobId);
+            boolean deleted = storage.delete(blobId);
+            if (!deleted) {
+                System.err.println("Xóa file thất bại: " + fileName);
+            }
+            return deleted;
         } catch (Exception e) {
             System.err.println("Lỗi xóa file: " + e.getMessage());
             e.printStackTrace();
