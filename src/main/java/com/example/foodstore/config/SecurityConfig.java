@@ -110,7 +110,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         return (request, response, authentication) -> {
             var roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
             if (roles.contains("ROLE_ADMIN")) {
-                response.sendRedirect("/admin/charts");
+                response.sendRedirect("/admin/dashboard");
             } else {
                 response.sendRedirect("/index");
             }
