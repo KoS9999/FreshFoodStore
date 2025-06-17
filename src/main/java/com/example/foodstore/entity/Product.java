@@ -61,4 +61,7 @@ public class Product implements Serializable {
     @Column(name = "month")
     private List<Integer> seasonMonths = new ArrayList<>();
 
+    @Column(nullable = true)
+    private String videoUrl;
+
 }
