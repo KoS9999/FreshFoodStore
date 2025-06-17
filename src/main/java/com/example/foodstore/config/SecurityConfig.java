@@ -34,7 +34,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         "/admin/products/delete-image/**","/admin/vouchers/delete/**",
                         "/api/payment/check-voucher/**","/api/payment/redeem/**",
                         "/reviews/**","/admin/reviews/**","/api/chatbot","/account/update", "/account/update-phone",
-                        "/send-verification-code", "/webhook", "/account/cancel-order/**",
+                        "/send-verification-code", "/webhook", "/account/cancel-order/**", "/admin/orders/update-status/**", "/admin/orders/update-order-status/**",
                         "/api/payment/createPayment","/api/payment/createCODOrder","/api/payment/createVNPayPayment"))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(
@@ -110,7 +110,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         return (request, response, authentication) -> {
             var roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
             if (roles.contains("ROLE_ADMIN")) {
-                response.sendRedirect("/admin/dashboard");
+                response.sendRedirect("/admin/charts");
             } else {
                 response.sendRedirect("/index");
             }
