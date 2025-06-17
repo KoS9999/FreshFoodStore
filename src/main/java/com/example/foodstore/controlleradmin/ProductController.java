@@ -152,6 +152,7 @@ public class ProductController {
         existingProduct.setQuantity(product.getQuantity());
         existingProduct.setEnteredDate(product.getEnteredDate());
         existingProduct.setDescription(product.getDescription());
+        existingProduct.setVideoUrl(product.getVideoUrl());
         existingProduct.setStatus(product.getStatus());
         existingProduct.setSeasonMonths(seasonMonths != null ? new ArrayList<>(seasonMonths) : new ArrayList<>());
         Category category = categoryService.findById(categoryId);
@@ -208,6 +209,5 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 }
